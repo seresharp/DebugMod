@@ -15,6 +15,8 @@ namespace CanvasTestMod
         private Button button;
         private Texture2D texture;
 
+        public bool active;
+
         public CanvasButton(GameObject parent, Texture2D tex, Vector2 pos, Vector2 size, Font font = null, string text = null)
         {
             if (size.x == 0 || size.y == 0)
@@ -52,6 +54,8 @@ namespace CanvasTestMod
 
                 GameObject.DontDestroyOnLoad(textObj);
             }
+
+            active = true;
         }
 
         public void AddClickEvent(UnityAction action)
@@ -93,6 +97,15 @@ namespace CanvasTestMod
                 Vector2 position = new Vector2(pos.x / 1920f, (1080f - pos.y) / 1080f);
                 buttonObj.GetComponent<RectTransform>().anchorMin = position;
                 buttonObj.GetComponent<RectTransform>().anchorMax = position;
+            }
+        }
+
+        public void SetActive(bool b)
+        {
+            if (buttonObj != null)
+            {
+                buttonObj.SetActive(b);
+                active = b;
             }
         }
     }
