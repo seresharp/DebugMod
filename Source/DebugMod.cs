@@ -19,10 +19,9 @@ namespace DebugMod
         private static CameraController _refCamera;
         private static PlayMakerFSM _refDreamNail;
 
-        private GUIController ui;
-
         private static float loadTime;
         private static float unloadTime;
+        private static bool loadingChar;
 
         public override void Initialize()
         {
@@ -31,11 +30,11 @@ namespace DebugMod
             ModHooks.Instance.BeforeSceneLoadHook += OnLevelUnload;
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += LevelActivated;
             UnityEngine.GameObject UIObj = new UnityEngine.GameObject();
-            ui = UIObj.AddComponent<GUIController>();
+            UIObj.AddComponent<GUIController>();
             UnityEngine.GameObject.DontDestroyOnLoad(UIObj);
 
             BossHandler.PopulateBossLists();
-            ui.BuildMenus();
+            GUIController.instance.BuildMenus();
         }
 
         public void LoadCharacter(int saveId)
@@ -43,13 +42,15 @@ namespace DebugMod
             Console.Reset();
             EnemyController.Reset();
             DreamGate.Reset();
+
+            loadingChar = true;
         }
 
         public void LevelActivated(Scene sceneFrom, Scene sceneTo)
         {
             string sceneName = sceneTo.name;
 
-            if (PlayerData.instance.atBench)
+            if (loadingChar)
             {
                 TimeSpan timeSpan = TimeSpan.FromSeconds((double)PlayerData.instance.playTime);
                 string text = string.Format("{0:00}.{1:00}", Math.Floor(timeSpan.TotalHours), timeSpan.Minutes);
@@ -57,6 +58,10 @@ namespace DebugMod
                 string saveFilename = GameManager.instance.GetSaveFilename(profileID);
                 DateTime lastWriteTime = File.GetLastWriteTime(Application.persistentDataPath + saveFilename);
                 Console.AddLine("New savegame loaded. Profile playtime " + text + " Completion: " + PlayerData.instance.completionPercentage + " Save slot: " + profileID + " Game Version: " + PlayerData.instance.version + " Last Written: " + lastWriteTime);
+
+                GUIController.instance.SetMenusActive(true);
+
+                loadingChar = false;
             }
 
             if (gm.IsGameplayScene())
@@ -66,6 +71,11 @@ namespace DebugMod
                 EnemyController.Reset();
                 PlayerDeathWatcher.Reset();
                 BossHandler.LookForBoss(sceneName);
+            }
+
+            if (sceneName == "Menu_Title")
+            {
+                GUIController.instance.SetMenusActive(false);
             }
         }
 

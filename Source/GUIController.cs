@@ -20,6 +20,8 @@ namespace DebugMod
     {
         private Font font;
         private GameObject canvas;
+        private TopMenu topMenu;
+
         public Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
 
         public void Awake()
@@ -38,7 +40,7 @@ namespace DebugMod
             }
             
             this.modVersion = "1.2.0.2";
-            this.showAll = true;
+            this.showMenus = true;
             this.showHelp = true;
             this.showPanelState = 6;
             this.hazardLocation = PlayerData.instance.hazardRespawnLocation;
@@ -67,9 +69,17 @@ namespace DebugMod
             scaler.referenceResolution = new Vector2(1920f, 1080f);
             canvas.AddComponent<GraphicRaycaster>();
 
-            TopMenu menu = new TopMenu(canvas, font);
+            topMenu = new TopMenu(canvas, font);
 
             GameObject.DontDestroyOnLoad(canvas);
+        }
+
+        public void SetMenusActive(bool active)
+        {
+            if (topMenu != null)
+            {
+                topMenu.SetActive(active);
+            }
         }
 
         private void LoadResources()
@@ -139,7 +149,7 @@ namespace DebugMod
                 GUI.skin.label.fontSize = 14;
                 GUI.Label(new Rect(10f, 0f, 400f, 300f), "DebugMod\nby KZ | The Embraced One");
             }
-            if (this.showAll)
+            if (this.showMenus)
             {
                 GUI.skin.button.fontStyle = FontStyle.Bold;
                 if ((this.showPanel && GameManager.instance.IsGameplayScene() && UIManager.instance.uiState == UIState.PLAYING) || (GameManager.instance.IsGameplayScene() && !this.showHelp && UIManager.instance.uiState == UIState.PAUSED))
@@ -425,7 +435,7 @@ namespace DebugMod
                 GUILayout.Width(150f)
                 }))
                     {
-                        this.showAll = false;
+                        this.showMenus = false;
                     }
                     if (GUILayout.Button("KILL ALL", new GUILayoutOption[]
                     {
@@ -526,10 +536,10 @@ namespace DebugMod
                         Console.AddLine("Invincibility set to " + PlayerData.instance.isInvincible.ToString().ToUpper());
                     }
                     if (GUILayout.Button("SET RESPAWN", new GUILayoutOption[]
-                {
-                GUILayout.Height(30f),
-                GUILayout.Width(150f)
-                }))
+                    {
+                        GUILayout.Height(30f),
+                        GUILayout.Width(150f)
+                    }))
                     {
                         this.manualRespawn = DebugMod.refKnight.transform.position;
                         HeroController.instance.SetHazardRespawn(this.manualRespawn, false);
@@ -1036,7 +1046,7 @@ namespace DebugMod
                 }
                 if (Input.GetKeyUp(KeyCode.F1))
                 {
-                    this.showAll = !this.showAll;
+                    this.showMenus = !this.showMenus;
                 }
                 if (Input.GetKeyUp(KeyCode.F2) && !Input.GetKey(KeyCode.LeftControl))
                 {
@@ -1275,7 +1285,7 @@ namespace DebugMod
                 {
                     this.hazardLocation = PlayerData.instance.hazardRespawnLocation;
                     Console.AddLine("Hazard Respawn location updated: " + this.hazardLocation.ToString());
-                    if (this.showAll && EnemyController.enemyPanel)
+                    if (this.showMenus && EnemyController.enemyPanel)
                     {
                         EnemyController.RefreshEnemyList(base.gameObject);
                     }
@@ -1334,7 +1344,7 @@ namespace DebugMod
 
         public Vector3 scale;
 
-        public bool showAll;
+        public bool showMenus;
         
         public bool showPanel;
 
