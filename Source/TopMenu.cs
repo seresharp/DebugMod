@@ -18,17 +18,17 @@ namespace DebugMod
         {
             canvas = parent;
 
-            buttons.Add("Hide Menu", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1138f + 45f, 38f + 13.5f), Vector2.zero, font, "Hide Menu"));
-            buttons.Add("Kill All", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1238f + 45f, 38f + 13.5f), Vector2.zero, font, "Kill All"));
-            buttons.Add("Set Spawn", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1338f + 45f, 38f + 13.5f), Vector2.zero, font, "Set Spawn"));
-            buttons.Add("Respawn", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1438f + 45f, 38f + 13.5f), Vector2.zero, font, "Respawn"));
-            buttons.Add("Dump Log", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1538f + 45f, 38f + 13.5f), Vector2.zero, font, "Dump Log"));
-            buttons.Add("Cheats", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1138f + 45f, 78f + 13.5f), Vector2.zero, font, "Cheats"));
-            buttons.Add("Charms", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1238f + 45f, 78f + 13.5f), Vector2.zero, font, "Charms"));
-            buttons.Add("Skills", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1338f + 45f, 78f + 13.5f), Vector2.zero, font, "Skills"));
-            buttons.Add("Items", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1438f + 45f, 78f + 13.5f), Vector2.zero, font, "Items"));
-            buttons.Add("Bosses", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1538f + 45f, 78f + 13.5f), Vector2.zero, font, "Bosses"));
-            buttons.Add("DreamGate", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1638f + 45f, 78f + 13.5f), Vector2.zero, font, "DreamGate"));
+            buttons.Add("Hide Menu", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1138f, 38f), Vector2.zero, font, "Hide Menu"));
+            buttons.Add("Kill All", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1238f, 38f), Vector2.zero, font, "Kill All"));
+            buttons.Add("Set Spawn", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1338f, 38f), Vector2.zero, font, "Set Spawn"));
+            buttons.Add("Respawn", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1438f, 38f), Vector2.zero, font, "Respawn"));
+            buttons.Add("Dump Log", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1538f, 38f), Vector2.zero, font, "Dump Log"));
+            buttons.Add("Cheats", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1138f, 78f), Vector2.zero, font, "Cheats"));
+            buttons.Add("Charms", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1238f, 78f), Vector2.zero, font, "Charms"));
+            buttons.Add("Skills", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1338f, 78f), Vector2.zero, font, "Skills"));
+            buttons.Add("Items", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1438f, 78f), Vector2.zero, font, "Items"));
+            buttons.Add("Bosses", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1538f, 78f), Vector2.zero, font, "Bosses"));
+            buttons.Add("DreamGate", new CanvasButton(canvas, GUIController.instance.images["ButtonRect"], new Vector2(1638f, 78f), Vector2.zero, font, "DreamGate"));
 
             buttons["Hide Menu"].AddClickEvent(HideMenuClicked);
             buttons["Kill All"].AddClickEvent(KillAllClicked);
@@ -42,7 +42,7 @@ namespace DebugMod
             buttons["Bosses"].AddClickEvent(BossesClicked);
             buttons["DreamGate"].AddClickEvent(DreamGateClicked);
 
-            background = new CanvasImage(canvas, GUIController.instance.images["ButtonsMenuBG"], new Vector2(1920f - 414f, 80f), Vector2.zero);
+            background = new CanvasImage(canvas, GUIController.instance.images["ButtonsMenuBG"], new Vector2(1920f - 828f, 10f), Vector2.zero);
             background.SetRenderIndex(0);
         }
 
@@ -101,7 +101,7 @@ namespace DebugMod
         private void DumpLogClicked()
         {
             Console.AddLine("Saving console log...");
-            Console.SaveHistory();
+                        Console.SaveHistory();
         }
 
         private void CheatsClicked()

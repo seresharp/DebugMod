@@ -36,7 +36,7 @@ namespace DebugMod
 
             imageObj.transform.SetParent(parent.transform, false);
 
-            Vector2 position = new Vector2(pos.x / 1920f, (1080f - pos.y) / 1080f);
+            Vector2 position = new Vector2((pos.x + tex.width / 2f) / 1920f, (1080f - (pos.y + tex.height / 2f)) / 1080f);
             imageTransform.anchorMin = position;
             imageTransform.anchorMax = position;
             imageTransform.SetScaleX(size.x / tex.width);

@@ -49,7 +49,7 @@ namespace DebugMod
         public void LevelActivated(Scene sceneFrom, Scene sceneTo)
         {
             string sceneName = sceneTo.name;
-
+            
             if (loadingChar)
             {
                 TimeSpan timeSpan = TimeSpan.FromSeconds((double)PlayerData.instance.playTime);

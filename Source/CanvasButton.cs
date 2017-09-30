@@ -35,9 +35,7 @@ namespace DebugMod
 
             buttonObj.transform.SetParent(parent.transform, false);
 
-            Vector2 position = new Vector2(pos.x / 1920f, (1080f - pos.y) / 1080f);
-            buttonTransform.position = position;
-            buttonTransform.localPosition = position;
+            Vector2 position = new Vector2((pos.x + tex.width / 2f) / 1920f, (1080f - (pos.y + tex.height / 2f)) / 1080f);
             buttonTransform.anchorMin = position;
             buttonTransform.anchorMax = position;
             buttonTransform.SetScaleX(size.x / tex.width);
