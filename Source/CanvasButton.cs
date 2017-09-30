@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 
-namespace CanvasTestMod
+namespace DebugMod
 {
     public class CanvasButton
     {
@@ -36,6 +36,8 @@ namespace CanvasTestMod
             buttonObj.transform.SetParent(parent.transform, false);
 
             Vector2 position = new Vector2(pos.x / 1920f, (1080f - pos.y) / 1080f);
+            buttonTransform.position = position;
+            buttonTransform.localPosition = position;
             buttonTransform.anchorMin = position;
             buttonTransform.anchorMax = position;
             buttonTransform.SetScaleX(size.x / tex.width);
@@ -46,9 +48,11 @@ namespace CanvasTestMod
             if (font != null && text != null)
             {
                 textObj = new GameObject();
+                textObj.AddComponent<RectTransform>().sizeDelta = new Vector2(tex.width, tex.height);
                 Text t = textObj.AddComponent<Text>();
                 t.text = text;
                 t.font = font;
+                t.fontSize = 13;
                 t.alignment = TextAnchor.MiddleCenter;
                 textObj.transform.SetParent(buttonObj.transform, false);
 
@@ -107,6 +111,12 @@ namespace CanvasTestMod
                 buttonObj.SetActive(b);
                 active = b;
             }
+        }
+
+
+        public void SetRenderIndex(int idx)
+        {
+            buttonObj.transform.SetSiblingIndex(idx);
         }
     }
 }

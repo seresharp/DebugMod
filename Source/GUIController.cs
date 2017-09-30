@@ -9,13 +9,19 @@ using System.Runtime.CompilerServices;
 using GlobalEnums;
 using InControl;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Modding;
 
 namespace DebugMod 
 {
     public class GUIController : MonoBehaviour
     {
+        private Font font;
+        private GameObject canvas;
+        public Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
+
         public void Awake()
         {
             if (this.backgroundTexture == null)
@@ -48,6 +54,75 @@ namespace DebugMod
         public void OnEnable()
         {
             GUI.depth = 2;
+        }
+
+        public void BuildMenus()
+        {
+            LoadResources();
+
+            canvas = new GameObject();
+            canvas.AddComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            CanvasScaler scaler = canvas.AddComponent<CanvasScaler>();
+            scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+            scaler.referenceResolution = new Vector2(1920f, 1080f);
+            canvas.AddComponent<GraphicRaycaster>();
+
+            TopMenu menu = new TopMenu(canvas, font);
+
+            GameObject.DontDestroyOnLoad(canvas);
+        }
+
+        private void LoadResources()
+        {
+            foreach (Font f in Resources.FindObjectsOfTypeAll<Font>())
+            {
+                if (f != null && f.name == "TrajanPro-Bold")
+                {
+                    font = f;
+                    break;
+                }
+            }
+
+            if (font == null) ModHooks.ModLog("[DEBUG MOD] Could not find game font");
+
+            if (Directory.Exists("DebugMod"))
+            {
+                foreach (string fileName in Directory.GetFiles("DebugMod"))
+                {
+                    string extension = "";
+                    if (fileName.Contains('.'))
+                    {
+                        extension = fileName.Substring(fileName.LastIndexOf('.'));
+                    }
+
+                    if (extension == ".png" || extension == ".jpg")
+                    {
+                        try
+                        {
+                            Texture2D tex = new Texture2D(1, 1);
+                            tex.LoadImage(File.ReadAllBytes(fileName));
+
+                            string[] split = fileName.Split(new char[] { '/', '\\' });
+                            string internalName = split[split.Length - 1].Substring(0, split[split.Length - 1].LastIndexOf('.'));
+                            images.Add(internalName, tex);
+
+                            ModHooks.ModLog("[DEBUG MOD] Loaded image: " + internalName);
+                        }
+                        catch (Exception e)
+                        {
+                            ModHooks.ModLog("[DEBUG MOD] Failed to load image: " + fileName + "\n" + e.ToString());
+                        }
+                    }
+                    else
+                    {
+                        ModHooks.ModLog("[DEBUG MOD] Non-image file in asset folder: " + fileName);
+                    }
+                }
+            }
+            else
+            {
+                ModHooks.ModLog("[DEBUG MOD] Could not find asset folder");
+            }
         }
 
         public void OnGUI()

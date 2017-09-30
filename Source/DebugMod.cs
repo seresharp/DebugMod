@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using Modding;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 namespace DebugMod
@@ -18,6 +19,8 @@ namespace DebugMod
         private static CameraController _refCamera;
         private static PlayMakerFSM _refDreamNail;
 
+        private GUIController ui;
+
         private static float loadTime;
         private static float unloadTime;
 
@@ -28,22 +31,21 @@ namespace DebugMod
             ModHooks.Instance.BeforeSceneLoadHook += OnLevelUnload;
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += LevelActivated;
             UnityEngine.GameObject UIObj = new UnityEngine.GameObject();
-            UIObj.AddComponent<GUIController>();
+            ui = UIObj.AddComponent<GUIController>();
             UnityEngine.GameObject.DontDestroyOnLoad(UIObj);
 
             BossHandler.PopulateBossLists();
-            DebugMod.gm = GameManager.instance;
-            DebugMod.ih = GameManager.instance.inputHandler;
+            ui.BuildMenus();
         }
 
-        public static void LoadCharacter(int saveId)
+        public void LoadCharacter(int saveId)
         {
             Console.Reset();
             EnemyController.Reset();
             DreamGate.Reset();
         }
 
-        public static void LevelActivated(Scene sceneFrom, Scene sceneTo)
+        public void LevelActivated(Scene sceneFrom, Scene sceneTo)
         {
             string sceneName = sceneTo.name;
 
@@ -67,7 +69,7 @@ namespace DebugMod
             }
         }
 
-        public static string OnLevelUnload(string toScene)
+        public string OnLevelUnload(string toScene)
         {
             unloadTime = Time.realtimeSinceStartup;
 
