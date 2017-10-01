@@ -60,6 +60,7 @@ namespace DebugMod
                 Console.AddLine("New savegame loaded. Profile playtime " + text + " Completion: " + PlayerData.instance.completionPercentage + " Save slot: " + profileID + " Game Version: " + PlayerData.instance.version + " Last Written: " + lastWriteTime);
 
                 GUIController.instance.SetMenusActive(true);
+                GUIController.instance.CharacterLoaded();
 
                 loadingChar = false;
             }

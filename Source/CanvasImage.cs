@@ -11,24 +11,21 @@ namespace DebugMod
     public class CanvasImage
     {
         private GameObject imageObj;
-        private Texture2D texture;
 
         public bool active;
 
-        public CanvasImage(GameObject parent, Texture2D tex, Vector2 pos, Vector2 size)
+        public CanvasImage(GameObject parent, Texture2D tex, Vector2 pos, Vector2 size, Rect subSprite)
         {
             if (size.x == 0 || size.y == 0)
             {
-                size = new Vector2(tex.width, tex.height);
+                size = new Vector2(subSprite.width, subSprite.height);
             }
-
-            texture = tex;
 
             imageObj = new GameObject();
             imageObj.AddComponent<CanvasRenderer>();
             RectTransform imageTransform = imageObj.AddComponent<RectTransform>();
-            imageTransform.sizeDelta = new Vector2(tex.width, tex.height);
-            imageObj.AddComponent<Image>().sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), Vector2.zero);
+            imageTransform.sizeDelta = new Vector2(subSprite.width, subSprite.height);
+            imageObj.AddComponent<Image>().sprite = Sprite.Create(tex, new Rect(subSprite.x, tex.height - subSprite.height, subSprite.width, subSprite.height), Vector2.zero);
 
             CanvasGroup group = imageObj.AddComponent<CanvasGroup>();
             group.interactable = false;
@@ -36,11 +33,11 @@ namespace DebugMod
 
             imageObj.transform.SetParent(parent.transform, false);
 
-            Vector2 position = new Vector2((pos.x + tex.width / 2f) / 1920f, (1080f - (pos.y + tex.height / 2f)) / 1080f);
+            Vector2 position = new Vector2((pos.x + subSprite.width / 2f) / 1920f, (1080f - (pos.y + subSprite.height / 2f)) / 1080f);
             imageTransform.anchorMin = position;
             imageTransform.anchorMax = position;
-            imageTransform.SetScaleX(size.x / tex.width);
-            imageTransform.SetScaleY(size.y / tex.height);
+            imageTransform.SetScaleX(size.x / subSprite.width);
+            imageTransform.SetScaleY(size.y / subSprite.height);
 
             GameObject.DontDestroyOnLoad(imageObj);
 
@@ -49,17 +46,17 @@ namespace DebugMod
 
         public void SetWidth(float width)
         {
-            if (imageObj != null && texture != null)
+            if (imageObj != null)
             {
-                imageObj.GetComponent<RectTransform>().SetScaleX(width / texture.width);
+                imageObj.GetComponent<RectTransform>().SetScaleX(width / imageObj.GetComponent<RectTransform>().sizeDelta.x);
             }
         }
 
         public void SetHeight(float height)
         {
-            if (imageObj != null && texture != null)
+            if (imageObj != null)
             {
-                imageObj.GetComponent<RectTransform>().SetScaleY(height / texture.height);
+                imageObj.GetComponent<RectTransform>().SetScaleX(height / imageObj.GetComponent<RectTransform>().sizeDelta.y);
             }
         }
 
@@ -67,7 +64,8 @@ namespace DebugMod
         {
             if (imageObj != null)
             {
-                Vector2 position = new Vector2(pos.x / 1920f, (1080f - pos.y) / 1080f);
+                Vector2 sz = imageObj.GetComponent<RectTransform>().sizeDelta;
+                Vector2 position = new Vector2((pos.x + sz.x / 2f) / 1920f, (1080f - (pos.y + sz.y / 2f)) / 1080f);
                 imageObj.GetComponent<RectTransform>().anchorMin = position;
                 imageObj.GetComponent<RectTransform>().anchorMax = position;
             }

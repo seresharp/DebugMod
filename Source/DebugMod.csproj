@@ -63,7 +63,18 @@
     <Reference Include="UnityEngine">
       <HintPath>UnityEngine.dll</HintPath>
     </Reference>
-    <Compile Include="*.cs" />
+    <Compile Include="BossHandler.cs" />
+    <Compile Include="CanvasButton.cs" />
+    <Compile Include="CanvasImage.cs" />
+    <Compile Include="CanvasPanel.cs" />
+    <Compile Include="Console.cs" />
+    <Compile Include="DebugMod.cs" />
+    <Compile Include="DreamGate.cs" />
+    <Compile Include="EnemyController.cs" />
+    <Compile Include="GUIController.cs" />
+    <Compile Include="ParticleSwitch.cs" />
+    <Compile Include="PlayerDeathWatcher.cs" />
+    <Compile Include="SaveManager.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup />

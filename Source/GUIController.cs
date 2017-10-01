@@ -18,34 +18,37 @@ namespace DebugMod
 {
     public class GUIController : MonoBehaviour
     {
-        private Font font;
+        private Font trajanBold;
+        private Font trajanNormal;
         private GameObject canvas;
-        private TopMenu topMenu;
+        private CanvasPanel topMenu;
+
+        public bool playerInvincible;
 
         public Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
 
         public void Awake()
         {
-            if (this.backgroundTexture == null)
+            if (backgroundTexture == null)
             {
-                this.backgroundTexture = new Texture2D(1, 1);
-                this.backgroundTexture.SetPixel(0, 0, Color.white);
-                this.backgroundTexture.Apply();
+                backgroundTexture = new Texture2D(1, 1);
+                backgroundTexture.SetPixel(0, 0, Color.white);
+                backgroundTexture.Apply();
             }
 
-            if (this.textureStyle == null)
+            if (textureStyle == null)
             {
-                this.textureStyle = new GUIStyle();
-                this.textureStyle.normal.background = this.backgroundTexture;
+                textureStyle = new GUIStyle();
+                textureStyle.normal.background = backgroundTexture;
             }
             
-            this.modVersion = "1.2.0.2";
-            this.showMenus = true;
-            this.showHelp = true;
-            this.showPanelState = 6;
-            this.hazardLocation = PlayerData.instance.hazardRespawnLocation;
-            this.respawnSceneWatch = PlayerData.instance.respawnScene;
-            this.setMatrix();
+            modVersion = "1.2.0.2";
+            showMenus = true;
+            showHelp = true;
+            showPanelState = 6;
+            hazardLocation = PlayerData.instance.hazardRespawnLocation;
+            respawnSceneWatch = PlayerData.instance.respawnScene;
+            setMatrix();
         }
 
         public void Start()
@@ -69,7 +72,58 @@ namespace DebugMod
             scaler.referenceResolution = new Vector2(1920f, 1080f);
             canvas.AddComponent<GraphicRaycaster>();
 
-            topMenu = new TopMenu(canvas, font);
+            topMenu = new CanvasPanel(canvas, images["ButtonsMenuBG"], new Vector2(1092f, 25f), Vector2.zero, new Rect(0, 0, images["ButtonsMenuBG"].width, images["ButtonsMenuBG"].height));
+
+            Rect buttonRect = new Rect(0, 0, images["ButtonRect"].width, images["ButtonRect"].height);
+
+            //Main buttons
+            topMenu.AddButton("Hide Menu", images["ButtonRect"], new Vector2(46f, 28f), Vector2.zero, HideMenuClicked, buttonRect, trajanBold, "Hide Menu");
+            topMenu.AddButton("Kill All", images["ButtonRect"], new Vector2(146f, 28f), Vector2.zero, KillAllClicked, buttonRect, trajanBold, "Kill All");
+            topMenu.AddButton("Set Spawn", images["ButtonRect"], new Vector2(246f, 28f), Vector2.zero, SetSpawnClicked, buttonRect, trajanBold, "Set Spawn");
+            topMenu.AddButton("Respawn", images["ButtonRect"], new Vector2(346f, 28f), Vector2.zero, RespawnClicked, buttonRect, trajanBold, "Respawn");
+            topMenu.AddButton("Dump Log", images["ButtonRect"], new Vector2(446f, 28f), Vector2.zero, DumpLogClicked, buttonRect, trajanBold, "Dump Log");
+            topMenu.AddButton("Cheats", images["ButtonRect"], new Vector2(46f, 68f), Vector2.zero, CheatsClicked, buttonRect, trajanBold, "Cheats");
+            topMenu.AddButton("Charms", images["ButtonRect"], new Vector2(146f, 68f), Vector2.zero, CharmsClicked, buttonRect, trajanBold, "Charms");
+            topMenu.AddButton("Skills", images["ButtonRect"], new Vector2(246f, 68f), Vector2.zero, SkillsClicked, buttonRect, trajanBold, "Skills");
+            topMenu.AddButton("Items", images["ButtonRect"], new Vector2(346f, 68f), Vector2.zero, ItemsClicked, buttonRect, trajanBold, "Items");
+            topMenu.AddButton("Bosses", images["ButtonRect"], new Vector2(446f, 68f), Vector2.zero, BossesClicked, buttonRect, trajanBold, "Bosses");
+            topMenu.AddButton("DreamGate", images["ButtonRect"], new Vector2(546f, 68f), Vector2.zero, DreamGatePanelClicked, buttonRect, trajanBold, "DreamGate");
+
+            //Dropdown panels
+            topMenu.AddPanel("Cheats Panel", images["DropdownBG"], new Vector2(45f, 75f), Vector2.zero, new Rect(0, 0, images["DropdownBG"].width, 150f));
+            topMenu.AddPanel("Charms Panel", images["DropdownBG"], new Vector2(145f, 75f), Vector2.zero, new Rect(0, 0, images["DropdownBG"].width, 180f));
+            topMenu.AddPanel("Skills Panel", images["DropdownBG"], new Vector2(245f, 75f), Vector2.zero, new Rect(0, 0, images["DropdownBG"].width, images["DropdownBG"].height));
+            topMenu.AddPanel("Items Panel", images["DropdownBG"], new Vector2(345f, 75f), Vector2.zero, new Rect(0, 0, images["DropdownBG"].width, images["DropdownBG"].height));
+            topMenu.AddPanel("Bosses Panel", images["DropdownBG"], new Vector2(445f, 75f), Vector2.zero, new Rect(0, 0, images["DropdownBG"].width, images["DropdownBG"].height));
+            topMenu.AddPanel("DreamGate Panel", images["DreamGateDropdownBG"], new Vector2(545f, 75f), Vector2.zero, new Rect(0, 0, images["DreamGateDropdownBG"].width, images["DreamGateDropdownBG"].height));
+
+            //Cheats panel
+            topMenu.GetPanel("Cheats Panel").AddButton("Infinite Jump", images["ButtonRectEmpty"], new Vector2(5f, 30f), Vector2.zero, InfiniteJumpClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "Infinite Jump", 10);
+            topMenu.GetPanel("Cheats Panel").AddButton("Infinite Soul", images["ButtonRectEmpty"], new Vector2(5f, 60f), Vector2.zero, InfiniteSoulClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "Infinite Soul", 10);
+            topMenu.GetPanel("Cheats Panel").AddButton("Infinite HP", images["ButtonRectEmpty"], new Vector2(5f, 90f), Vector2.zero, InfiniteHPClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "Infinite HP", 10);
+            topMenu.GetPanel("Cheats Panel").AddButton("Invincibility", images["ButtonRectEmpty"], new Vector2(5f, 120f), Vector2.zero, InvincibilityClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "Invincibility", 10);
+
+            //Charms panel
+            topMenu.GetPanel("Charms Panel").AddButton("All Charms", images["ButtonRectEmpty"], new Vector2(5f, 30f), Vector2.zero, AllCharmsClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "All Charms", 10);
+            topMenu.GetPanel("Charms Panel").AddButton("Kingsoul", images["ButtonRectEmpty"], new Vector2(5f, 60f), Vector2.zero, KingsoulClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "Kingsoul: " + PlayerData.instance.royalCharmState, 10);
+            topMenu.GetPanel("Charms Panel").AddButton("fHeart fix", images["ButtonRectEmpty"], new Vector2(5f, 90f), Vector2.zero, FragileHeartFixClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "fHeart fix", 10);
+            topMenu.GetPanel("Charms Panel").AddButton("fGreed fix", images["ButtonRectEmpty"], new Vector2(5f, 120f), Vector2.zero, FragileGreedFixClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "fGreed fix", 10);
+            topMenu.GetPanel("Charms Panel").AddButton("fStrength fix", images["ButtonRectEmpty"], new Vector2(5f, 150f), Vector2.zero, FragileStrengthFixClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "fStrength fix", 10);
+
+            //Skills panel
+            topMenu.GetPanel("Skills Panel").AddButton("All Skills", images["ButtonRectEmpty"], new Vector2(5f, 30f), Vector2.zero, AllSkillsClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "All Skills", 10);
+            topMenu.GetPanel("Skills Panel").AddButton("Scream", images["ButtonRectEmpty"], new Vector2(5f, 60f), Vector2.zero, ScreamClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "Scream: " + PlayerData.instance.screamLevel, 10);
+            topMenu.GetPanel("Skills Panel").AddButton("Fireball", images["ButtonRectEmpty"], new Vector2(5f, 90f), Vector2.zero, FireballClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "Fireball: " + PlayerData.instance.fireballLevel, 10);
+            topMenu.GetPanel("Skills Panel").AddButton("Quake", images["ButtonRectEmpty"], new Vector2(5f, 120f), Vector2.zero, QuakeClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "Quake: " + PlayerData.instance.quakeLevel, 10);
+            topMenu.GetPanel("Skills Panel").AddButton("Mothwing Cloak", images["MothwingCloak"], new Vector2(5f, 150f), new Vector2(37f, 34f), MothwingCloakClicked, new Rect(0f, 0f, images["MothwingCloak"].width, images["MothwingCloak"].height));
+            topMenu.GetPanel("Skills Panel").AddButton("Mantis Claw", images["MantisClaw"], new Vector2(43f, 150f), new Vector2(37f, 34f), MantisClawClicked, new Rect(0f, 0f, images["MantisClaw"].width, images["MantisClaw"].height));
+            topMenu.GetPanel("Skills Panel").AddButton("Monarch Wings", images["MonarchWings"], new Vector2(5f, 194), new Vector2(37f, 33f), MonarchWingsClicked, new Rect(0f, 0f, images["MonarchWings"].width, images["MonarchWings"].height));
+            topMenu.GetPanel("Skills Panel").AddButton("Crystal Heart", images["CrystalHeart"], new Vector2(43f, 194f), new Vector2(37f, 34f), CrystalHeartClicked, new Rect(0f, 0f, images["CrystalHeart"].width, images["CrystalHeart"].height));
+            topMenu.GetPanel("Skills Panel").AddButton("Isma's Tear", images["IsmasTear"], new Vector2(5f, 238f), new Vector2(37f, 40f), IsmasTearClicked, new Rect(0f, 0f, images["IsmasTear"].width, images["IsmasTear"].height));
+            topMenu.GetPanel("Skills Panel").AddButton("Dream Nail", images["DreamNail1"], new Vector2(43f, 251f), new Vector2(37f, 59f), DreamNailClicked, new Rect(0f, 0f, images["DreamNail1"].width, images["DreamNail1"].height));
+            topMenu.GetPanel("Skills Panel").AddButton("Dream Gate", images["DreamGate"], new Vector2(5f, 288f), new Vector2(37f, 36f), DreamGateClicked, new Rect(0f, 0f, images["DreamGate"].width, images["DreamGate"].height));
+
+            SetMenusActive(false);
 
             GameObject.DontDestroyOnLoad(canvas);
         }
@@ -78,8 +132,18 @@ namespace DebugMod
         {
             if (topMenu != null)
             {
-                topMenu.SetActive(active);
+                topMenu.SetActive(active, !active);
             }
+        }
+
+        public void CharacterLoaded()
+        {
+            if (PlayerData.instance.dreamNailUpgraded) topMenu.GetButton("Dream Nail", "Skills Panel").UpdateSprite(images["DreamNail2"], new Rect(0f, 0f, images["DreamNail2"].width, images["DreamNail2"].height));
+            else topMenu.GetButton("Dream Nail", "Skills Panel").UpdateSprite(images["DreamNail1"], new Rect(0f, 0f, images["DreamNail1"].width, images["DreamNail1"].height));
+            if (PlayerData.instance.hasShadowDash) topMenu.GetButton("Mothwing Cloak", "Skills Panel").UpdateSprite(images["ShadeCloak"], new Rect(0f, 0f, images["ShadeCloak"].width, images["ShadeCloak"].height));
+            else topMenu.GetButton("Mothwing Cloak", "Skills Panel").UpdateSprite(images["MothwingCloak"], new Rect(0f, 0f, images["MothwingCloak"].width, images["MothwingCloak"].height));
+
+            topMenu.GetButton("Infinite Jump", "Cheats Panel").SetTextColor(PlayerData.instance.infiniteAirJump ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
         }
 
         private void LoadResources()
@@ -88,12 +152,16 @@ namespace DebugMod
             {
                 if (f != null && f.name == "TrajanPro-Bold")
                 {
-                    font = f;
-                    break;
+                    trajanBold = f;
+                }
+
+                if (f != null && f.name == "TrajanPro-Regular")
+                {
+                    trajanNormal = f;
                 }
             }
 
-            if (font == null) ModHooks.ModLog("[DEBUG MOD] Could not find game font");
+            if (trajanBold == null) ModHooks.ModLog("[DEBUG MOD] Could not find game font");
 
             if (Directory.Exists("DebugMod"))
             {
@@ -135,10 +203,244 @@ namespace DebugMod
             }
         }
 
+        private void HideMenuClicked()
+        {
+            SetMenusActive(false);
+        }
+
+        private void KillAllClicked()
+        {
+            PlayMakerFSM.BroadcastEvent("INSTA KILL");
+            Console.AddLine("INSTA KILL broadcasted!");
+        }
+
+        private void SetSpawnClicked()
+        {
+            HeroController.instance.SetHazardRespawn(DebugMod.refKnight.transform.position, false);
+            Console.AddLine("Manual respawn point on this map set to" + DebugMod.refKnight.transform.position.ToString());
+        }
+
+        private void RespawnClicked()
+        {
+            if (GameManager.instance.IsGameplayScene() && !HeroController.instance.cState.dead && PlayerData.instance.health > 0)
+            {
+                if (UIManager.instance.uiState.ToString() == "PAUSED")
+                {
+                    UIManager.instance.TogglePauseGame();
+                    GameManager.instance.HazardRespawn();
+                    Console.AddLine("Closing Pause Menu and respawning...");
+                    return;
+                }
+                if (UIManager.instance.uiState.ToString() == "PLAYING")
+                {
+                    HeroController.instance.RelinquishControl();
+                    GameManager.instance.HazardRespawn();
+                    HeroController.instance.RegainControl();
+                    Console.AddLine("Respawn signal sent");
+                    return;
+                }
+                Console.AddLine("Respawn requested in some weird conditions, abort, ABORT");
+            }
+        }
+
+        private void DumpLogClicked()
+        {
+            Console.AddLine("Saving console log...");
+            Console.SaveHistory();
+        }
+
+        private void CheatsClicked()
+        {
+            topMenu.TogglePanel("Cheats Panel");
+        }
+
+        private void CharmsClicked()
+        {
+            topMenu.TogglePanel("Charms Panel");
+        }
+
+        private void SkillsClicked()
+        {
+            topMenu.TogglePanel("Skills Panel");
+        }
+
+        private void ItemsClicked()
+        {
+            topMenu.TogglePanel("Items Panel");
+        }
+
+        private void BossesClicked()
+        {
+            topMenu.TogglePanel("Bosses Panel");
+        }
+
+        private void DreamGatePanelClicked()
+        {
+            topMenu.TogglePanel("DreamGate Panel");
+        }
+
+        private void InfiniteJumpClicked()
+        {
+            PlayerData.instance.infiniteAirJump = !PlayerData.instance.infiniteAirJump;
+            Console.AddLine("Infinite Jump set to " + PlayerData.instance.infiniteAirJump.ToString().ToUpper());
+
+            topMenu.GetButton("Infinite Jump", "Cheats Panel").SetTextColor(PlayerData.instance.infiniteAirJump ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+        }
+
+        private void InfiniteSoulClicked()
+        {
+            infiniteSoul = !infiniteSoul;
+            Console.AddLine("Infinite SOUL set to " + infiniteSoul.ToString().ToUpper());
+
+            topMenu.GetButton("Infinite Soul", "Cheats Panel").SetTextColor(infiniteSoul ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+        }
+
+        private void InfiniteHPClicked()
+        {
+            infiniteHP = !infiniteHP;
+            Console.AddLine("Infinite HP set to " + infiniteHP.ToString().ToUpper());
+
+            topMenu.GetButton("Infinite Soul", "Cheats Panel").SetTextColor(infiniteHP ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+        }
+
+        private void InvincibilityClicked()
+        {
+            PlayerData.instance.isInvincible = !PlayerData.instance.isInvincible;
+            Console.AddLine("Invincibility set to " + PlayerData.instance.isInvincible.ToString().ToUpper());
+
+            topMenu.GetButton("Invincibility", "Cheats Panel").SetTextColor(PlayerData.instance.isInvincible ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+
+            playerInvincible = PlayerData.instance.isInvincible;
+        }
+
+        private void AllCharmsClicked()
+        {
+            for (int i = 1; i < 37; i++)
+            {
+                PlayerData.instance.GetType().GetField("gotCharm_" + i.ToString()).SetValue(PlayerData.instance, true);
+            }
+
+            PlayerData.instance.charmSlots = 10;
+            PlayerData.instance.hasCharm = true;
+            PlayerData.instance.charmsOwned = 36;
+            PlayerData.instance.royalCharmState = 4;
+            PlayerData.instance.gotKingFragment = true;
+            PlayerData.instance.gotQueenFragment = true;
+            PlayerData.instance.notchShroomOgres = true;
+            PlayerData.instance.notchFogCanyon = true;
+            PlayerData.instance.salubraNotch1 = true;
+            PlayerData.instance.salubraNotch2 = true;
+            PlayerData.instance.salubraNotch3 = true;
+            PlayerData.instance.salubraNotch4 = true;
+
+            topMenu.GetButton("Kingsoul", "Charms Panel").UpdateText("Kingsoul: " + PlayerData.instance.royalCharmState);
+
+            Console.AddLine("Added all charms to inventory");
+        }
+
+        private void KingsoulClicked()
+        {
+            if (!PlayerData.instance.gotCharm_36)
+            {
+                PlayerData.instance.gotCharm_36 = true;
+            }
+
+            PlayerData.instance.royalCharmState++;
+
+            if (PlayerData.instance.royalCharmState >= 5)
+            {
+                PlayerData.instance.royalCharmState = 0;
+            }
+
+            topMenu.GetButton("Kingsoul", "Charms Panel").UpdateText("Kingsoul: " + PlayerData.instance.royalCharmState);
+        }
+
+        private void FragileHeartFixClicked()
+        {
+            if (PlayerData.instance.brokenCharm_23)
+            {
+                PlayerData.instance.brokenCharm_23 = false;
+                Console.AddLine("Fixed fragile heart");
+            }
+        }
+
+        private void FragileGreedFixClicked()
+        {
+            if (PlayerData.instance.brokenCharm_24)
+            {
+                PlayerData.instance.brokenCharm_24 = false;
+                Console.AddLine("Fixed fragile greed");
+            }
+        }
+
+        private void FragileStrengthFixClicked()
+        {
+            if (PlayerData.instance.brokenCharm_25)
+            {
+                PlayerData.instance.brokenCharm_25 = false;
+                Console.AddLine("Fixed fragile strength");
+            }
+        }
+
+        private void AllSkillsClicked()
+        {
+
+        }
+
+        private void ScreamClicked()
+        {
+
+        }
+
+        private void FireballClicked()
+        {
+
+        }
+
+        private void QuakeClicked()
+        {
+
+        }
+
+        private void MothwingCloakClicked()
+        {
+
+        }
+
+        private void MantisClawClicked()
+        {
+
+        }
+
+        private void MonarchWingsClicked()
+        {
+
+        }
+
+        private void CrystalHeartClicked()
+        {
+
+        }
+
+        private void IsmasTearClicked()
+        {
+
+        }
+
+        private void DreamNailClicked()
+        {
+
+        }
+
+        private void DreamGateClicked()
+        {
+
+        }
+
         public void OnGUI()
         {
             Matrix4x4 matrix = GUI.matrix;
-            GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, this.scale);
+            GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, scale);
             GUI.backgroundColor = Color.white;
             GUI.contentColor = Color.white;
             GUI.color = Color.white;
@@ -149,29 +451,29 @@ namespace DebugMod
                 GUI.skin.label.fontSize = 14;
                 GUI.Label(new Rect(10f, 0f, 400f, 300f), "DebugMod\nby KZ | The Embraced One");
             }
-            if (this.showMenus)
+            if (showMenus)
             {
                 GUI.skin.button.fontStyle = FontStyle.Bold;
-                if ((this.showPanel && GameManager.instance.IsGameplayScene() && UIManager.instance.uiState == UIState.PLAYING) || (GameManager.instance.IsGameplayScene() && !this.showHelp && UIManager.instance.uiState == UIState.PAUSED))
+                if ((showPanel && GameManager.instance.IsGameplayScene() && UIManager.instance.uiState == UIState.PLAYING) || (GameManager.instance.IsGameplayScene() && !showHelp && UIManager.instance.uiState == UIState.PAUSED))
                 {
                     GUI.skin.label.alignment = TextAnchor.UpperLeft;
                     GUI.skin.label.fontStyle = FontStyle.Bold;
                     GUI.skin.label.fontSize = 18;
 
-                    if (this.showPanelState >= 1)
+                    if (showPanelState >= 1)
                     {
                         int num = Mathf.FloorToInt(Time.realtimeSinceStartup / 60f);
                         int num2 = Mathf.FloorToInt(Time.realtimeSinceStartup - (float)(num * 60));
                         Vector3 position = DebugMod.refKnight.transform.position;
                         GUI.Label(new Rect(10f, 10f, 200f, 25f), "Session  time: " + string.Format("{0:00}:{1:00}", num, num2));
                         GUI.Label(new Rect(10f, 35f, 300f, 25f), "Hero position: " + position.ToString());
-                        GUI.Label(new Rect(1720f, 10f, 300f, 120f), this.ReadInput());
+                        GUI.Label(new Rect(1720f, 10f, 300f, 120f), ReadInput());
                         GUI.Label(new Rect(910f, 5f, 100f, 25f), "Load: " + DebugMod.GetLoadTime() + "s");
                     }
 
                     GUILayout.BeginArea(new Rect(7f, 210f, 500f, 790f));
                     GUILayout.BeginVertical("box", new GUILayoutOption[0]);
-                    if (this.showPanelState >= 0 && this.showPanelState < 2)
+                    if (showPanelState >= 0 && showPanelState < 2)
                     {
                         GUILayout.Label("CTRL+F2 TO CYCLE BETWEEN TABS", new GUILayoutOption[]
                         {
@@ -179,7 +481,7 @@ namespace DebugMod
                         });
                     }
 
-                    if (this.showPanelState >= 2)
+                    if (showPanelState >= 2)
                     {
                         ActorStates hero_state = HeroController.instance.hero_state;
                         int health = PlayerData.instance.health;
@@ -230,7 +532,7 @@ namespace DebugMod
                         });
                     }
 
-                    if (this.showPanelState >= 3)
+                    if (showPanelState >= 3)
                     {
                         bool dashing = HeroController.instance.cState.dashing;
                         bool jumping = HeroController.instance.cState.jumping;
@@ -274,7 +576,7 @@ namespace DebugMod
                         });
                     }
 
-                    if (this.showPanelState >= 4)
+                    if (showPanelState >= 4)
                     {
                         bool touchingWall = HeroController.instance.cState.touchingWall;
                         bool wallLocked = HeroController.instance.wallLocked;
@@ -333,7 +635,7 @@ namespace DebugMod
                         });
                     }
 
-                    if (this.showPanelState >= 5)
+                    if (showPanelState >= 5)
                     {
                         bool invulnerable = HeroController.instance.cState.invulnerable;
                         bool isInvincible = PlayerData.instance.isInvincible;
@@ -365,7 +667,7 @@ namespace DebugMod
                         });
                     }
 
-                    if (this.showPanelState >= 6 && !BossHandler.bossSub)
+                    if (showPanelState >= 6 && !BossHandler.bossSub)
                     {
                         string sceneName = DebugMod.GetSceneName();
                         bool flag5 = DebugMod.gm.IsGameplayScene();
@@ -415,7 +717,7 @@ namespace DebugMod
                     GUILayout.FlexibleSpace();
                     GUILayout.EndArea();
                 }
-                if ((this.showButtons && GameManager.instance.IsGameplayScene() && UIManager.instance.uiState == UIState.PLAYING) || (GameManager.instance.IsGameplayScene() && UIManager.instance.uiState == UIState.PAUSED))
+                if ((showButtons && GameManager.instance.IsGameplayScene() && UIManager.instance.uiState == UIState.PLAYING) || (GameManager.instance.IsGameplayScene() && UIManager.instance.uiState == UIState.PAUSED))
                 {
                     TextAnchor alignment = GUI.skin.button.alignment;
                     int fontSize = GUI.skin.toggle.fontSize;
@@ -435,7 +737,7 @@ namespace DebugMod
                 GUILayout.Width(150f)
                 }))
                     {
-                        this.showMenus = false;
+                        showMenus = false;
                     }
                     if (GUILayout.Button("KILL ALL", new GUILayoutOption[]
                     {
@@ -457,31 +759,31 @@ namespace DebugMod
                         GUILayout.Width(150f)
                     });
                     GUI.backgroundColor = backgroundColor;
-                    if (this.charmSub)
+                    if (charmSub)
                     {
                         GUI.backgroundColor = Color.green;
                     }
-                    this.charmSub = GUILayout.Toggle(this.charmSub, "CHARMS", "Button", new GUILayoutOption[]
+                    charmSub = GUILayout.Toggle(charmSub, "CHARMS", "Button", new GUILayoutOption[]
                     {
                         GUILayout.Height(30f),
                         GUILayout.Width(150f)
                     });
                     GUI.backgroundColor = backgroundColor;
-                    if (this.skillSub)
+                    if (skillSub)
                     {
                         GUI.backgroundColor = Color.green;
                     }
-                    this.skillSub = GUILayout.Toggle(this.skillSub, "SKILLS", "Button", new GUILayoutOption[]
+                    skillSub = GUILayout.Toggle(skillSub, "SKILLS", "Button", new GUILayoutOption[]
                     {
                         GUILayout.Height(30f),
                         GUILayout.Width(150f)
                     });
                     GUI.backgroundColor = backgroundColor;
-                    if (this.itemSub)
+                    if (itemSub)
                     {
                         GUI.backgroundColor = Color.green;
                     }
-                    this.itemSub = GUILayout.Toggle(this.itemSub, "ITEMS", "Button", new GUILayoutOption[]
+                    itemSub = GUILayout.Toggle(itemSub, "ITEMS", "Button", new GUILayoutOption[]
                     {
                         GUILayout.Height(30f),
                         GUILayout.Width(150f)
@@ -514,8 +816,8 @@ namespace DebugMod
                 GUILayout.Width(150f)
                 }))
                     {
-                        this.infiniSOUL = !this.infiniSOUL;
-                        Console.AddLine("Infinite SOUL set to " + this.infiniSOUL.ToString().ToUpper());
+                        infiniteSoul = !infiniteSoul;
+                        Console.AddLine("Infinite SOUL set to " + infiniteSoul.ToString().ToUpper());
                     }
                     if (GUILayout.Button("INFINITE HP", new GUILayoutOption[]
                 {
@@ -523,8 +825,8 @@ namespace DebugMod
                 GUILayout.Width(150f)
                 }))
                     {
-                        this.infiniteHP = !this.infiniteHP;
-                        Console.AddLine("Infinite HP set to " + this.infiniteHP.ToString().ToUpper());
+                        infiniteHP = !infiniteHP;
+                        Console.AddLine("Infinite HP set to " + infiniteHP.ToString().ToUpper());
                     }
                     if (GUILayout.Button("INVINCIBLE", new GUILayoutOption[]
                 {
@@ -541,8 +843,8 @@ namespace DebugMod
                         GUILayout.Width(150f)
                     }))
                     {
-                        this.manualRespawn = DebugMod.refKnight.transform.position;
-                        HeroController.instance.SetHazardRespawn(this.manualRespawn, false);
+                        manualRespawn = DebugMod.refKnight.transform.position;
+                        HeroController.instance.SetHazardRespawn(manualRespawn, false);
                     }
                     if (GUILayout.Button("DUMP LOG", new GUILayoutOption[]
                     {
@@ -560,13 +862,13 @@ namespace DebugMod
                 }))
                     {
                         Console.AddLine("Trying to respawn Hero...");
-                        this.Respawn();
+                        Respawn();
                     }
                     GUILayout.EndHorizontal();
                     GUILayout.EndArea();
                     TextAnchor alignment2 = GUI.skin.label.alignment;
                     GUI.skin.label.alignment = TextAnchor.MiddleLeft;
-                    if (this.infiniSOUL)
+                    if (infiniteSoul)
                     {
                         GUI.Label(new Rect(167f, 1045f, 30f, 30f), "<color=lime>✔</color>");
                     }
@@ -574,7 +876,7 @@ namespace DebugMod
                     {
                         GUI.Label(new Rect(12f, 1045f, 30f, 30f), "<color=lime>✔</color>");
                     }
-                    if (this.infiniteHP)
+                    if (infiniteHP)
                     {
                         GUI.Label(new Rect(322f, 1045f, 30f, 30f), "<color=lime>✔</color>");
                     }
@@ -592,7 +894,7 @@ namespace DebugMod
                     FontStyle fontStyle3 = GUI.skin.toggle.fontStyle;
                     GUI.skin.toggle.fontSize = 18;
                     GUI.skin.toggle.fontStyle = FontStyle.Bold;
-                    if (this.skillSub)
+                    if (skillSub)
                     {
                         TextAnchor alignment3 = GUI.skin.button.alignment;
                         int fontSize4 = GUI.skin.button.fontSize;
@@ -694,7 +996,7 @@ namespace DebugMod
                         GUI.backgroundColor = backgroundColor2;
                         GUI.skin.button.fontSize = fontSize4;
                     }
-                    if (this.charmSub)
+                    if (charmSub)
                     {
                         TextAnchor alignment4 = GUI.skin.button.alignment;
                         int fontSize5 = GUI.skin.button.fontSize;
@@ -767,7 +1069,7 @@ namespace DebugMod
                         GUI.backgroundColor = backgroundColor3;
                         GUI.skin.button.fontSize = fontSize5;
                     }
-                    if (this.itemSub)
+                    if (itemSub)
                     {
                         TextAnchor alignment5 = GUI.skin.button.alignment;
                         int fontSize6 = GUI.skin.button.fontSize;
@@ -872,7 +1174,7 @@ namespace DebugMod
 
                 Console.UpdateGUI(DreamGate.menuOpen);
 
-                if (DebugMod.gm.IsGameplayScene() && this.showHelp)
+                if (DebugMod.gm.IsGameplayScene() && showHelp)
                 {
                     TextAnchor alignment10 = GUI.skin.label.alignment;
                     TextAnchor alignment11 = GUI.skin.label.alignment;
@@ -995,19 +1297,42 @@ namespace DebugMod
 
         public void setMatrix()
         {
-            this.originalWidth = (float)Screen.width;
-            this.originalHeight = (float)Screen.height;
-            this.scale.x = (float)Screen.width / 1920f;
-            this.scale.y = (float)Screen.height / 1080f;
-            this.scale.z = 1f;
+            originalWidth = (float)Screen.width;
+            originalHeight = (float)Screen.height;
+            scale.x = (float)Screen.width / 1920f;
+            scale.y = (float)Screen.height / 1080f;
+            scale.z = 1f;
         }
 
         public void Update()
         {
-            if (this.originalHeight != Screen.height || this.originalWidth != Screen.width) this.setMatrix();
+            if (originalHeight != Screen.height || originalWidth != Screen.width) setMatrix();
 
             if (DebugMod.GetSceneName() != "Menu_Title")
             {
+                if (infiniteSoul && PlayerData.instance.MPCharge < 100 && PlayerData.instance.health > 0 && !HeroController.instance.cState.dead && GameManager.instance.IsGameplayScene())
+                {
+                    PlayerData.instance.MPCharge = 100;
+                }
+
+                if (infiniteHP && !HeroController.instance.cState.dead && GameManager.instance.IsGameplayScene() && PlayerData.instance.health < PlayerData.instance.maxHealth)
+                {
+                    int amount = PlayerData.instance.maxHealth - PlayerData.instance.health;
+                    PlayerData.instance.health = PlayerData.instance.maxHealth;
+                    HeroController.instance.AddHealth(amount);
+                }
+
+                if (playerInvincible && PlayerData.instance != null)
+                {
+                    PlayerData.instance.isInvincible = true;
+                }
+
+                if (Input.GetKeyUp(KeyCode.Escape) && DebugMod.gm.IsGamePaused())
+                {
+                    UIManager.instance.TogglePauseGame();
+                }
+
+
                 if (Input.GetKeyUp(KeyCode.Equals))
                 {
                     int num = 4;
@@ -1038,38 +1363,38 @@ namespace DebugMod
                 }
                 if (Input.GetKeyUp(KeyCode.BackQuote))
                 {
-                    if (this.showPanel)
+                    if (showPanel)
                     {
-                        this.showPanel = false;
+                        showPanel = false;
                     }
-                    this.showHelp = !this.showHelp;
+                    showHelp = !showHelp;
                 }
                 if (Input.GetKeyUp(KeyCode.F1))
                 {
-                    this.showMenus = !this.showMenus;
+                    showMenus = !showMenus;
                 }
                 if (Input.GetKeyUp(KeyCode.F2) && !Input.GetKey(KeyCode.LeftControl))
                 {
-                    if (this.showHelp)
+                    if (showHelp)
                     {
-                        this.showHelp = false;
+                        showHelp = false;
                     }
-                    this.showPanel = !this.showPanel;
+                    showPanel = !showPanel;
                 }
                 if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.F2))
                 {
-                    if (this.showPanelState >= 6)
+                    if (showPanelState >= 6)
                     {
-                        this.showPanelState = 1;
+                        showPanelState = 1;
                     }
                     else
                     {
-                        this.showPanelState++;
+                        showPanelState++;
                     }
                 }
                 if (Input.GetKeyUp(KeyCode.F3))
                 {
-                    this.showButtons = !this.showButtons;
+                    showButtons = !showButtons;
                 }
                 if (Input.GetKeyUp(KeyCode.F4))
                 {
@@ -1091,25 +1416,25 @@ namespace DebugMod
                 }
                 if (Input.GetKeyUp(KeyCode.F6))
                 {
-                    this.Respawn();
+                    Respawn();
                 }
                 if (Input.GetKeyUp(KeyCode.F7))
                 {
-                    this.manualRespawn = DebugMod.refKnight.transform.position;
-                    HeroController.instance.SetHazardRespawn(this.manualRespawn, false);
-                    Console.AddLine("Manual respawn point on this map set to" + this.manualRespawn.ToString());
+                    manualRespawn = DebugMod.refKnight.transform.position;
+                    HeroController.instance.SetHazardRespawn(manualRespawn, false);
+                    Console.AddLine("Manual respawn point on this map set to" + manualRespawn.ToString());
                 }
                 if (Input.GetKeyUp(KeyCode.F8))
                 {
                     string text = DebugMod.refCamera.mode.ToString();
-                    if (!this.cameraFollow && text != "FOLLOWING")
+                    if (!cameraFollow && text != "FOLLOWING")
                     {
                         Console.AddLine("Setting Camera Mode to FOLLOW. Previous mode: " + text);
-                        this.cameraFollow = true;
+                        cameraFollow = true;
                     }
-                    else if (this.cameraFollow)
+                    else if (cameraFollow)
                     {
-                        this.cameraFollow = false;
+                        cameraFollow = false;
                         Console.AddLine("Camera Mode is no longer forced");
                     }
                 }
@@ -1261,19 +1586,9 @@ namespace DebugMod
                         Console.AddLine("Cannot set TimeScale greater than 2.0");
                     }
                 }
-                if (this.cameraFollow && DebugMod.refCamera.mode != CameraController.CameraMode.FOLLOWING)
+                if (cameraFollow && DebugMod.refCamera.mode != CameraController.CameraMode.FOLLOWING)
                 {
                     DebugMod.refCamera.SetMode(CameraController.CameraMode.FOLLOWING);
-                }
-                if (this.infiniteHP && !HeroController.instance.cState.dead && GameManager.instance.IsGameplayScene() && PlayerData.instance.health < PlayerData.instance.maxHealth)
-                {
-                    int amount = PlayerData.instance.maxHealth - PlayerData.instance.health;
-                    PlayerData.instance.health = PlayerData.instance.maxHealth;
-                    HeroController.instance.AddHealth(amount);
-                }
-                if (this.infiniSOUL && PlayerData.instance.MPCharge < 100 && PlayerData.instance.health > 0 && !HeroController.instance.cState.dead && GameManager.instance.IsGameplayScene())
-                {
-                    PlayerData.instance.MPCharge = 100;
                 }
 
                 if (PlayerDeathWatcher.PlayerDied())
@@ -1281,18 +1596,19 @@ namespace DebugMod
                     PlayerDeathWatcher.LogDeathDetails();
                 }
 
-                if (PlayerData.instance.hazardRespawnLocation != this.hazardLocation)
+                if (PlayerData.instance.hazardRespawnLocation != hazardLocation)
                 {
-                    this.hazardLocation = PlayerData.instance.hazardRespawnLocation;
-                    Console.AddLine("Hazard Respawn location updated: " + this.hazardLocation.ToString());
-                    if (this.showMenus && EnemyController.enemyPanel)
+                    hazardLocation = PlayerData.instance.hazardRespawnLocation;
+                    Console.AddLine("Hazard Respawn location updated: " + hazardLocation.ToString());
+
+                    if (showMenus && EnemyController.enemyPanel)
                     {
                         EnemyController.RefreshEnemyList(base.gameObject);
                     }
                 }
-                if (!string.IsNullOrEmpty(this.respawnSceneWatch) && this.respawnSceneWatch != PlayerData.instance.respawnScene)
+                if (!string.IsNullOrEmpty(respawnSceneWatch) && respawnSceneWatch != PlayerData.instance.respawnScene)
                 {
-                    this.respawnSceneWatch = PlayerData.instance.respawnScene;
+                    respawnSceneWatch = PlayerData.instance.respawnScene;
                     Console.AddLine(string.Concat(new string[]
                 {
                 "Save Respawn updated, new scene: ",
@@ -1312,7 +1628,7 @@ namespace DebugMod
         {
             Color backgroundColor = GUI.backgroundColor;
             GUI.backgroundColor = color;
-            GUI.Box(position, GUIContent.none, this.textureStyle);
+            GUI.Box(position, GUIContent.none, textureStyle);
             GUI.backgroundColor = backgroundColor;
         }
 
@@ -1350,7 +1666,7 @@ namespace DebugMod
 
         public bool showButtons;
 
-        public bool infiniSOUL;
+        public bool infiniteSoul;
 
         public Vector3 manualRespawn;
 
