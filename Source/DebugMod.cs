@@ -26,15 +26,23 @@ namespace DebugMod
         public override void Initialize()
         {
             ModHooks.ModLog("Initializing debug mod");
-            ModHooks.Instance.SavegameLoadHook += LoadCharacter;
-            ModHooks.Instance.BeforeSceneLoadHook += OnLevelUnload;
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += LevelActivated;
             UnityEngine.GameObject UIObj = new UnityEngine.GameObject();
             UIObj.AddComponent<GUIController>();
             UnityEngine.GameObject.DontDestroyOnLoad(UIObj);
 
+            ModHooks.Instance.SavegameLoadHook += LoadCharacter;
+            ModHooks.Instance.NewGameHook += NewCharacter;
+            ModHooks.Instance.BeforeSceneLoadHook += OnLevelUnload;
+            ModHooks.Instance.SetPlayerBoolHook += GUIController.instance.PlayerSetBool;
+
             BossHandler.PopulateBossLists();
             GUIController.instance.BuildMenus();
+        }
+
+        public void NewCharacter()
+        {
+            LoadCharacter(0);
         }
 
         public void LoadCharacter(int saveId)

@@ -22,10 +22,9 @@ namespace DebugMod
         private Font trajanNormal;
         private GameObject canvas;
         private CanvasPanel topMenu;
-
-        public bool playerInvincible;
-
-        public Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
+        private CanvasPanel infoPanel;
+        private Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
+        private bool playerInvincible;
 
         public void Awake()
         {
@@ -72,7 +71,117 @@ namespace DebugMod
             scaler.referenceResolution = new Vector2(1920f, 1080f);
             canvas.AddComponent<GraphicRaycaster>();
 
-            topMenu = new CanvasPanel(canvas, images["ButtonsMenuBG"], new Vector2(1092f, 25f), Vector2.zero, new Rect(0, 0, images["ButtonsMenuBG"].width, images["ButtonsMenuBG"].height));
+            infoPanel = new CanvasPanel(canvas, images["StatusPanelBG"], new Vector2(0f, 223f), Vector2.zero, new Rect(0f, 0f, images["StatusPanelBG"].width, images["StatusPanelBG"].height));
+
+            //Labels
+            infoPanel.AddText("Hero State Label", "Hero State", new Vector2(10f, 20f), trajanBold);
+            infoPanel.AddText("Velocity Label", "Velocity", new Vector2(10f, 40f), trajanBold);
+            infoPanel.AddText("Nail Damage Label", "Naildmg", new Vector2(10f, 60f), trajanBold);
+            infoPanel.AddText("HP Label", "HP", new Vector2(10f, 80f), trajanBold);
+            infoPanel.AddText("MP Label", "MP", new Vector2(10f, 100f), trajanBold);
+
+            infoPanel.AddText("Completion Label", "Completion", new Vector2(10f, 178f), trajanBold);
+            infoPanel.AddText("Grubs Label", "Grubs", new Vector2(10f, 198f), trajanBold);
+            
+            infoPanel.AddText("isInvuln Label", "isInvuln", new Vector2(10f, 276f), trajanBold);
+            infoPanel.AddText("Invincible Label", "Invincible", new Vector2(10f, 296f), trajanBold);
+            infoPanel.AddText("Invincitest Label", "invinciTest", new Vector2(10f, 316f), trajanBold);
+            infoPanel.AddText("Damage State Label", "Damage State", new Vector2(10f, 336f), trajanBold);
+            infoPanel.AddText("Dead State Label", "Dead State", new Vector2(10f, 356f), trajanBold);
+            infoPanel.AddText("Hazard Death Label", "Hazard Death", new Vector2(10f, 376f), trajanBold);
+
+            infoPanel.AddText("Scene Name Label", "Scene Name", new Vector2(10f, 454), trajanBold);
+            infoPanel.AddText("Transition Label", "Transition", new Vector2(10f, 474f), trajanBold);
+            infoPanel.AddText("Trans State Label", "Trans State", new Vector2(10f, 494f), trajanBold);
+            infoPanel.AddText("is Gameplay Label", "Is Gameplay", new Vector2(10f, 514f), trajanBold);
+            infoPanel.AddText("Game State Label", "Game State", new Vector2(10f, 534f), trajanBold);
+            infoPanel.AddText("UI State Label", "UI State", new Vector2(10f, 554f), trajanBold);
+            infoPanel.AddText("Hero Paused Label", "Hero Paused", new Vector2(10f, 574f), trajanBold);
+            infoPanel.AddText("Camera Mode Label", "Camera Mode", new Vector2(10f, 594f), trajanBold);
+
+            infoPanel.AddText("Accept Input Label", "Accept Input", new Vector2(300f, 30f), trajanBold);
+            infoPanel.AddText("Relinquished Label", "Relinquished", new Vector2(300f, 50f), trajanBold);
+            infoPanel.AddText("atBench Label", "atBench", new Vector2(300f, 70f), trajanBold);
+
+            infoPanel.AddText("Dashing Label", "Dashing", new Vector2(300f, 120f), trajanBold);
+            infoPanel.AddText("Jumping Label", "Jumping", new Vector2(300f, 140f), trajanBold);
+            infoPanel.AddText("Superdashing Label", "Superdashing", new Vector2(300f, 160f), trajanBold);
+            infoPanel.AddText("Falling Label", "Falling", new Vector2(300f, 180f), trajanBold);
+            infoPanel.AddText("Hardland Label", "Hardland", new Vector2(300f, 200f), trajanBold);
+            infoPanel.AddText("Swimming Label", "Swimming", new Vector2(300f, 220f), trajanBold);
+            infoPanel.AddText("Recoiling Label", "Recoiling", new Vector2(300f, 240f), trajanBold);
+
+            infoPanel.AddText("Wall lock Label", "Wall lock", new Vector2(300f, 290f), trajanBold);
+            infoPanel.AddText("Wall jumping Label", "Wall jumping", new Vector2(300f, 310f), trajanBold);
+            infoPanel.AddText("Wall touching Label", "Wall touching", new Vector2(300f, 330f), trajanBold);
+            infoPanel.AddText("Wall sliding Label", "Wall sliding", new Vector2(300f, 350f), trajanBold);
+            infoPanel.AddText("Wall left Label", "Wall left", new Vector2(300f, 370f), trajanBold);
+            infoPanel.AddText("Wall right Label", "Wall right", new Vector2(300f, 390f), trajanBold);
+
+            infoPanel.AddText("Attacking Label", "Attacking", new Vector2(300f, 440f), trajanBold);
+            infoPanel.AddText("canCast Label", "canCast", new Vector2(300f, 460f), trajanBold);
+            infoPanel.AddText("canSuperdash Label", "canSuperdash", new Vector2(300f, 480f), trajanBold);
+            infoPanel.AddText("canQuickmap Label", "canQuickmap", new Vector2(300f, 500f), trajanBold);
+            infoPanel.AddText("canInventory Label", "canInventory", new Vector2(300f, 520f), trajanBold);
+            infoPanel.AddText("canWarp Label", "canWarp", new Vector2(300f, 540f), trajanBold);
+            infoPanel.AddText("canDGate Label", "canDGate", new Vector2(300f, 560f), trajanBold);
+            infoPanel.AddText("gateAllow Label", "gateAllow", new Vector2(300f, 580f), trajanBold);
+
+            //Values
+            infoPanel.AddText("Hero State", "", new Vector2(150f, 20f), trajanNormal);
+            infoPanel.AddText("Velocity", "", new Vector2(150f, 40f), trajanNormal);
+            infoPanel.AddText("Nail Damage", "", new Vector2(150f, 60f), trajanNormal);
+            infoPanel.AddText("HP", "", new Vector2(150f, 80f), trajanNormal);
+            infoPanel.AddText("MP", "", new Vector2(150f, 100f), trajanNormal);
+
+            infoPanel.AddText("Completion", "", new Vector2(150f, 178f), trajanNormal);
+            infoPanel.AddText("Grubs", "", new Vector2(150f, 198f), trajanNormal);
+
+            infoPanel.AddText("isInvuln", "", new Vector2(150f, 276f), trajanNormal);
+            infoPanel.AddText("Invincible", "", new Vector2(150f, 296f), trajanNormal);
+            infoPanel.AddText("Invincitest", "", new Vector2(150f, 316f), trajanNormal);
+            infoPanel.AddText("Damage State", "", new Vector2(150f, 336f), trajanNormal);
+            infoPanel.AddText("Dead State", "", new Vector2(150f, 356f), trajanNormal);
+            infoPanel.AddText("Hazard Death", "", new Vector2(150f, 376f), trajanNormal);
+
+            infoPanel.AddText("Scene Name", "", new Vector2(150f, 454), trajanNormal);
+            infoPanel.AddText("Transition", "", new Vector2(150f, 474f), trajanNormal);
+            infoPanel.AddText("Trans State", "", new Vector2(150f, 494f), trajanNormal);
+            infoPanel.AddText("is Gameplay", "", new Vector2(150f, 514f), trajanNormal);
+            infoPanel.AddText("Game State", "", new Vector2(150f, 534f), trajanNormal);
+            infoPanel.AddText("UI State", "", new Vector2(150f, 554f), trajanNormal);
+            infoPanel.AddText("Hero Paused", "", new Vector2(150f, 574f), trajanNormal);
+            infoPanel.AddText("Camera Mode", "", new Vector2(150f, 594f), trajanNormal);
+
+            infoPanel.AddText("Accept Input", "", new Vector2(440f, 30f), trajanNormal);
+            infoPanel.AddText("Relinquished", "", new Vector2(440f, 50f), trajanNormal);
+            infoPanel.AddText("atBench", "", new Vector2(440f, 70f), trajanNormal);
+
+            infoPanel.AddText("Dashing", "", new Vector2(440f, 120f), trajanNormal);
+            infoPanel.AddText("Jumping", "", new Vector2(440f, 140f), trajanNormal);
+            infoPanel.AddText("Superdashing", "", new Vector2(440f, 160f), trajanNormal);
+            infoPanel.AddText("Falling", "", new Vector2(440f, 180f), trajanNormal);
+            infoPanel.AddText("Hardland", "", new Vector2(440f, 200f), trajanNormal);
+            infoPanel.AddText("Swimming", "", new Vector2(440f, 220f), trajanNormal);
+            infoPanel.AddText("Recoiling", "", new Vector2(440f, 240f), trajanNormal);
+
+            infoPanel.AddText("Wall lock", "", new Vector2(440f, 290f), trajanNormal);
+            infoPanel.AddText("Wall jumping", "", new Vector2(440f, 310f), trajanNormal);
+            infoPanel.AddText("Wall touching", "", new Vector2(440f, 330f), trajanNormal);
+            infoPanel.AddText("Wall sliding", "", new Vector2(440f, 350f), trajanNormal);
+            infoPanel.AddText("Wall left", "", new Vector2(440f, 370f), trajanNormal);
+            infoPanel.AddText("Wall right", "", new Vector2(440f, 390f), trajanNormal);
+
+            infoPanel.AddText("Attacking", "", new Vector2(440f, 440f), trajanNormal);
+            infoPanel.AddText("canCast", "", new Vector2(440f, 460f), trajanNormal);
+            infoPanel.AddText("canSuperdash", "", new Vector2(440f, 480f), trajanNormal);
+            infoPanel.AddText("canQuickmap", "", new Vector2(440f, 500f), trajanNormal);
+            infoPanel.AddText("canInventory", "", new Vector2(440f, 520f), trajanNormal);
+            infoPanel.AddText("canWarp", "", new Vector2(440f, 540f), trajanNormal);
+            infoPanel.AddText("canDGate", "", new Vector2(440f, 560f), trajanNormal);
+            infoPanel.AddText("gateAllow", "", new Vector2(440f, 580f), trajanNormal);
+
+            topMenu = new CanvasPanel(canvas, images["ButtonsMenuBG"], new Vector2(1092f, 25f), Vector2.zero, new Rect(0f, 0f, images["ButtonsMenuBG"].width, images["ButtonsMenuBG"].height));
 
             Rect buttonRect = new Rect(0, 0, images["ButtonRect"].width, images["ButtonRect"].height);
 
@@ -110,20 +219,38 @@ namespace DebugMod
             topMenu.GetPanel("Charms Panel").AddButton("fGreed fix", images["ButtonRectEmpty"], new Vector2(5f, 120f), Vector2.zero, FragileGreedFixClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "fGreed fix", 10);
             topMenu.GetPanel("Charms Panel").AddButton("fStrength fix", images["ButtonRectEmpty"], new Vector2(5f, 150f), Vector2.zero, FragileStrengthFixClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "fStrength fix", 10);
 
-            //Skills panel
+            //Skills panel buttons
             topMenu.GetPanel("Skills Panel").AddButton("All Skills", images["ButtonRectEmpty"], new Vector2(5f, 30f), Vector2.zero, AllSkillsClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "All Skills", 10);
             topMenu.GetPanel("Skills Panel").AddButton("Scream", images["ButtonRectEmpty"], new Vector2(5f, 60f), Vector2.zero, ScreamClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "Scream: " + PlayerData.instance.screamLevel, 10);
             topMenu.GetPanel("Skills Panel").AddButton("Fireball", images["ButtonRectEmpty"], new Vector2(5f, 90f), Vector2.zero, FireballClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "Fireball: " + PlayerData.instance.fireballLevel, 10);
             topMenu.GetPanel("Skills Panel").AddButton("Quake", images["ButtonRectEmpty"], new Vector2(5f, 120f), Vector2.zero, QuakeClicked, new Rect(0f, 0f, 80f, 20f), trajanNormal, "Quake: " + PlayerData.instance.quakeLevel, 10);
             topMenu.GetPanel("Skills Panel").AddButton("Mothwing Cloak", images["MothwingCloak"], new Vector2(5f, 150f), new Vector2(37f, 34f), MothwingCloakClicked, new Rect(0f, 0f, images["MothwingCloak"].width, images["MothwingCloak"].height));
             topMenu.GetPanel("Skills Panel").AddButton("Mantis Claw", images["MantisClaw"], new Vector2(43f, 150f), new Vector2(37f, 34f), MantisClawClicked, new Rect(0f, 0f, images["MantisClaw"].width, images["MantisClaw"].height));
-            topMenu.GetPanel("Skills Panel").AddButton("Monarch Wings", images["MonarchWings"], new Vector2(5f, 194), new Vector2(37f, 33f), MonarchWingsClicked, new Rect(0f, 0f, images["MonarchWings"].width, images["MonarchWings"].height));
+            topMenu.GetPanel("Skills Panel").AddButton("Monarch Wings", images["MonarchWings"], new Vector2(5f, 194f), new Vector2(37f, 33f), MonarchWingsClicked, new Rect(0f, 0f, images["MonarchWings"].width, images["MonarchWings"].height));
             topMenu.GetPanel("Skills Panel").AddButton("Crystal Heart", images["CrystalHeart"], new Vector2(43f, 194f), new Vector2(37f, 34f), CrystalHeartClicked, new Rect(0f, 0f, images["CrystalHeart"].width, images["CrystalHeart"].height));
             topMenu.GetPanel("Skills Panel").AddButton("Isma's Tear", images["IsmasTear"], new Vector2(5f, 238f), new Vector2(37f, 40f), IsmasTearClicked, new Rect(0f, 0f, images["IsmasTear"].width, images["IsmasTear"].height));
             topMenu.GetPanel("Skills Panel").AddButton("Dream Nail", images["DreamNail1"], new Vector2(43f, 251f), new Vector2(37f, 59f), DreamNailClicked, new Rect(0f, 0f, images["DreamNail1"].width, images["DreamNail1"].height));
             topMenu.GetPanel("Skills Panel").AddButton("Dream Gate", images["DreamGate"], new Vector2(5f, 288f), new Vector2(37f, 36f), DreamGateClicked, new Rect(0f, 0f, images["DreamGate"].width, images["DreamGate"].height));
+            topMenu.GetPanel("Skills Panel").AddButton("Great Slash", images["NailArt_GreatSlash"], new Vector2(5f, 329f), new Vector2(23f, 23f), GreatSlashClicked, new Rect(0f, 0f, images["NailArt_GreatSlash"].width, images["NailArt_GreatSlash"].height));
+            topMenu.GetPanel("Skills Panel").AddButton("Dash Slash", images["NailArt_DashSlash"], new Vector2(33f, 329f), new Vector2(23f, 23f), DashSlashClicked, new Rect(0f, 0f, images["NailArt_DashSlash"].width, images["NailArt_DashSlash"].height));
+            topMenu.GetPanel("Skills Panel").AddButton("Cyclone Slash", images["NailArt_CycloneSlash"], new Vector2(61f, 329f), new Vector2(23f, 23f), CycloneSlashClicked, new Rect(0f, 0f, images["NailArt_CycloneSlash"].width, images["NailArt_CycloneSlash"].height));
+
+            //Skills panel button glow
+            topMenu.GetPanel("Skills Panel").AddImage("Mothwing Cloak Glow", images["BlueGlow"], new Vector2(0f, 145f), new Vector2(47f, 44f), new Rect(0f, 0f, images["BlueGlow"].width, images["BlueGlow"].height));
+            topMenu.GetPanel("Skills Panel").AddImage("Mantis Claw Glow", images["BlueGlow"], new Vector2(38f, 145f), new Vector2(47f, 44f), new Rect(0f, 0f, images["BlueGlow"].width, images["BlueGlow"].height));
+            topMenu.GetPanel("Skills Panel").AddImage("Monarch Wings Glow", images["BlueGlow"], new Vector2(0f, 189f), new Vector2(47f, 43f), new Rect(0f, 0f, images["BlueGlow"].width, images["BlueGlow"].height));
+            topMenu.GetPanel("Skills Panel").AddImage("Crystal Heart Glow", images["BlueGlow"], new Vector2(38f, 189f), new Vector2(47f, 44f), new Rect(0f, 0f, images["BlueGlow"].width, images["BlueGlow"].height));
+            topMenu.GetPanel("Skills Panel").AddImage("Isma's Tear Glow", images["BlueGlow"], new Vector2(0f, 233f), new Vector2(47f, 50f), new Rect(0f, 0f, images["BlueGlow"].width, images["BlueGlow"].height));
+            topMenu.GetPanel("Skills Panel").AddImage("Dream Nail Glow", images["BlueGlow"], new Vector2(38f, 246f), new Vector2(47f, 69f), new Rect(0f, 0f, images["BlueGlow"].width, images["BlueGlow"].height));
+            topMenu.GetPanel("Skills Panel").AddImage("Dream Gate Glow", images["BlueGlow"], new Vector2(0f, 283f), new Vector2(47f, 46f), new Rect(0f, 0f, images["BlueGlow"].width, images["BlueGlow"].height));
+            topMenu.GetPanel("Skills Panel").AddImage("Great Slash Glow", images["BlueGlow"], new Vector2(0f, 324f), new Vector2(33f, 33f), new Rect(0f, 0f, images["BlueGlow"].width, images["BlueGlow"].height));
+            topMenu.GetPanel("Skills Panel").AddImage("Dash Slash Glow", images["BlueGlow"], new Vector2(28f, 324f), new Vector2(33f, 33f), new Rect(0f, 0f, images["BlueGlow"].width, images["BlueGlow"].height));
+            topMenu.GetPanel("Skills Panel").AddImage("Cyclone Slash Glow", images["BlueGlow"], new Vector2(56f, 324f), new Vector2(33f, 33f), new Rect(0f, 0f, images["BlueGlow"].width, images["BlueGlow"].height));
 
             SetMenusActive(false);
+
+            topMenu.FixRenderOrder();
+            RefreshMenus();
 
             GameObject.DontDestroyOnLoad(canvas);
         }
@@ -134,16 +261,126 @@ namespace DebugMod
             {
                 topMenu.SetActive(active, !active);
             }
+
+            if (infoPanel != null)
+            {
+                infoPanel.SetActive(active, !active);
+            }
         }
 
         public void CharacterLoaded()
+        {
+            RefreshMenus();
+        }
+
+        public void PlayerSetBool(string boolName, bool val)
+        {
+            RefreshMenus();
+            PlayerData.instance.SetBoolInternal(boolName, val);
+        }
+
+        private void RefreshMenus()
+        {
+            if (topMenu.GetPanel("Skills Panel").active) RefreshSkillsMenu();
+
+            topMenu.GetButton("Infinite Jump", "Cheats Panel").SetTextColor(PlayerData.instance.infiniteAirJump ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+        }
+
+        private void RefreshSkillsMenu()
         {
             if (PlayerData.instance.dreamNailUpgraded) topMenu.GetButton("Dream Nail", "Skills Panel").UpdateSprite(images["DreamNail2"], new Rect(0f, 0f, images["DreamNail2"].width, images["DreamNail2"].height));
             else topMenu.GetButton("Dream Nail", "Skills Panel").UpdateSprite(images["DreamNail1"], new Rect(0f, 0f, images["DreamNail1"].width, images["DreamNail1"].height));
             if (PlayerData.instance.hasShadowDash) topMenu.GetButton("Mothwing Cloak", "Skills Panel").UpdateSprite(images["ShadeCloak"], new Rect(0f, 0f, images["ShadeCloak"].width, images["ShadeCloak"].height));
             else topMenu.GetButton("Mothwing Cloak", "Skills Panel").UpdateSprite(images["MothwingCloak"], new Rect(0f, 0f, images["MothwingCloak"].width, images["MothwingCloak"].height));
 
-            topMenu.GetButton("Infinite Jump", "Cheats Panel").SetTextColor(PlayerData.instance.infiniteAirJump ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+            topMenu.GetImage("Mothwing Cloak Glow", "Skills Panel").SetActive(true);
+            topMenu.GetImage("Mantis Claw Glow", "Skills Panel").SetActive(true);
+            topMenu.GetImage("Monarch Wings Glow", "Skills Panel").SetActive(true);
+            topMenu.GetImage("Crystal Heart Glow", "Skills Panel").SetActive(true);
+            topMenu.GetImage("Isma's Tear Glow", "Skills Panel").SetActive(true);
+            topMenu.GetImage("Dream Gate Glow", "Skills Panel").SetActive(true);
+            topMenu.GetImage("Dream Nail Glow", "Skills Panel").SetActive(true);
+            topMenu.GetImage("Great Slash Glow", "Skills Panel").SetActive(true);
+            topMenu.GetImage("Dash Slash Glow", "Skills Panel").SetActive(true);
+            topMenu.GetImage("Cyclone Slash Glow", "Skills Panel").SetActive(true);
+
+            if (!PlayerData.instance.hasDash && !PlayerData.instance.hasShadowDash) topMenu.GetImage("Mothwing Cloak Glow", "Skills Panel").SetActive(false);
+            if (!PlayerData.instance.hasWalljump) topMenu.GetImage("Mantis Claw Glow", "Skills Panel").SetActive(false);
+            if (!PlayerData.instance.hasDoubleJump) topMenu.GetImage("Monarch Wings Glow", "Skills Panel").SetActive(false);
+            if (!PlayerData.instance.hasSuperDash) topMenu.GetImage("Crystal Heart Glow", "Skills Panel").SetActive(false);
+            if (!PlayerData.instance.hasAcidArmour) topMenu.GetImage("Isma's Tear Glow", "Skills Panel").SetActive(false);
+            if (!PlayerData.instance.hasDreamGate) topMenu.GetImage("Dream Gate Glow", "Skills Panel").SetActive(false);
+            if (!PlayerData.instance.hasDreamNail && !PlayerData.instance.dreamNailUpgraded) topMenu.GetImage("Dream Nail Glow", "Skills Panel").SetActive(false);
+            if (!PlayerData.instance.hasDashSlash) topMenu.GetImage("Great Slash Glow", "Skills Panel").SetActive(false);
+            if (!PlayerData.instance.hasUpwardSlash) topMenu.GetImage("Dash Slash Glow", "Skills Panel").SetActive(false);
+            if (!PlayerData.instance.hasCyclone) topMenu.GetImage("Cyclone Slash Glow", "Skills Panel").SetActive(false);
+
+            topMenu.GetButton("Scream", "Skills Panel").UpdateText("Scream: " + PlayerData.instance.screamLevel);
+            topMenu.GetButton("Fireball", "Skills Panel").UpdateText("Fireball: " + PlayerData.instance.fireballLevel);
+            topMenu.GetButton("Quake", "Skills Panel").UpdateText("Quake: " + PlayerData.instance.quakeLevel);
+        }
+
+        private void RefreshInfoPanel()
+        {
+            PlayerData.instance.CountGameCompletion();
+
+            infoPanel.GetText("Hero State").UpdateText(HeroController.instance.hero_state.ToString());
+            infoPanel.GetText("Velocity").UpdateText(HeroController.instance.current_velocity.ToString());
+            infoPanel.GetText("Nail Damage").UpdateText(DebugMod.refKnightSlash.FsmVariables.GetFsmInt("damageDealt").Value + " (Flat " + PlayerData.instance.nailDamage + ", x" + DebugMod.refKnightSlash.FsmVariables.GetFsmFloat("Multiplier").Value + ")");
+            infoPanel.GetText("HP").UpdateText(PlayerData.instance.health + " / " + PlayerData.instance.maxHealth);
+            infoPanel.GetText("MP").UpdateText((PlayerData.instance.MPCharge + PlayerData.instance.MPReserve).ToString());
+
+            infoPanel.GetText("Completion").UpdateText(PlayerData.instance.completionPercentage.ToString());
+            infoPanel.GetText("Grubs").UpdateText(PlayerData.instance.grubsCollected + " / 46");
+
+            infoPanel.GetText("isInvuln").UpdateText(HeroController.instance.cState.invulnerable.ToString());
+            infoPanel.GetText("Invincible").UpdateText(PlayerData.instance.isInvincible.ToString());
+            infoPanel.GetText("Invincitest").UpdateText(PlayerData.instance.invinciTest.ToString());
+            infoPanel.GetText("Damage State").UpdateText(HeroController.instance.damageMode.ToString());
+            infoPanel.GetText("Dead State").UpdateText(HeroController.instance.cState.dead.ToString());
+            infoPanel.GetText("Hazard Death").UpdateText(HeroController.instance.cState.hazardDeath.ToString());
+
+            infoPanel.GetText("Scene Name").UpdateText(DebugMod.GetSceneName());
+            infoPanel.GetText("Transition").UpdateText(HeroController.instance.cState.transitioning.ToString());
+
+            string transState = HeroController.instance.transitionState.ToString();
+            if (transState == "WAITING_TO_ENTER_LEVEL") transState = "LOADING";
+            if (transState == "WAITING_TO_TRANSITION") transState = "WAITING";
+
+            infoPanel.GetText("Trans State").UpdateText(transState);
+            infoPanel.GetText("is Gameplay").UpdateText(DebugMod.gm.IsGameplayScene().ToString());
+            infoPanel.GetText("Game State").UpdateText(GameManager.instance.gameState.ToString());
+            infoPanel.GetText("UI State").UpdateText(UIManager.instance.uiState.ToString());
+            infoPanel.GetText("Hero Paused").UpdateText(HeroController.instance.cState.isPaused.ToString());
+            infoPanel.GetText("Camera Mode").UpdateText(DebugMod.refCamera.mode.ToString());
+
+            infoPanel.GetText("Accept Input").UpdateText(HeroController.instance.acceptingInput.ToString());
+            infoPanel.GetText("Relinquished").UpdateText(HeroController.instance.controlReqlinquished.ToString());
+            infoPanel.GetText("atBench").UpdateText(PlayerData.instance.atBench.ToString());
+
+            infoPanel.GetText("Dashing").UpdateText(HeroController.instance.cState.dashing.ToString());
+            infoPanel.GetText("Jumping").UpdateText((HeroController.instance.cState.jumping || HeroController.instance.cState.doubleJumping).ToString());
+            infoPanel.GetText("Superdashing").UpdateText(HeroController.instance.cState.superDashing.ToString());
+            infoPanel.GetText("Falling").UpdateText(HeroController.instance.cState.falling.ToString());
+            infoPanel.GetText("Hardland").UpdateText(HeroController.instance.cState.willHardLand.ToString());
+            infoPanel.GetText("Swimming").UpdateText(HeroController.instance.cState.swimming.ToString());
+            infoPanel.GetText("Recoiling").UpdateText(HeroController.instance.cState.recoiling.ToString());
+
+            infoPanel.GetText("Wall lock").UpdateText(HeroController.instance.wallLocked.ToString());
+            infoPanel.GetText("Wall jumping").UpdateText(HeroController.instance.cState.wallJumping.ToString());
+            infoPanel.GetText("Wall touching").UpdateText(HeroController.instance.cState.touchingWall.ToString());
+            infoPanel.GetText("Wall sliding").UpdateText(HeroController.instance.cState.wallSliding.ToString());
+            infoPanel.GetText("Wall left").UpdateText(HeroController.instance.touchingWallL.ToString());
+            infoPanel.GetText("Wall right").UpdateText(HeroController.instance.touchingWallR.ToString());
+
+            infoPanel.GetText("Attacking").UpdateText(HeroController.instance.cState.attacking.ToString());
+            infoPanel.GetText("canCast").UpdateText(HeroController.instance.CanCast().ToString());
+            infoPanel.GetText("canSuperdash").UpdateText(HeroController.instance.CanSuperDash().ToString());
+            infoPanel.GetText("canQuickmap").UpdateText(HeroController.instance.CanQuickMap().ToString());
+            infoPanel.GetText("canInventory").UpdateText(HeroController.instance.CanOpenInventory().ToString());
+            infoPanel.GetText("canWarp").UpdateText(DebugMod.refDreamNail.FsmVariables.GetFsmBool("Dream Warp Allowed").Value.ToString());
+            infoPanel.GetText("canDGate").UpdateText(DebugMod.refDreamNail.FsmVariables.GetFsmBool("Can Dream Gate").Value.ToString());
+            infoPanel.GetText("gateAllow").UpdateText(DebugMod.refDreamNail.FsmVariables.GetFsmBool("Dream Gate Allowed").Value.ToString());
         }
 
         private void LoadResources()
@@ -262,6 +499,7 @@ namespace DebugMod
         private void SkillsClicked()
         {
             topMenu.TogglePanel("Skills Panel");
+            if (topMenu.GetPanel("Skills Panel").active) RefreshSkillsMenu();
         }
 
         private void ItemsClicked()
@@ -384,57 +622,270 @@ namespace DebugMod
 
         private void AllSkillsClicked()
         {
+            PlayerData.instance.screamLevel = 2;
+            PlayerData.instance.fireballLevel = 2;
+            PlayerData.instance.quakeLevel = 2;
 
+            PlayerData.instance.hasDash = true;
+            PlayerData.instance.canDash = true;
+            PlayerData.instance.hasShadowDash = true;
+            PlayerData.instance.canShadowDash = true;
+            PlayerData.instance.hasWalljump = true;
+            PlayerData.instance.canWallJump = true;
+            PlayerData.instance.hasDoubleJump = true;
+            PlayerData.instance.hasSuperDash = true;
+            PlayerData.instance.canSuperDash = true;
+            PlayerData.instance.hasAcidArmour = true;
+
+            PlayerData.instance.hasDreamNail = true;
+            PlayerData.instance.dreamNailUpgraded = true;
+            PlayerData.instance.hasDreamGate = true;
+
+            PlayerData.instance.hasNailArt = true;
+            PlayerData.instance.hasCyclone = true;
+            PlayerData.instance.hasDashSlash = true;
+            PlayerData.instance.hasUpwardSlash = true;
+
+            Console.AddLine("Giving player all skills");
+
+            RefreshSkillsMenu();
         }
 
         private void ScreamClicked()
         {
+            if (PlayerData.instance.screamLevel >= 2)
+            {
+                PlayerData.instance.screamLevel = 0;
+            }
+            else
+            {
+                PlayerData.instance.screamLevel++;
+            }
 
+            RefreshSkillsMenu();
         }
 
         private void FireballClicked()
         {
+            if (PlayerData.instance.fireballLevel >= 2)
+            {
+                PlayerData.instance.fireballLevel = 0;
+            }
+            else
+            {
+                PlayerData.instance.fireballLevel++;
+            }
 
+            RefreshSkillsMenu();
         }
 
         private void QuakeClicked()
         {
+            if (PlayerData.instance.quakeLevel >= 2)
+            {
+                PlayerData.instance.quakeLevel = 0;
+            }
+            else
+            {
+                PlayerData.instance.quakeLevel++;
+            }
 
+            RefreshSkillsMenu();
         }
 
         private void MothwingCloakClicked()
         {
+            if (!PlayerData.instance.hasDash && !PlayerData.instance.hasShadowDash)
+            {
+                PlayerData.instance.hasDash = true;
+                PlayerData.instance.canDash = true;
+                Console.AddLine("Giving player Mothwing Cloak");
+            }
+            else if (PlayerData.instance.hasDash && !PlayerData.instance.hasShadowDash)
+            {
+                PlayerData.instance.hasShadowDash = true;
+                PlayerData.instance.canShadowDash = true;
+                Console.AddLine("Giving player Shade Cloak");
+            }
+            else
+            {
+                PlayerData.instance.hasDash = false;
+                PlayerData.instance.canDash = false;
+                PlayerData.instance.hasShadowDash = false;
+                PlayerData.instance.canShadowDash = false;
+                Console.AddLine("Taking away both dash upgrades");
+            }
 
+            RefreshSkillsMenu();
         }
 
         private void MantisClawClicked()
         {
+            if (!PlayerData.instance.hasWalljump)
+            {
+                PlayerData.instance.hasWalljump = true;
+                PlayerData.instance.canWallJump = true;
+                Console.AddLine("Giving player Mantis Claw");
+            }
+            else
+            {
+                PlayerData.instance.hasWalljump = false;
+                PlayerData.instance.canWallJump = false;
+                Console.AddLine("Taking away Mantis Claw");
+            }
 
+            RefreshSkillsMenu();
         }
 
         private void MonarchWingsClicked()
         {
+            if (!PlayerData.instance.hasDoubleJump)
+            {
+                PlayerData.instance.hasDoubleJump = true;
+                Console.AddLine("Giving player Monarch Wings");
+            }
+            else
+            {
+                PlayerData.instance.hasDoubleJump = false;
+                Console.AddLine("Taking away Monarch Wings");
+            }
 
+            RefreshSkillsMenu();
         }
 
         private void CrystalHeartClicked()
         {
+            if (!PlayerData.instance.hasSuperDash)
+            {
+                PlayerData.instance.hasSuperDash = true;
+                PlayerData.instance.canSuperDash = true;
+                Console.AddLine("Giving player Crystal Heart");
+            }
+            else
+            {
+                PlayerData.instance.hasSuperDash = false;
+                PlayerData.instance.canSuperDash = false;
+                Console.AddLine("Taking away Crystal Heart");
+            }
 
+            RefreshSkillsMenu();
         }
 
         private void IsmasTearClicked()
         {
+            if (!PlayerData.instance.hasAcidArmour)
+            {
+                PlayerData.instance.hasAcidArmour = true;
+                Console.AddLine("Giving player Isma's Tear");
+            }
+            else
+            {
+                PlayerData.instance.hasAcidArmour = false;
+                Console.AddLine("Taking away Isma's Tear");
+            }
 
+            RefreshSkillsMenu();
         }
 
         private void DreamNailClicked()
         {
+            if (!PlayerData.instance.hasDreamNail && !PlayerData.instance.dreamNailUpgraded)
+            {
+                PlayerData.instance.hasDreamNail = true;
+                Console.AddLine("Giving player Dream Nail");
+            }
+            else if (PlayerData.instance.hasDreamNail && !PlayerData.instance.dreamNailUpgraded)
+            {
+                PlayerData.instance.dreamNailUpgraded = true;
+                Console.AddLine("Giving player Awoken Dream Nail");
+            }
+            else
+            {
+                PlayerData.instance.hasDreamNail = false;
+                PlayerData.instance.dreamNailUpgraded = false;
+                Console.AddLine("Taking away both Dream Nail upgrades");
+            }
 
+            RefreshSkillsMenu();
         }
 
         private void DreamGateClicked()
         {
+            if (!PlayerData.instance.hasDreamNail && !PlayerData.instance.hasDreamGate)
+            {
+                PlayerData.instance.hasDreamNail = true;
+                PlayerData.instance.hasDreamGate = true;
+                Console.AddLine("Giving player both Dream Nail and Dream Gate");
+            }
+            else if (PlayerData.instance.hasDreamNail && !PlayerData.instance.hasDreamGate)
+            {
+                PlayerData.instance.hasDreamGate = true;
+                Console.AddLine("Giving player Dream Gate");
+            }
+            else
+            {
+                PlayerData.instance.hasDreamGate = false;
+                Console.AddLine("Taking away Dream Gate");
+            }
 
+            RefreshSkillsMenu();
+        }
+
+        private void GreatSlashClicked()
+        {
+            if (!PlayerData.instance.hasDashSlash)
+            {
+                PlayerData.instance.hasDashSlash = true;
+                PlayerData.instance.hasNailArt = true;
+                Console.AddLine("Giving player Great Slash");
+            }
+            else
+            {
+                PlayerData.instance.hasDashSlash = false;
+                Console.AddLine("Taking away Great Slash");
+            }
+
+            if (!PlayerData.instance.hasUpwardSlash && !PlayerData.instance.hasDashSlash && !PlayerData.instance.hasCyclone) PlayerData.instance.hasNailArt = false;
+
+            RefreshSkillsMenu();
+        }
+
+        private void DashSlashClicked()
+        {
+            if (!PlayerData.instance.hasUpwardSlash)
+            {
+                PlayerData.instance.hasUpwardSlash = true;
+                PlayerData.instance.hasNailArt = true;
+                Console.AddLine("Giving player Dash Slash");
+            }
+            else
+            {
+                PlayerData.instance.hasUpwardSlash = false;
+                Console.AddLine("Taking away Dash Slash");
+            }
+
+            if (!PlayerData.instance.hasUpwardSlash && !PlayerData.instance.hasDashSlash && !PlayerData.instance.hasCyclone) PlayerData.instance.hasNailArt = false;
+
+            RefreshSkillsMenu();
+        }
+
+        private void CycloneSlashClicked()
+        {
+            if (!PlayerData.instance.hasCyclone)
+            {
+                PlayerData.instance.hasCyclone = true;
+                PlayerData.instance.hasNailArt = true;
+                Console.AddLine("Giving player Cyclone Slash");
+            }
+            else
+            {
+                PlayerData.instance.hasCyclone = false;
+                Console.AddLine("Taking away Cyclone Slash");
+            }
+
+            if (!PlayerData.instance.hasUpwardSlash && !PlayerData.instance.hasDashSlash && !PlayerData.instance.hasCyclone) PlayerData.instance.hasNailArt = false;
+
+            RefreshSkillsMenu();
         }
 
         public void OnGUI()
@@ -1330,6 +1781,11 @@ namespace DebugMod
                 if (Input.GetKeyUp(KeyCode.Escape) && DebugMod.gm.IsGamePaused())
                 {
                     UIManager.instance.TogglePauseGame();
+                }
+
+                if (infoPanel.active)
+                {
+                    RefreshInfoPanel();
                 }
 
 

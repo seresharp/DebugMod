@@ -33,7 +33,7 @@ namespace DebugMod
 
             imageObj.transform.SetParent(parent.transform, false);
 
-            Vector2 position = new Vector2((pos.x + subSprite.width / 2f) / 1920f, (1080f - (pos.y + subSprite.height / 2f)) / 1080f);
+            Vector2 position = new Vector2((pos.x + ((size.x / subSprite.width) * subSprite.width) / 2f) / 1920f, (1080f - (pos.y + ((size.y / subSprite.height) * subSprite.height) / 2f)) / 1080f);
             imageTransform.anchorMin = position;
             imageTransform.anchorMax = position;
             imageTransform.SetScaleX(size.x / subSprite.width);

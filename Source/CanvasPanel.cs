@@ -15,6 +15,8 @@ namespace DebugMod
         private Vector2 size;
         private Dictionary<string, CanvasButton> buttons = new Dictionary<string, CanvasButton>();
         private Dictionary<string, CanvasPanel> panels = new Dictionary<string, CanvasPanel>();
+        private Dictionary<string, CanvasImage> images = new Dictionary<string, CanvasImage>();
+        private Dictionary<string, CanvasText> texts = new Dictionary<string, CanvasText>();
 
         public bool active;
 
@@ -43,6 +45,20 @@ namespace DebugMod
             panels.Add(name, panel);
         }
 
+        public void AddImage(string name, Texture2D tex, Vector2 pos, Vector2 size, Rect subSprite)
+        {
+            CanvasImage image = new CanvasImage(canvas, tex, position + pos, size, subSprite);
+
+            images.Add(name, image);
+        }
+
+        public void AddText(string name, string text, Vector2 pos, Font font, int fontSize = 13)
+        {
+            CanvasText t = new CanvasText(canvas, position + pos, font, text, fontSize);
+
+            texts.Add(name, t);
+        }
+
         public CanvasButton GetButton(string buttonName, string panelName = null)
         {
             if (panelName != null && panels.ContainsKey(panelName))
@@ -58,11 +74,41 @@ namespace DebugMod
             return null;
         }
 
+        public CanvasImage GetImage(string imageName, string panelName = null)
+        {
+            if (panelName != null && panels.ContainsKey(panelName))
+            {
+                return panels[panelName].GetImage(imageName);
+            }
+
+            if (images.ContainsKey(imageName))
+            {
+                return images[imageName];
+            }
+
+            return null;
+        }
+
         public CanvasPanel GetPanel(string panelName)
         {
             if (panels.ContainsKey(panelName))
             {
                 return panels[panelName];
+            }
+
+            return null;
+        }
+
+        public CanvasText GetText(string textName, string panelName = null)
+        {
+            if (panelName != null && panels.ContainsKey(panelName))
+            {
+                return panels[panelName].GetText(textName);
+            }
+
+            if (texts.ContainsKey(textName))
+            {
+                return texts[textName];
             }
 
             return null;
@@ -117,6 +163,16 @@ namespace DebugMod
                 button.SetActive(b);
             }
 
+            foreach (CanvasImage image in images.Values)
+            {
+                image.SetActive(b);
+            }
+
+            foreach (CanvasText t in texts.Values)
+            {
+                t.SetActive(b);
+            }
+
             if (panel)
             {
                 foreach (CanvasPanel p in panels.Values)
@@ -135,9 +191,19 @@ namespace DebugMod
 
         public void FixRenderOrder()
         {
+            foreach (CanvasText t in texts.Values)
+            {
+                t.MoveToTop();
+            }
+
             foreach (CanvasButton button in buttons.Values)
             {
                 button.MoveToTop();
+            }
+
+            foreach (CanvasImage image in images.Values)
+            {
+                image.SetRenderIndex(0);
             }
 
             foreach (CanvasPanel panel in panels.Values)

@@ -67,6 +67,7 @@
     <Compile Include="CanvasButton.cs" />
     <Compile Include="CanvasImage.cs" />
     <Compile Include="CanvasPanel.cs" />
+    <Compile Include="CanvasText.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="DebugMod.cs" />
     <Compile Include="DreamGate.cs" />
