@@ -68,6 +68,54 @@ namespace DebugMod
             ghostData.Add("Cliffs_02", "aladarSlugDefeated");
         }
 
+        public static void RespawnBoss()
+        {
+            if (bossFound)
+            {
+                if (bossData[DebugMod.GetSceneName()].Key)
+                {
+                    PlayMakerFSM[] components = GameObject.Find(bossData[DebugMod.GetSceneName()].Value).GetComponents<PlayMakerFSM>();
+                    if (components != null)
+                    {
+                        foreach (PlayMakerFSM playMakerFSM in components)
+                        {
+                            if (playMakerFSM.FsmVariables.GetFsmBool("Activated") != null)
+                            {
+                                playMakerFSM.FsmVariables.GetFsmBool("Activated").Value = false;
+                                Console.AddLine("Boss control for this scene was reset, re-enter scene or warp");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.AddLine("GO does not exist or no FSM on it");
+                    }
+                }
+                else
+                {
+                    PlayerData.instance.GetType().GetField(bossData[DebugMod.GetSceneName()].Value).SetValue(PlayerData.instance, false);
+                    Console.AddLine("Boss control for this scene was reset, re-enter scene or warp");
+                }
+            }
+            else
+            {
+                Console.AddLine("No boss in this scene to respawn");
+            }
+        }
+
+        public static void RespawnGhost()
+        {
+            if (ghostFound)
+            {
+                PlayerData.instance.GetType().GetField(ghostData[DebugMod.GetSceneName()]).SetValue(PlayerData.instance, 0);
+                Console.AddLine("Ghost Boss for this scene was reset, re-enter scene or warp");
+            }
+            else
+            {
+                Console.AddLine("No ghost in this scene to respawn");
+            }
+        }
+
         public static void UpdateGUI()
         {
             if (bossSub)

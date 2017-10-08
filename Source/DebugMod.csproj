@@ -63,6 +63,7 @@
     <Compile Include="CanvasInput.cs" />
     <Compile Include="CanvasScroll.cs" />
     <Compile Include="EnemiesPanel.cs" />
+    <Compile Include="HelpPanel.cs" />
     <Compile Include="TopMenu.cs" />
     <Compile Include="CustomInput.cs" />
     <Reference Include="UnityEngine">

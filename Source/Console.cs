@@ -12,6 +12,7 @@ namespace DebugMod
     {
         public static bool visible;
 
+        private static CanvasPanel panel;
         private static string GUIString = "";
         private static float alpha = 1f;
         private static List<string> history = new List<string>();
@@ -20,7 +21,68 @@ namespace DebugMod
 
         public static void BuildMenu(GameObject canvas)
         {
+            panel = new CanvasPanel(canvas, GUIController.instance.images["ConsoleBg"], new Vector2(1275, 800), Vector2.zero, new Rect(0, 0, GUIController.instance.images["ConsoleBg"].width, GUIController.instance.images["ConsoleBg"].height));
 
+            panel.AddText("Console", "", new Vector2(10f, 25f), Vector2.zero, GUIController.instance.arial);
+            panel.AddText("NoConsole", "", new Vector2(10f, 180f), Vector2.zero, GUIController.instance.arial);
+
+            panel.FixRenderOrder();
+
+            GUIController.instance.arial.RequestCharactersInTexture("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/? ", 13);
+        }
+
+        public static void Update()
+        {
+            if (panel == null)
+            {
+                return;
+            }
+
+            if (visible && !panel.active)
+            {
+                panel.SetActive(true, false);
+            }
+            else if (!visible && panel.active)
+            {
+                panel.SetActive(false, true);
+            }
+
+            if (panel.active)
+            {
+                string consoleString = "";
+                int lineCount = 0;
+
+                for (int i = history.Count - 1; i >= 0; i--)
+                {
+                    if (lineCount >= 8) break;
+                    consoleString = history[i] + "\n" + consoleString;
+                    lineCount++;
+                }
+
+                panel.GetText("Console").UpdateText(consoleString);
+            }
+
+            if (!panel.active)
+            {
+                float delta = Time.realtimeSinceStartup - lastTime;
+                lastTime = Time.realtimeSinceStartup;
+
+                alpha -= delta * .5f;
+
+                if (alpha > 0 && DebugMod.gm.IsGameplayScene())
+                {
+                    Color c = Color.white;
+                    c.a = alpha;
+
+                    panel.GetText("NoConsole").SetActive(true);
+                    panel.GetText("NoConsole").UpdateText(GUIString);
+                    panel.GetText("NoConsole").SetTextColor(c);
+                }
+                else
+                {
+                    panel.GetText("NoConsole").SetActive(false);
+                }
+            }
         }
 
         public static void Reset()
@@ -28,21 +90,40 @@ namespace DebugMod
             history.Clear();
             alpha = 1f;
             GUIString = "";
+            lastTime = Time.realtimeSinceStartup;
             scrollPosition = Vector2.zero;
-
-            AddLine("New session started " + DateTime.Now.ToString());
         }
 
         public static void AddLine(string chatLine)
         {
-            if (history.Count > 1000)
+            while (history.Count > 1000)
             {
-                history.RemoveAt(1);
+                history.RemoveAt(0);
+            }
+
+            int wrap = WrapIndex(GUIController.instance.arial, 13, chatLine);
+
+            while (wrap != -1)
+            {
+                int index = chatLine.LastIndexOf(' ', wrap, wrap);
+
+                if (index != -1)
+                {
+                    history.Add(chatLine.Substring(0, index));
+                    chatLine = chatLine.Substring(index + 1);
+                    wrap = WrapIndex(GUIController.instance.arial, 13, chatLine);
+                }
+                else
+                {
+                    break;
+                }
             }
 
             history.Add(chatLine);
+
             scrollPosition.y = scrollPosition.y + 50f;
             alpha = 1f;
+            lastTime = Time.realtimeSinceStartup;
 
             if (!visible)
             {
@@ -55,72 +136,33 @@ namespace DebugMod
             try
             {
                 File.WriteAllLines("console.txt", history.ToArray());
+                Console.AddLine("Written history to console.txt");
             }
             catch (Exception arg)
             {
                 Modding.ModHooks.ModLog("[DEBUG MOD] [CONSOLE] Unable to write console history: " + arg);
+                Console.AddLine("Unable to write console history");
             }
         }
 
-        public static void UpdateGUI(bool forceInvisible)
+        private static int WrapIndex(Font font, int fontSize, string message)
         {
-            float deltaTime = Time.realtimeSinceStartup - lastTime;
-            lastTime = Time.realtimeSinceStartup;
+            int totalLength = 0;
 
-            if ((!visible || forceInvisible) && alpha > 0f)
+            CharacterInfo characterInfo;
+
+            char[] arr = message.ToCharArray();
+
+            for (int i = 0; i < arr.Length; i++)
             {
-                alpha -= deltaTime * .3f;
+                char c = arr[i];
+                font.GetCharacterInfo(c, out characterInfo, fontSize);
+                totalLength += characterInfo.advance;
 
-                if (alpha <= 0f)
-                {
-                    alpha = 0f;
-                    GUIString = "";
-                }
+                if (totalLength >= 564) return i;
             }
 
-            if ((visible || UIManager.instance.uiState == UIState.PAUSED) && !forceInvisible)
-            {
-                GUI.skin.label.fontStyle = FontStyle.Bold;
-                GUI.skin.label.alignment = TextAnchor.UpperLeft;
-                GUI.skin.label.alignment = TextAnchor.UpperLeft;
-                GUI.skin.label.fontSize = 18;
-                new GUIStyle().fontSize = 18;
-                GUI.BeginGroup(new Rect(1125f, 720f, 820f, 360f));
-                scrollPosition = GUILayout.BeginScrollView(scrollPosition, new GUILayoutOption[]
-                {
-                    GUILayout.MaxWidth(800f),
-                    GUILayout.MaxHeight(345f),
-                    GUILayout.ExpandHeight(false)
-                });
-                if (history.Count <= 150)
-                {
-                    GUILayout.Label(string.Join("\n", history.ToArray()), new GUILayoutOption[]
-                    {
-                        GUILayout.ExpandHeight(true)
-                    });
-                }
-                else
-                {
-                    GUILayout.Label(string.Join("\n", history.GetRange(history.Count - 150, 150).ToArray()), new GUILayoutOption[]
-                    {
-                        GUILayout.ExpandHeight(true)
-                    });
-                }
-                GUILayout.EndScrollView();
-                GUI.EndGroup();
-            }
-            else if (((!visible && UIManager.instance.uiState == UIState.PLAYING) || (forceInvisible && UIManager.instance.uiState == UIState.PAUSED)) && !string.IsNullOrEmpty(GUIString) && alpha > 0f)
-            {
-                Color color = GUI.color;
-                GUI.color = new Color(1f, 1f, 1f, alpha);
-                TextAnchor alignment9 = GUI.skin.label.alignment;
-                GUI.skin.label.fontStyle = FontStyle.Bold;
-                GUI.skin.label.alignment = TextAnchor.UpperRight;
-                GUI.skin.label.fontSize = 18;
-                GUI.Label(new Rect(1f, 1050f, 1915f, 30f), GUIString.ToString());
-                GUI.color = color;
-                GUI.skin.label.alignment = alignment9;
-            }
+            return -1;
         }
     }
 }

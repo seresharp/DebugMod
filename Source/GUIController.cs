@@ -73,8 +73,8 @@ namespace DebugMod
             InfoPanel.BuildMenu(canvas);
             TopMenu.BuildMenu(canvas);
             EnemiesPanel.BuildMenu(canvas);
-
-            //new CanvasInput(canvas, images["ButtonRect"], new Vector2(1920 / 2, 1080 / 2), Vector2.zero, new Rect(0, 0, images["ButtonRect"].width, images["ButtonRect"].height), arial, "Enter Warp Name", InputClicked);
+            Console.BuildMenu(canvas);
+            HelpPanel.BuildMenus(canvas);
 
             SetMenusActive(false);
 
@@ -91,6 +91,8 @@ namespace DebugMod
             TopMenu.visible = active;
             InfoPanel.visible = active;
             EnemiesPanel.visible = active;
+            Console.visible = active;
+            HelpPanel.visible = active;
         }
 
         private void LoadResources()
@@ -167,6 +169,8 @@ namespace DebugMod
 
         public void OnGUI()
         {
+            return;
+
             Matrix4x4 matrix = GUI.matrix;
             GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, scale);
             GUI.backgroundColor = Color.white;
@@ -900,8 +904,6 @@ namespace DebugMod
                     GUI.skin.toggle.fontStyle = fontStyle3;
                 }
 
-                Console.UpdateGUI(DreamGate.menuOpen);
-
                 if (DebugMod.gm.IsGameplayScene() && showHelp)
                 {
                     TextAnchor alignment10 = GUI.skin.label.alignment;
@@ -1039,6 +1041,8 @@ namespace DebugMod
             InfoPanel.Update();
             TopMenu.Update();
             EnemiesPanel.Update();
+            Console.Update();
+            HelpPanel.Update();
 
             if (DebugMod.GetSceneName() != "Menu_Title")
             {
@@ -1095,38 +1099,19 @@ namespace DebugMod
                 }
                 if (Input.GetKeyUp(KeyCode.BackQuote))
                 {
-                    if (showPanel)
-                    {
-                        showPanel = false;
-                    }
-                    showHelp = !showHelp;
+                    HelpPanel.visible = !HelpPanel.visible;
                 }
                 if (Input.GetKeyUp(KeyCode.F1))
                 {
-                    showMenus = !showMenus;
+                    SetMenusActive(!(HelpPanel.visible || InfoPanel.visible || EnemiesPanel.visible || TopMenu.visible || Console.visible));
                 }
-                if (Input.GetKeyUp(KeyCode.F2) && !Input.GetKey(KeyCode.LeftControl))
+                if (Input.GetKeyUp(KeyCode.F2))
                 {
-                    if (showHelp)
-                    {
-                        showHelp = false;
-                    }
-                    showPanel = !showPanel;
-                }
-                if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyUp(KeyCode.F2))
-                {
-                    if (showPanelState >= 6)
-                    {
-                        showPanelState = 1;
-                    }
-                    else
-                    {
-                        showPanelState++;
-                    }
+                    InfoPanel.visible = !InfoPanel.visible;
                 }
                 if (Input.GetKeyUp(KeyCode.F3))
                 {
-                    showButtons = !showButtons;
+                    TopMenu.visible = !TopMenu.visible;
                 }
                 if (Input.GetKeyUp(KeyCode.F4))
                 {
@@ -1168,6 +1153,14 @@ namespace DebugMod
                     {
                         cameraFollow = false;
                         Console.AddLine("Camera Mode is no longer forced");
+                    }
+                }
+                if (Input.GetKeyUp(KeyCode.F9))
+                {
+                    EnemiesPanel.visible = !EnemiesPanel.visible;
+                    if (EnemiesPanel.visible)
+                    {
+                        EnemiesPanel.RefreshEnemyList();
                     }
                 }
                 if (Input.GetKeyUp(KeyCode.Insert))
@@ -1329,14 +1322,14 @@ namespace DebugMod
                 {
                     respawnSceneWatch = PlayerData.instance.respawnScene;
                     Console.AddLine(string.Concat(new string[]
-                {
-                "Save Respawn updated, new scene: ",
-                PlayerData.instance.respawnScene.ToString(),
-                ", Map Zone: ",
-                GameManager.instance.GetCurrentMapZone(),
-                ", Respawn Marker: ",
-                PlayerData.instance.respawnMarkerName.ToString()
-                }));
+                    {
+                        "Save Respawn updated, new scene: ",
+                        PlayerData.instance.respawnScene.ToString(),
+                        ", Map Zone: ",
+                        GameManager.instance.GetCurrentMapZone(),
+                        ", Respawn Marker: ",
+                        PlayerData.instance.respawnMarkerName.ToString()
+                    }));
                 }
             }
         }

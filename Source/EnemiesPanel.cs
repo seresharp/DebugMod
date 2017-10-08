@@ -129,15 +129,6 @@ namespace DebugMod
 
         public static void Update()
         {
-            if (Input.GetKeyUp(KeyCode.F9))
-            {
-                EnemiesPanel.visible = !EnemiesPanel.visible;
-                if (EnemiesPanel.enemyPool.Count < 1 && EnemiesPanel.visible)
-                {
-                    EnemiesPanel.RefreshEnemyList();
-                }
-            }
-
             if (panel == null)
             {
                 return;
@@ -351,7 +342,7 @@ namespace DebugMod
             }
         }
 
-        private static void Reset()
+        public static void Reset()
         {
             enemyPool.Clear();
         }

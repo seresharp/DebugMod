@@ -36,7 +36,7 @@ namespace DebugMod
             panel.AddPanel("Charms Panel", GUIController.instance.images["DropdownBG"], new Vector2(145f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DropdownBG"].width, 180f));
             panel.AddPanel("Skills Panel", GUIController.instance.images["DropdownBG"], new Vector2(245f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DropdownBG"].width, GUIController.instance.images["DropdownBG"].height));
             panel.AddPanel("Items Panel", GUIController.instance.images["DropdownBG"], new Vector2(345f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DropdownBG"].width, GUIController.instance.images["DropdownBG"].height));
-            panel.AddPanel("Bosses Panel", GUIController.instance.images["DropdownBG"], new Vector2(445f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DropdownBG"].width, GUIController.instance.images["DropdownBG"].height));
+            panel.AddPanel("Bosses Panel", GUIController.instance.images["DropdownBG"], new Vector2(445f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DropdownBG"].width, 170f));
             panel.AddPanel("DreamGate Panel", GUIController.instance.images["DreamGateDropdownBG"], new Vector2(545f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DreamGateDropdownBG"].width, GUIController.instance.images["DreamGateDropdownBG"].height));
 
             //Cheats panel
@@ -80,6 +80,14 @@ namespace DebugMod
             panel.GetPanel("Skills Panel").AddImage("Dash Slash Glow", GUIController.instance.images["BlueGlow"], new Vector2(28f, 324f), new Vector2(33f, 33f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
             panel.GetPanel("Skills Panel").AddImage("Cyclone Slash Glow", GUIController.instance.images["BlueGlow"], new Vector2(56f, 324f), new Vector2(33f, 33f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
 
+            //Boss panel
+            panel.GetPanel("Bosses Panel").AddButton("Respawn Boss", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 30f), Vector2.zero, RespawnBossClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Respawn Boss", 10);
+            panel.GetPanel("Bosses Panel").AddButton("Respawn Ghost", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 50f), Vector2.zero, RespawnGhostClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Respawn Ghost", 9);
+
+            panel.GetPanel("Bosses Panel").AddButton("Failed Champ", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 110f), Vector2.zero, FailedChampClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Failed Champ", 10);
+            panel.GetPanel("Bosses Panel").AddButton("Soul Tyrant", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 130f), Vector2.zero, SoulTyrantClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Soul Tyrant", 10);
+            panel.GetPanel("Bosses Panel").AddButton("Lost Kin", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 150f), Vector2.zero, LostKinClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Lost Kin", 10);
+
             panel.FixRenderOrder();
         }
 
@@ -103,6 +111,9 @@ namespace DebugMod
 
             if (panel.GetPanel("Cheats Panel").active) panel.GetButton("Infinite Jump", "Cheats Panel").SetTextColor(PlayerData.instance.infiniteAirJump ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
 
+            if (panel.GetPanel("Bosses Panel").active) panel.GetButton("Failed Champ", "Bosses Panel").SetTextColor(PlayerData.instance.falseKnightDreamDefeated ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+            if (panel.GetPanel("Bosses Panel").active) panel.GetButton("Soul Tyrant", "Bosses Panel").SetTextColor(PlayerData.instance.mageLordDreamDefeated ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+            if (panel.GetPanel("Bosses Panel").active) panel.GetButton("Lost Kin", "Bosses Panel").SetTextColor(PlayerData.instance.infectedKnightDreamDefeated ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
         }
 
         private static void RefreshSkillsMenu()
@@ -585,6 +596,37 @@ namespace DebugMod
             if (!PlayerData.instance.hasUpwardSlash && !PlayerData.instance.hasDashSlash && !PlayerData.instance.hasCyclone) PlayerData.instance.hasNailArt = false;
 
             RefreshSkillsMenu();
+        }
+
+        private static void RespawnGhostClicked(string buttonName)
+        {
+            BossHandler.RespawnGhost();
+        }
+
+        private static void RespawnBossClicked(string buttonName)
+        {
+            BossHandler.RespawnBoss();
+        }
+
+        private static void FailedChampClicked(string buttonName)
+        {
+            PlayerData.instance.falseKnightDreamDefeated = !PlayerData.instance.falseKnightDreamDefeated;
+
+            Console.AddLine("Set Failed Champion killed: " + PlayerData.instance.falseKnightDreamDefeated);
+        }
+
+        private static void SoulTyrantClicked(string buttonName)
+        {
+            PlayerData.instance.mageLordDreamDefeated = !PlayerData.instance.mageLordDreamDefeated;
+
+            Console.AddLine("Set Soul Tyrant killed: " + PlayerData.instance.mageLordDreamDefeated);
+        }
+
+        private static void LostKinClicked(string buttonName)
+        {
+            PlayerData.instance.infectedKnightDreamDefeated = !PlayerData.instance.infectedKnightDreamDefeated;
+
+            Console.AddLine("Set Lost Kin killed: " + PlayerData.instance.infectedKnightDreamDefeated);
         }
     }
 }

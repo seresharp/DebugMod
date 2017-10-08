@@ -41,6 +41,8 @@ namespace DebugMod
 
             BossHandler.PopulateBossLists();
             GUIController.instance.BuildMenus();
+
+            Console.AddLine("New session started " + DateTime.Now.ToString());
         }
 
         public void NewCharacter()
@@ -51,7 +53,7 @@ namespace DebugMod
         public void LoadCharacter(int saveId)
         {
             Console.Reset();
-            EnemyController.Reset();
+            EnemiesPanel.Reset();
             DreamGate.Reset();
 
             loadingChar = true;

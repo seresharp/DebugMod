@@ -102,6 +102,15 @@ namespace DebugMod
             }
         }
 
+        public void SetTextColor(Color color)
+        {
+            if (textObj != null)
+            {
+                Text t = textObj.GetComponent<Text>();
+                t.color = color;
+            }
+        }
+
         public void Destroy()
         {
             GameObject.Destroy(textObj);

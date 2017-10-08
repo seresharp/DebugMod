@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using InControl;
 
 namespace DebugMod
 {
@@ -125,6 +126,13 @@ namespace DebugMod
             panel.AddText("canDGate", "", new Vector2(440f, 560f), Vector2.zero, GUIController.instance.trajanNormal);
             panel.AddText("gateAllow", "", new Vector2(440f, 580f), Vector2.zero, GUIController.instance.trajanNormal);
 
+            //Bottom right info
+            panel.AddText("Right1 Label", "Session Time\nLoad\nHero Pos\nMove Raw", new Vector2(1285, 747), Vector2.zero, GUIController.instance.arial);
+            panel.AddText("Right1", "", new Vector2(1385, 747), Vector2.zero, GUIController.instance.trajanNormal);
+
+            panel.AddText("Right2 Label", "Move Vector\nKey Pressed\nMove Pressed\nInput X", new Vector2(1500, 747), Vector2.zero, GUIController.instance.arial);
+            panel.AddText("Right2", "", new Vector2(1600, 747), Vector2.zero, GUIController.instance.trajanNormal);
+
             panel.FixRenderOrder();
         }
 
@@ -205,6 +213,12 @@ namespace DebugMod
                 panel.GetText("canWarp").UpdateText(GetStringForBool(DebugMod.refDreamNail.FsmVariables.GetFsmBool("Dream Warp Allowed").Value));
                 panel.GetText("canDGate").UpdateText(GetStringForBool(DebugMod.refDreamNail.FsmVariables.GetFsmBool("Can Dream Gate").Value));
                 panel.GetText("gateAllow").UpdateText(GetStringForBool(DebugMod.refDreamNail.FsmVariables.GetFsmBool("Dream Gate Allowed").Value));
+
+                int time1 = Mathf.FloorToInt(Time.realtimeSinceStartup / 60f);
+                int time2 = Mathf.FloorToInt(Time.realtimeSinceStartup - (float)(time1 * 60));
+
+                panel.GetText("Right1").UpdateText(string.Format("{0:00}:{1:00}", time1, time2) + "\n" + DebugMod.GetLoadTime() + "s\n" + (Vector2)DebugMod.refKnight.transform.position + "\n" + string.Format("L: {0} R: {1}", DebugMod.ih.inputActions.left.RawValue, DebugMod.ih.inputActions.right.RawValue));
+                panel.GetText("Right2").UpdateText(DebugMod.ih.inputActions.moveVector.Vector.x + ", " + DebugMod.ih.inputActions.moveVector.Vector.y + "\n" + GetStringForBool(InputManager.AnyKeyIsPressed) + "\n" + GetStringForBool(DebugMod.ih.inputActions.left.IsPressed || DebugMod.ih.inputActions.right.IsPressed) + "\n" + DebugMod.ih.inputX);
             }
         }
 
