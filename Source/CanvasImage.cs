@@ -11,6 +11,8 @@ namespace DebugMod
     public class CanvasImage
     {
         private GameObject imageObj;
+        private Vector2 sz;
+        private Rect sub;
 
         public bool active;
 
@@ -20,6 +22,9 @@ namespace DebugMod
             {
                 size = new Vector2(subSprite.width, subSprite.height);
             }
+
+            sz = size;
+            sub = subSprite;
 
             imageObj = new GameObject();
             imageObj.AddComponent<CanvasRenderer>();
@@ -44,10 +49,19 @@ namespace DebugMod
             active = true;
         }
 
+        public void UpdateImage(Texture2D tex, Rect subSection)
+        {
+            if (imageObj != null)
+            {
+                imageObj.GetComponent<Image>().sprite = Sprite.Create(tex, new Rect(subSection.x, tex.height - subSection.height, subSection.width, subSection.height), Vector2.zero);
+            }
+        }
+
         public void SetWidth(float width)
         {
             if (imageObj != null)
             {
+                sz = new Vector2(width, sz.y);
                 imageObj.GetComponent<RectTransform>().SetScaleX(width / imageObj.GetComponent<RectTransform>().sizeDelta.x);
             }
         }
@@ -56,7 +70,8 @@ namespace DebugMod
         {
             if (imageObj != null)
             {
-                imageObj.GetComponent<RectTransform>().SetScaleX(height / imageObj.GetComponent<RectTransform>().sizeDelta.y);
+                sz = new Vector2(sz.x, height);
+                imageObj.GetComponent<RectTransform>().SetScaleY(height / imageObj.GetComponent<RectTransform>().sizeDelta.y);
             }
         }
 
@@ -64,8 +79,7 @@ namespace DebugMod
         {
             if (imageObj != null)
             {
-                Vector2 sz = imageObj.GetComponent<RectTransform>().sizeDelta;
-                Vector2 position = new Vector2((pos.x + sz.x / 2f) / 1920f, (1080f - (pos.y + sz.y / 2f)) / 1080f);
+                Vector2 position = new Vector2((pos.x + ((sz.x / sub.width) * sub.width) / 2f) / 1920f, (1080f - (pos.y + ((sz.y / sub.height) * sub.height) / 2f)) / 1080f);
                 imageObj.GetComponent<RectTransform>().anchorMin = position;
                 imageObj.GetComponent<RectTransform>().anchorMax = position;
             }
@@ -83,6 +97,11 @@ namespace DebugMod
         public void SetRenderIndex(int idx)
         {
             imageObj.transform.SetSiblingIndex(idx);
+        }
+
+        public void Destroy()
+        {
+            GameObject.Destroy(imageObj); ;
         }
     }
 }

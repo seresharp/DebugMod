@@ -10,15 +10,25 @@ namespace DebugMod
     public class CanvasText
     {
         private GameObject textObj;
+        private Vector2 size;
 
         public bool active;
 
-        public CanvasText(GameObject parent, Vector2 pos, Font font, string text, int fontSize = 13)
+        public CanvasText(GameObject parent, Vector2 pos, Vector2 sz, Font font, string text, int fontSize = 13, FontStyle style = FontStyle.Normal, TextAnchor alignment = TextAnchor.UpperLeft)
         {
+            if (sz.x == 0 || sz.y == 0)
+            {
+                size = new Vector2(1920f, 1080f);
+            }
+            else
+            {
+                size = sz;
+            }
+
             textObj = new GameObject();
             textObj.AddComponent<CanvasRenderer>();
             RectTransform textTransform = textObj.AddComponent<RectTransform>();
-            textTransform.sizeDelta = new Vector2(1920f, 1080f);
+            textTransform.sizeDelta = size;
 
             CanvasGroup group = textObj.AddComponent<CanvasGroup>();
             group.interactable = false;
@@ -28,17 +38,42 @@ namespace DebugMod
             t.text = text;
             t.font = font;
             t.fontSize = fontSize;
-            t.alignment = TextAnchor.UpperLeft;
+            t.fontStyle = style;
+            t.alignment = alignment;
 
             textObj.transform.SetParent(parent.transform, false);
 
-            Vector2 position = new Vector2((pos.x + 1920f / 2f) / 1920f, (1080f - (pos.y + 1080f / 2f)) / 1080f);
+            Vector2 position = new Vector2((pos.x + size.x / 2f) / 1920f, (1080f - (pos.y + size.y / 2f)) / 1080f);
             textTransform.anchorMin = position;
             textTransform.anchorMax = position;
 
             GameObject.DontDestroyOnLoad(textObj);
 
             active = true;
+        }
+
+        public void SetPosition(Vector2 pos)
+        {
+            if (textObj != null)
+            {
+                RectTransform textTransform = textObj.GetComponent<RectTransform>();
+
+                Vector2 position = new Vector2((pos.x + size.x / 2f) / 1920f, (1080f - (pos.y + size.y / 2f)) / 1080f);
+                textTransform.anchorMin = position;
+                textTransform.anchorMax = position;
+            }
+        }
+
+        public Vector2 GetPosition()
+        {
+            if (textObj != null)
+            {
+                Vector2 anchor = textObj.GetComponent<RectTransform>().anchorMin;
+
+                return new Vector2(anchor.x * 1920f - size.x / 2f, 1080f - anchor.y * 1080f - size.y / 2f);
+            }
+
+            return Vector2.zero;
         }
 
         public void UpdateText(string text)
@@ -65,6 +100,11 @@ namespace DebugMod
             {
                 textObj.transform.SetAsLastSibling();
             }
+        }
+
+        public void Destroy()
+        {
+            GameObject.Destroy(textObj);
         }
     }
 }

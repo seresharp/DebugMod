@@ -18,6 +18,11 @@ namespace DebugMod
         private static Vector2 scrollPosition = Vector2.zero;
         private static float lastTime;
 
+        public static void BuildMenu(GameObject canvas)
+        {
+
+        }
+
         public static void Reset()
         {
             history.Clear();

@@ -13,15 +13,19 @@ namespace DebugMod
         private GameObject buttonObj;
         private GameObject textObj;
         private Button button;
+        private UnityAction<string> clicked;
+        private string buttonName;
 
         public bool active;
 
-        public CanvasButton(GameObject parent, Texture2D tex, Vector2 pos, Vector2 size, Rect bgSubSection, Font font = null, string text = null, int fontSize = 13)
+        public CanvasButton(GameObject parent, string name, Texture2D tex, Vector2 pos, Vector2 size, Rect bgSubSection, Font font = null, string text = null, int fontSize = 13)
         {
             if (size.x == 0 || size.y == 0)
             {
                 size = new Vector2(bgSubSection.width, bgSubSection.height);
             }
+
+            buttonName = name;
 
             buttonObj = new GameObject();
             buttonObj.AddComponent<CanvasRenderer>();
@@ -66,12 +70,18 @@ namespace DebugMod
             }
         }
 
-        public void AddClickEvent(UnityAction action)
+        public void AddClickEvent(UnityAction<string> action)
         {
             if (buttonObj != null)
             {
-                buttonObj.GetComponent<Button>().onClick.AddListener(action);
+                clicked = action;
+                buttonObj.GetComponent<Button>().onClick.AddListener(ButtonClicked);
             }
+        }
+
+        private void ButtonClicked()
+        {
+            if (clicked != null && buttonName != null) clicked(buttonName);
         }
 
         public void UpdateText(string text)
@@ -152,6 +162,12 @@ namespace DebugMod
                 Text t = textObj.GetComponent<Text>();
                 t.color = color;
             }
+        }
+
+        public void Destroy()
+        {
+            GameObject.Destroy(buttonObj);
+            GameObject.Destroy(textObj);
         }
     }
 }

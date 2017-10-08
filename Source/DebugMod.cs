@@ -23,6 +23,10 @@ namespace DebugMod
         private static float unloadTime;
         private static bool loadingChar;
 
+        public static bool infiniteHP;
+        public static bool infiniteSoul;
+        public static bool playerInvincible;
+
         public override void Initialize()
         {
             ModHooks.ModLog("Initializing debug mod");
@@ -34,7 +38,6 @@ namespace DebugMod
             ModHooks.Instance.SavegameLoadHook += LoadCharacter;
             ModHooks.Instance.NewGameHook += NewCharacter;
             ModHooks.Instance.BeforeSceneLoadHook += OnLevelUnload;
-            ModHooks.Instance.SetPlayerBoolHook += GUIController.instance.PlayerSetBool;
 
             BossHandler.PopulateBossLists();
             GUIController.instance.BuildMenus();
@@ -68,7 +71,6 @@ namespace DebugMod
                 Console.AddLine("New savegame loaded. Profile playtime " + text + " Completion: " + PlayerData.instance.completionPercentage + " Save slot: " + profileID + " Game Version: " + PlayerData.instance.version + " Last Written: " + lastWriteTime);
 
                 GUIController.instance.SetMenusActive(true);
-                GUIController.instance.CharacterLoaded();
 
                 loadingChar = false;
             }

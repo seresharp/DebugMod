@@ -60,6 +60,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CanvasInput.cs" />
+    <Compile Include="CanvasScroll.cs" />
+    <Compile Include="EnemiesPanel.cs" />
+    <Compile Include="TopMenu.cs" />
+    <Compile Include="CustomInput.cs" />
     <Reference Include="UnityEngine">
       <HintPath>UnityEngine.dll</HintPath>
     </Reference>
@@ -73,6 +78,7 @@
     <Compile Include="DreamGate.cs" />
     <Compile Include="EnemyController.cs" />
     <Compile Include="GUIController.cs" />
+    <Compile Include="InfoPanel.cs" />
     <Compile Include="ParticleSwitch.cs" />
     <Compile Include="PlayerDeathWatcher.cs" />
     <Compile Include="SaveManager.cs" />

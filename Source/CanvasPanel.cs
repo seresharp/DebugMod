@@ -22,6 +22,8 @@ namespace DebugMod
 
         public CanvasPanel(GameObject parent, Texture2D tex, Vector2 pos, Vector2 sz, Rect bgSubSection)
         {
+            if (parent == null) return;
+
             position = pos;
             size = sz;
             canvas = parent;
@@ -30,9 +32,9 @@ namespace DebugMod
             active = true;
         }
 
-        public void AddButton(string name, Texture2D tex, Vector2 pos, Vector2 sz, UnityAction func, Rect bgSubSection, Font font = null, string text = null, int fontSize = 13)
+        public void AddButton(string name, Texture2D tex, Vector2 pos, Vector2 sz, UnityAction<string> func, Rect bgSubSection, Font font = null, string text = null, int fontSize = 13)
         {
-            CanvasButton button = new CanvasButton(canvas, tex, position + pos, size + sz, bgSubSection, font, text, fontSize);
+            CanvasButton button = new CanvasButton(canvas, name, tex, position + pos, size + sz, bgSubSection, font, text, fontSize);
             button.AddClickEvent(func);
 
             buttons.Add(name, button);
@@ -52,9 +54,9 @@ namespace DebugMod
             images.Add(name, image);
         }
 
-        public void AddText(string name, string text, Vector2 pos, Font font, int fontSize = 13)
+        public void AddText(string name, string text, Vector2 pos, Vector2 sz, Font font, int fontSize = 13, FontStyle style = FontStyle.Normal, TextAnchor alignment = TextAnchor.UpperLeft)
         {
-            CanvasText t = new CanvasText(canvas, position + pos, font, text, fontSize);
+            CanvasText t = new CanvasText(canvas, position + pos, sz, font, text, fontSize, style, alignment);
 
             texts.Add(name, t);
         }
@@ -114,6 +116,18 @@ namespace DebugMod
             return null;
         }
 
+        public void UpdateBackground(Texture2D tex, Rect subSection)
+        {
+            background.UpdateImage(tex, subSection);
+        }
+
+        public void ResizeBG(Vector2 sz)
+        {
+            background.SetWidth(sz.x);
+            background.SetHeight(sz.y);
+            background.SetPosition(position);
+        }
+
         public void SetPosition(Vector2 pos)
         {
             background.SetPosition(pos);
@@ -123,12 +137,17 @@ namespace DebugMod
 
             foreach (CanvasButton button in buttons.Values)
             {
-                button.SetPosition(button.GetPosition() + deltaPos);
+                button.SetPosition(button.GetPosition() - deltaPos);
+            }
+
+            foreach (CanvasText text in texts.Values)
+            {
+                text.SetPosition(text.GetPosition() - deltaPos);
             }
 
             foreach (CanvasPanel panel in panels.Values)
             {
-                panel.SetPosition(panel.GetPosition() + deltaPos);
+                panel.SetPosition(panel.GetPosition() - deltaPos);
             }
         }
 
@@ -137,14 +156,6 @@ namespace DebugMod
             if (active && panels.ContainsKey(name))
             {
                 panels[name].ToggleActive();
-            }
-        }
-
-        public void AddButtonToPanel(string panelName, string buttonName, Texture2D tex, Vector2 pos, Vector2 sz, UnityAction func, Rect bgSubSection, Font font = null, string text = null, int fontSize = 13)
-        {
-            if (panels.ContainsKey(panelName))
-            {
-                panels[panelName].AddButton(buttonName, tex, pos, sz, func, bgSubSection, font, text, fontSize);
             }
         }
 
@@ -212,6 +223,31 @@ namespace DebugMod
             }
 
             background.SetRenderIndex(0);
+        }
+
+        public void Destroy()
+        {
+            background.Destroy();
+
+            foreach (CanvasButton button in buttons.Values)
+            {
+                button.Destroy();
+            }
+
+            foreach (CanvasImage image in images.Values)
+            {
+                image.Destroy();
+            }
+
+            foreach (CanvasText t in texts.Values)
+            {
+                t.Destroy();
+            }
+
+            foreach (CanvasPanel p in panels.Values)
+            {
+                p.Destroy();
+            }
         }
     }
 }
