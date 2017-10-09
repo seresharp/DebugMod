@@ -18,7 +18,7 @@ namespace DebugMod
             panel = new CanvasPanel(canvas, GUIController.instance.images["HelpBG"], new Vector2(1123, 456), Vector2.zero, new Rect(0, 0, GUIController.instance.images["HelpBG"].width, GUIController.instance.images["HelpBG"].height));
             panel.AddText("Label", "Help", new Vector2(130f, -25f), Vector2.zero, GUIController.instance.trajanBold, 30);
 
-            panel.AddText("Help", "F1 - Toggle All\nF2 - Toggle info\nF3 - Toggle top right\nF4 - Toggle console\nF5 - Force pause\nF6 - Hazard respawn\nF7 - Set respawn\nF8 - Force camera follow\nF9 - Toggle enemy panel\nF10 - Self damage\n\n` - Toggle Help", new Vector2(75f, 50f), Vector2.zero, GUIController.instance.trajanNormal);
+            panel.AddText("Help", "F1 - Toggle All\nF2 - Toggle info\nF3 - Toggle top right\nF4 - Toggle console\nF5 - Force pause\nF6 - Hazard respawn\nF7 - Set respawn\nF8 - Force camera follow\nF9 - Toggle enemy panel\nF10 - Self damage\n` - Toggle Help", new Vector2(75f, 50f), Vector2.zero, GUIController.instance.arial, 15);
             panel.AddButton("Next", GUIController.instance.images["ButtonRect"], new Vector2(125, 250), Vector2.zero, NextClicked, new Rect(0, 0, GUIController.instance.images["ButtonRect"].width, GUIController.instance.images["ButtonRect"].height), GUIController.instance.trajanBold, "Next");
         }
 

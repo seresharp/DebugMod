@@ -17,7 +17,7 @@ namespace DebugMod
             panel = new CanvasPanel(canvas, GUIController.instance.images["ButtonsMenuBG"], new Vector2(1092f, 25f), Vector2.zero, new Rect(0f, 0f, GUIController.instance.images["ButtonsMenuBG"].width, GUIController.instance.images["ButtonsMenuBG"].height));
 
             Rect buttonRect = new Rect(0, 0, GUIController.instance.images["ButtonRect"].width, GUIController.instance.images["ButtonRect"].height);
-
+            
             //Main buttons
             panel.AddButton("Hide Menu", GUIController.instance.images["ButtonRect"], new Vector2(46f, 28f), Vector2.zero, HideMenuClicked, buttonRect, GUIController.instance.trajanBold, "Hide Menu");
             panel.AddButton("Kill All", GUIController.instance.images["ButtonRect"], new Vector2(146f, 28f), Vector2.zero, KillAllClicked, buttonRect, GUIController.instance.trajanBold, "Kill All");
@@ -80,6 +80,33 @@ namespace DebugMod
             panel.GetPanel("Skills Panel").AddImage("Dash Slash Glow", GUIController.instance.images["BlueGlow"], new Vector2(28f, 324f), new Vector2(33f, 33f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
             panel.GetPanel("Skills Panel").AddImage("Cyclone Slash Glow", GUIController.instance.images["BlueGlow"], new Vector2(56f, 324f), new Vector2(33f, 33f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
 
+            //Items panel
+            panel.GetPanel("Items Panel").AddButton("Pale Ore", GUIController.instance.images["PaleOre"], new Vector2(5f, 30f), new Vector2(23f, 22f), PaleOreClicked, new Rect(0, 0, GUIController.instance.images["PaleOre"].width, GUIController.instance.images["PaleOre"].height));
+            panel.GetPanel("Items Panel").AddButton("Simple Key", GUIController.instance.images["SimpleKey"], new Vector2(33f, 30f), new Vector2(23f, 23f), SimpleKeyClicked, new Rect(0, 0, GUIController.instance.images["SimpleKey"].width, GUIController.instance.images["SimpleKey"].height));
+            panel.GetPanel("Items Panel").AddButton("Rancid Egg", GUIController.instance.images["RancidEgg"], new Vector2(61f, 30f), new Vector2(23f, 30f), RancidEggClicked, new Rect(0, 0, GUIController.instance.images["RancidEgg"].width, GUIController.instance.images["RancidEgg"].height));
+            panel.GetPanel("Items Panel").AddButton("Geo", GUIController.instance.images["Geo"], new Vector2(5f, 63f), new Vector2(23f, 23f), GeoClicked, new Rect(0, 0, GUIController.instance.images["Geo"].width, GUIController.instance.images["Geo"].height));
+            panel.GetPanel("Items Panel").AddButton("Essence", GUIController.instance.images["Essence"], new Vector2(33f, 63f), new Vector2(23f, 23f), EssenceClicked, new Rect(0, 0, GUIController.instance.images["Essence"].width, GUIController.instance.images["Essence"].height));
+            panel.GetPanel("Items Panel").AddButton("Lantern", GUIController.instance.images["Lantern"], new Vector2(5f, 96f), new Vector2(37f, 41f), LanternClicked, new Rect(0, 0, GUIController.instance.images["Lantern"].width, GUIController.instance.images["Lantern"].height));
+            panel.GetPanel("Items Panel").AddButton("Tram Pass", GUIController.instance.images["TramPass"], new Vector2(43f, 96f), new Vector2(37f, 27f), TramPassClicked, new Rect(0, 0, GUIController.instance.images["TramPass"].width, GUIController.instance.images["TramPass"].height));
+            panel.GetPanel("Items Panel").AddButton("Map & Quill", GUIController.instance.images["MapQuill"], new Vector2(5f, 147f), new Vector2(37f, 30f), MapQuillClicked, new Rect(0, 0, GUIController.instance.images["MapQuill"].width, GUIController.instance.images["MapQuill"].height));
+            panel.GetPanel("Items Panel").AddButton("City Crest", GUIController.instance.images["CityKey"], new Vector2(43f, 147f), new Vector2(37f, 50f), CityKeyClicked, new Rect(0, 0, GUIController.instance.images["CityKey"].width, GUIController.instance.images["CityKey"].height));
+            panel.GetPanel("Items Panel").AddButton("Sly Key", GUIController.instance.images["SlyKey"], new Vector2(5f, 207f), new Vector2(37f, 39f), SlyKeyClicked, new Rect(0, 0, GUIController.instance.images["SlyKey"].width, GUIController.instance.images["SlyKey"].height));
+            panel.GetPanel("Items Panel").AddButton("Elegant Key", GUIController.instance.images["ElegantKey"], new Vector2(43f, 207f), new Vector2(37f, 36f), ElegantKeyClicked, new Rect(0, 0, GUIController.instance.images["ElegantKey"].width, GUIController.instance.images["ElegantKey"].height));
+            panel.GetPanel("Items Panel").AddButton("Love Key", GUIController.instance.images["LoveKey"], new Vector2(5f, 256f), new Vector2(37f, 36f), LoveKeyClicked, new Rect(0, 0, GUIController.instance.images["LoveKey"].width, GUIController.instance.images["LoveKey"].height));
+            panel.GetPanel("Items Panel").AddButton("King's Brand", GUIController.instance.images["Kingsbrand"], new Vector2(43f, 256f), new Vector2(37f, 35f), KingsbrandClicked, new Rect(0, 0, GUIController.instance.images["Kingsbrand"].width, GUIController.instance.images["Kingsbrand"].height));
+            panel.GetPanel("Items Panel").AddButton("Bullshit Flower", GUIController.instance.images["Flower"], new Vector2(5f, 302f), new Vector2(37f, 35f), FlowerClicked, new Rect(0, 0, GUIController.instance.images["Flower"].width, GUIController.instance.images["Flower"].height));
+            
+            //Items panel button glow
+            panel.GetPanel("Items Panel").AddImage("Lantern Glow", GUIController.instance.images["BlueGlow"], new Vector2(0f, 91f), new Vector2(47f, 51f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
+            panel.GetPanel("Items Panel").AddImage("Tram Pass Glow", GUIController.instance.images["BlueGlow"], new Vector2(38f, 91f), new Vector2(47f, 37f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
+            panel.GetPanel("Items Panel").AddImage("Map & Quill Glow", GUIController.instance.images["BlueGlow"], new Vector2(0f, 142f), new Vector2(47f, 40f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
+            panel.GetPanel("Items Panel").AddImage("City Crest Glow", GUIController.instance.images["BlueGlow"], new Vector2(38f, 142f), new Vector2(47f, 60f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
+            panel.GetPanel("Items Panel").AddImage("Sly Key Glow", GUIController.instance.images["BlueGlow"], new Vector2(0f, 202f), new Vector2(47f, 49f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
+            panel.GetPanel("Items Panel").AddImage("Elegant Key Glow", GUIController.instance.images["BlueGlow"], new Vector2(38f, 202f), new Vector2(47f, 46f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
+            panel.GetPanel("Items Panel").AddImage("Love Key Glow", GUIController.instance.images["BlueGlow"], new Vector2(0f, 251f), new Vector2(47f, 46f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
+            panel.GetPanel("Items Panel").AddImage("King's Brand Glow", GUIController.instance.images["BlueGlow"], new Vector2(38f, 251f), new Vector2(47f, 45f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
+            panel.GetPanel("Items Panel").AddImage("Bullshit Flower Glow", GUIController.instance.images["BlueGlow"], new Vector2(0f, 297f), new Vector2(47f, 45f), new Rect(0f, 0f, GUIController.instance.images["BlueGlow"].width, GUIController.instance.images["BlueGlow"].height));
+
             //Boss panel
             panel.GetPanel("Bosses Panel").AddButton("Respawn Boss", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 30f), Vector2.zero, RespawnBossClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Respawn Boss", 10);
             panel.GetPanel("Bosses Panel").AddButton("Respawn Ghost", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 50f), Vector2.zero, RespawnGhostClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Respawn Ghost", 9);
@@ -109,11 +136,36 @@ namespace DebugMod
 
             if (panel.GetPanel("Skills Panel").active) RefreshSkillsMenu();
 
+            if (panel.GetPanel("Items Panel").active) RefreshItemsMenu();
+
             if (panel.GetPanel("Cheats Panel").active) panel.GetButton("Infinite Jump", "Cheats Panel").SetTextColor(PlayerData.instance.infiniteAirJump ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
 
             if (panel.GetPanel("Bosses Panel").active) panel.GetButton("Failed Champ", "Bosses Panel").SetTextColor(PlayerData.instance.falseKnightDreamDefeated ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
             if (panel.GetPanel("Bosses Panel").active) panel.GetButton("Soul Tyrant", "Bosses Panel").SetTextColor(PlayerData.instance.mageLordDreamDefeated ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
             if (panel.GetPanel("Bosses Panel").active) panel.GetButton("Lost Kin", "Bosses Panel").SetTextColor(PlayerData.instance.infectedKnightDreamDefeated ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+        }
+
+        private static void RefreshItemsMenu()
+        {
+            panel.GetImage("Lantern Glow", "Items Panel").SetActive(true);
+            panel.GetImage("Tram Pass Glow", "Items Panel").SetActive(true);
+            panel.GetImage("Map & Quill Glow", "Items Panel").SetActive(true);
+            panel.GetImage("City Crest Glow", "Items Panel").SetActive(true);
+            panel.GetImage("Sly Key Glow", "Items Panel").SetActive(true);
+            panel.GetImage("Elegant Key Glow", "Items Panel").SetActive(true);
+            panel.GetImage("Love Key Glow", "Items Panel").SetActive(true);
+            panel.GetImage("King's Brand Glow", "Items Panel").SetActive(true);
+            panel.GetImage("Bullshit Flower Glow", "Items Panel").SetActive(true);
+
+            if (!PlayerData.instance.hasLantern) panel.GetImage("Lantern Glow", "Items Panel").SetActive(false);
+            if (!PlayerData.instance.hasTramPass) panel.GetImage("Tram Pass Glow", "Items Panel").SetActive(false);
+            if (!PlayerData.instance.hasQuill) panel.GetImage("Map & Quill Glow", "Items Panel").SetActive(false);
+            if (!PlayerData.instance.hasCityKey) panel.GetImage("City Crest Glow", "Items Panel").SetActive(false);
+            if (!PlayerData.instance.hasSlykey) panel.GetImage("Sly Key Glow", "Items Panel").SetActive(false);
+            if (!PlayerData.instance.hasWhiteKey) panel.GetImage("Elegant Key Glow", "Items Panel").SetActive(false);
+            if (!PlayerData.instance.hasLoveKey) panel.GetImage("Love Key Glow", "Items Panel").SetActive(false);
+            if (!PlayerData.instance.hasKingsBrand) panel.GetImage("King's Brand Glow", "Items Panel").SetActive(false);
+            if (!PlayerData.instance.hasXunFlower || PlayerData.instance.xunFlowerBroken) panel.GetImage("Bullshit Flower Glow", "Items Panel").SetActive(false);
         }
 
         private static void RefreshSkillsMenu()
@@ -525,16 +577,19 @@ namespace DebugMod
             {
                 PlayerData.instance.hasDreamNail = true;
                 PlayerData.instance.hasDreamGate = true;
+                FSMUtility.LocateFSM(DebugMod.refKnight, "Dream Nail").FsmVariables.GetFsmBool("Dream Warp Allowed").Value = true;
                 Console.AddLine("Giving player both Dream Nail and Dream Gate");
             }
             else if (PlayerData.instance.hasDreamNail && !PlayerData.instance.hasDreamGate)
             {
                 PlayerData.instance.hasDreamGate = true;
+                FSMUtility.LocateFSM(DebugMod.refKnight, "Dream Nail").FsmVariables.GetFsmBool("Dream Warp Allowed").Value = true;
                 Console.AddLine("Giving player Dream Gate");
             }
             else
             {
                 PlayerData.instance.hasDreamGate = false;
+                FSMUtility.LocateFSM(DebugMod.refKnight, "Dream Nail").FsmVariables.GetFsmBool("Dream Warp Allowed").Value = false;
                 Console.AddLine("Taking away Dream Gate");
             }
 
@@ -627,6 +682,164 @@ namespace DebugMod
             PlayerData.instance.infectedKnightDreamDefeated = !PlayerData.instance.infectedKnightDreamDefeated;
 
             Console.AddLine("Set Lost Kin killed: " + PlayerData.instance.infectedKnightDreamDefeated);
+        }
+
+        private static void PaleOreClicked(string buttonName)
+        {
+            PlayerData.instance.ore = 6;
+            Console.AddLine("Set player pale ore to 6");
+        }
+
+        private static void SimpleKeyClicked(string buttonName)
+        {
+            PlayerData.instance.simpleKeys = 3;
+            Console.AddLine("Set player simple keys to 3");
+        }
+
+        private static void RancidEggClicked(string buttonName)
+        {
+            PlayerData.instance.rancidEggs += 10;
+            Console.AddLine("Giving player 10 rancid eggs");
+        }
+
+        private static void GeoClicked(string buttonName)
+        {
+            HeroController.instance.AddGeo(1000);
+            Console.AddLine("Giving player 1000 geo");
+        }
+
+        private static void EssenceClicked(string buttonName)
+        {
+            PlayerData.instance.dreamOrbs += 100;
+            Console.AddLine("Giving player 100 essence");
+        }
+
+        private static void LanternClicked(string buttonName)
+        {
+            if (!PlayerData.instance.hasLantern)
+            {
+                PlayerData.instance.hasLantern = true;
+                Console.AddLine("Giving player lantern");
+            }
+            else
+            {
+                PlayerData.instance.hasLantern = false;
+                Console.AddLine("Taking away lantern");
+            }
+        }
+
+        private static void TramPassClicked(string buttonName)
+        {
+            if (!PlayerData.instance.hasTramPass)
+            {
+                PlayerData.instance.hasTramPass = true;
+                Console.AddLine("Giving player tram pass");
+            }
+            else
+            {
+                PlayerData.instance.hasTramPass = false;
+                Console.AddLine("Taking away tram pass");
+            }
+        }
+
+        private static void MapQuillClicked(string buttonName)
+        {
+            if (!PlayerData.instance.hasQuill)
+            {
+                PlayerData.instance.hasQuill = true;
+                Console.AddLine("Giving player map quill");
+            }
+            else
+            {
+                PlayerData.instance.hasQuill = false;
+                Console.AddLine("Taking away map quill");
+            }
+        }
+
+        private static void CityKeyClicked(string buttonName)
+        {
+            if (!PlayerData.instance.hasCityKey)
+            {
+                PlayerData.instance.hasCityKey = true;
+                Console.AddLine("Giving player city crest");
+            }
+            else
+            {
+                PlayerData.instance.hasCityKey = false;
+                Console.AddLine("Taking away city crest");
+            }
+        }
+
+        private static void SlyKeyClicked(string buttonName)
+        {
+            if (!PlayerData.instance.hasSlykey)
+            {
+                PlayerData.instance.hasSlykey = true;
+                Console.AddLine("Giving player shopkeeper's key");
+            }
+            else
+            {
+                PlayerData.instance.hasSlykey = false;
+                Console.AddLine("Taking away shopkeeper's key");
+            }
+        }
+
+        private static void ElegantKeyClicked(string buttonName)
+        {
+            if (!PlayerData.instance.hasWhiteKey)
+            {
+                PlayerData.instance.hasWhiteKey = true;
+                PlayerData.instance.usedWhiteKey = false;
+                Console.AddLine("Giving player elegant key");
+            }
+            else
+            {
+                PlayerData.instance.hasWhiteKey = false;
+                Console.AddLine("Taking away elegant key");
+            }
+        }
+
+        private static void LoveKeyClicked(string buttonName)
+        {
+            if (!PlayerData.instance.hasLoveKey)
+            {
+                PlayerData.instance.hasLoveKey = true;
+                Console.AddLine("Giving player love key");
+            }
+            else
+            {
+                PlayerData.instance.hasLoveKey = false;
+                Console.AddLine("Taking away love key");
+            }
+        }
+
+        private static void KingsbrandClicked(string buttonName)
+        {
+            if (!PlayerData.instance.hasKingsBrand)
+            {
+                PlayerData.instance.hasKingsBrand = true;
+                Console.AddLine("Giving player kingsbrand");
+            }
+            else
+            {
+                PlayerData.instance.hasKingsBrand = false;
+                Console.AddLine("Taking away kingsbrand");
+            }
+        }
+
+        private static void FlowerClicked(string buttonName)
+        {
+            if (!PlayerData.instance.hasXunFlower || PlayerData.instance.xunFlowerBroken)
+            {
+                PlayerData.instance.hasXunFlower = true;
+                PlayerData.instance.xunFlowerBroken = false;
+                Console.AddLine("Giving player delicate flower");
+            }
+            else
+            {
+                PlayerData.instance.hasLantern = false;
+                Console.AddLine("Taking away delicate flower");
+            }
         }
     }
 }
