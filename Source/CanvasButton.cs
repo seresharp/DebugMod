@@ -164,6 +164,16 @@ namespace DebugMod
             }
         }
 
+        public string GetText()
+        {
+            if (textObj != null)
+            {
+                return textObj.GetComponent<Text>().text;
+            }
+
+            return null;
+        }
+
         public void Destroy()
         {
             GameObject.Destroy(buttonObj);

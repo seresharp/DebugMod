@@ -115,6 +115,24 @@ namespace DebugMod
             panel.GetPanel("Bosses Panel").AddButton("Soul Tyrant", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 130f), Vector2.zero, SoulTyrantClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Soul Tyrant", 10);
             panel.GetPanel("Bosses Panel").AddButton("Lost Kin", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 150f), Vector2.zero, LostKinClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Lost Kin", 10);
 
+            //Dream gate left panel
+            panel.GetPanel("DreamGate Panel").AddButton("Read Data", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 30f), Vector2.zero, ReadDataClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Read Data", 10);
+            panel.GetPanel("DreamGate Panel").AddButton("Save Data", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 50f), Vector2.zero, SaveDataClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Save Data", 10);
+            panel.GetPanel("DreamGate Panel").AddButton("Delete Item", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 70f), Vector2.zero, DeleteItemClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Delete Item", 10);
+            panel.GetPanel("DreamGate Panel").AddButton("Add Item", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 90f), Vector2.zero, AddItemClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Add Item", 10);
+
+            //Dream gate right panel
+            panel.GetPanel("DreamGate Panel").AddButton("Right1", GUIController.instance.images["ButtonRectEmpty"], new Vector2(90f, 30f), Vector2.zero, SetWarpClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.arial, "");
+            panel.GetPanel("DreamGate Panel").AddButton("Right2", GUIController.instance.images["ButtonRectEmpty"], new Vector2(90f, 50f), Vector2.zero, SetWarpClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.arial, "");
+            panel.GetPanel("DreamGate Panel").AddButton("Right3", GUIController.instance.images["ButtonRectEmpty"], new Vector2(90f, 70f), Vector2.zero, SetWarpClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.arial, "");
+            panel.GetPanel("DreamGate Panel").AddButton("Right4", GUIController.instance.images["ButtonRectEmpty"], new Vector2(90f, 90f), Vector2.zero, SetWarpClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.arial, "");
+            panel.GetPanel("DreamGate Panel").AddButton("Right5", GUIController.instance.images["ButtonRectEmpty"], new Vector2(90f, 110f), Vector2.zero, SetWarpClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.arial, "");
+            panel.GetPanel("DreamGate Panel").AddButton("Right6", GUIController.instance.images["ButtonRectEmpty"], new Vector2(90f, 130f), Vector2.zero, SetWarpClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.arial, "");
+
+            //Dream gate scroll
+            panel.GetPanel("DreamGate Panel").AddButton("Scroll Up", GUIController.instance.images["ScrollBarArrowUp"], new Vector2(180f, 30f), Vector2.zero, ScrollUpClicked, new Rect(0f, 0f, GUIController.instance.images["ScrollBarArrowUp"].width, GUIController.instance.images["ScrollBarArrowUp"].height));
+            panel.GetPanel("DreamGate Panel").AddButton("Scroll Down", GUIController.instance.images["ScrollBarArrowDown"], new Vector2(180f, 130f), Vector2.zero, ScrollDownClicked, new Rect(0f, 0f, GUIController.instance.images["ScrollBarArrowDown"].width, GUIController.instance.images["ScrollBarArrowDown"].height));
+
             panel.FixRenderOrder();
         }
 
@@ -143,6 +161,36 @@ namespace DebugMod
             if (panel.GetPanel("Bosses Panel").active) panel.GetButton("Failed Champ", "Bosses Panel").SetTextColor(PlayerData.instance.falseKnightDreamDefeated ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
             if (panel.GetPanel("Bosses Panel").active) panel.GetButton("Soul Tyrant", "Bosses Panel").SetTextColor(PlayerData.instance.mageLordDreamDefeated ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
             if (panel.GetPanel("Bosses Panel").active) panel.GetButton("Lost Kin", "Bosses Panel").SetTextColor(PlayerData.instance.infectedKnightDreamDefeated ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+
+            if (panel.GetPanel("DreamGate Panel").active)
+            {
+                panel.GetPanel("DreamGate Panel").GetButton("Delete Item").SetTextColor(DreamGate.delMenu ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+
+                panel.GetPanel("DreamGate Panel").GetButton("Right1").UpdateText("");
+                panel.GetPanel("DreamGate Panel").GetButton("Right2").UpdateText("");
+                panel.GetPanel("DreamGate Panel").GetButton("Right3").UpdateText("");
+                panel.GetPanel("DreamGate Panel").GetButton("Right4").UpdateText("");
+                panel.GetPanel("DreamGate Panel").GetButton("Right5").UpdateText("");
+                panel.GetPanel("DreamGate Panel").GetButton("Right6").UpdateText("");
+
+                int i = 0;
+                int buttonNum = 1;
+
+                foreach (string entryName in DreamGate.DGData.Keys)
+                {
+                    if (i >= DreamGate.scrollPosition)
+                    {
+                        panel.GetPanel("DreamGate Panel").GetButton("Right" + buttonNum).UpdateText(entryName);
+                        buttonNum++;
+                        if (buttonNum > 6)
+                        {
+                            break;
+                        }
+                    }
+
+                    i++;
+                }
+            }
         }
 
         private static void RefreshItemsMenu()
@@ -839,6 +887,79 @@ namespace DebugMod
             {
                 PlayerData.instance.hasLantern = false;
                 Console.AddLine("Taking away delicate flower");
+            }
+        }
+
+        private static void ReadDataClicked(string buttonName)
+        {
+            DreamGate.addMenu = false;
+            DreamGate.delMenu = false;
+            if (!DreamGate.dataBusy)
+            {
+                Console.AddLine("Updating DGdata from the file...");
+                DreamGate.ReadData(true);
+            }
+        }
+
+        private static void SaveDataClicked(string buttonName)
+        {
+            DreamGate.addMenu = false;
+            DreamGate.delMenu = false;
+            if (!DreamGate.dataBusy)
+            {
+                Console.AddLine("Writing DGdata to the file...");
+                DreamGate.WriteData();
+            }
+        }
+
+        private static void DeleteItemClicked(string buttonName)
+        {
+            DreamGate.addMenu = false;
+            DreamGate.delMenu = !DreamGate.delMenu;
+        }
+
+        private static void AddItemClicked(string buttonName)
+        {
+            DreamGate.addMenu = true;
+            DreamGate.delMenu = false;
+
+            string entryName = DebugMod.gm.GetSceneNameString();
+            int i = 1;
+
+            if (entryName.Length > 5) entryName = entryName.Substring(0, 5);
+
+            while (DreamGate.DGData.ContainsKey(entryName))
+            {
+                entryName = DebugMod.gm.GetSceneNameString() + i;
+                i++;
+            }
+
+            DreamGate.AddEntry(entryName);
+        }
+
+        private static void SetWarpClicked(string buttonName)
+        {
+            string text = panel.GetPanel("DreamGate Panel").GetButton(buttonName).GetText();
+
+            if (!String.IsNullOrEmpty(text))
+            {
+                DreamGate.ClickedEntry(text);
+            }
+        }
+
+        private static void ScrollUpClicked(string buttonName)
+        {
+            if (DreamGate.scrollPosition > 0)
+            {
+                DreamGate.scrollPosition--;
+            }
+        }
+
+        private static void ScrollDownClicked(string buttonName)
+        {
+            if (DreamGate.scrollPosition + 6 < DreamGate.DGData.Count)
+            {
+                DreamGate.scrollPosition++;
             }
         }
     }

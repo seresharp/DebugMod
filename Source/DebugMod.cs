@@ -81,7 +81,7 @@ namespace DebugMod
             {
                 loadTime = Time.realtimeSinceStartup;
                 Console.AddLine("New scene loaded: " + sceneName);
-                EnemyController.Reset();
+                EnemiesPanel.Reset();
                 PlayerDeathWatcher.Reset();
                 BossHandler.LookForBoss(sceneName);
             }

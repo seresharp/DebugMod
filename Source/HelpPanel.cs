@@ -36,7 +36,7 @@ namespace DebugMod
                 page = 1;
 
                 panel.GetButton("Next").UpdateText("Next");
-                panel.GetText("Help").UpdateText("F1 - Toggle All\nF2 - Toggle info\nF3 - Toggle top right\nF4 - Toggle console\nF5 - Force pause\nF6 - Hazard respawn\nF7 - Set respawn\nF8 - Force camera follow\nF9 - Toggle enemy panel\nF10 - Self damage\n\n` - Toggle Help");
+                panel.GetText("Help").UpdateText("F1 - Toggle All\nF2 - Toggle info\nF3 - Toggle top right\nF4 - Toggle console\nF5 - Force pause\nF6 - Hazard respawn\nF7 - Set respawn\nF8 - Force camera follow\nF9 - Toggle enemy panel\nF10 - Self damage\n` - Toggle Help");
 
             }
         }
