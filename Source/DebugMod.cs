@@ -26,6 +26,9 @@ namespace DebugMod
         public static bool infiniteHP;
         public static bool infiniteSoul;
         public static bool playerInvincible;
+        public static bool noclip = false;
+        public static Vector3 noclipPos;
+        public static bool levelLoading;
 
         public override void Initialize()
         {
@@ -56,11 +59,18 @@ namespace DebugMod
             EnemiesPanel.Reset();
             DreamGate.Reset();
 
+            playerInvincible = false;
+            infiniteHP = false;
+            infiniteSoul = false;
+            noclip = false;
+
             loadingChar = true;
         }
 
         public void LevelActivated(Scene sceneFrom, Scene sceneTo)
         {
+            levelLoading = false;
+
             string sceneName = sceneTo.name;
             
             if (loadingChar)
@@ -94,6 +104,8 @@ namespace DebugMod
 
         public string OnLevelUnload(string toScene)
         {
+            levelLoading = true;
+
             unloadTime = Time.realtimeSinceStartup;
 
             return toScene;

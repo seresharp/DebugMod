@@ -194,6 +194,38 @@ namespace DebugMod
                     PlayerData.instance.isInvincible = true;
                 }
 
+                if (DebugMod.noclip)
+                {
+                    if (DebugMod.ih.inputActions.left.IsPressed)
+                    {
+                        DebugMod.noclipPos = new Vector3(DebugMod.noclipPos.x - Time.deltaTime * 20f, DebugMod.noclipPos.y, DebugMod.noclipPos.z);
+                    }
+
+                    if (DebugMod.ih.inputActions.right.IsPressed)
+                    {
+                        DebugMod.noclipPos = new Vector3(DebugMod.noclipPos.x + Time.deltaTime * 20f, DebugMod.noclipPos.y, DebugMod.noclipPos.z);
+                    }
+
+                    if (DebugMod.ih.inputActions.up.IsPressed)
+                    {
+                        DebugMod.noclipPos = new Vector3(DebugMod.noclipPos.x, DebugMod.noclipPos.y + Time.deltaTime * 20f, DebugMod.noclipPos.z);
+                    }
+
+                    if (DebugMod.ih.inputActions.down.IsPressed)
+                    {
+                        DebugMod.noclipPos = new Vector3(DebugMod.noclipPos.x, DebugMod.noclipPos.y - Time.deltaTime * 20f, DebugMod.noclipPos.z);
+                    }
+
+                    if (HeroController.instance.transitionState.ToString() == "WAITING_TO_TRANSITION")
+                    {
+                        DebugMod.refKnight.transform.position = DebugMod.noclipPos;
+                    }
+                    else
+                    {
+                        DebugMod.noclipPos = DebugMod.refKnight.transform.position;
+                    }
+                }
+
                 if (Input.GetKeyUp(KeyCode.Escape) && DebugMod.gm.IsGamePaused())
                 {
                     UIManager.instance.TogglePauseGame();
