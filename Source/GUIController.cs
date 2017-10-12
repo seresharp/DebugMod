@@ -267,6 +267,11 @@ namespace DebugMod
                 if (Input.GetKeyUp(KeyCode.F1))
                 {
                     SetMenusActive(!(HelpPanel.visible || InfoPanel.visible || EnemiesPanel.visible || TopMenu.visible || Console.visible));
+
+                    if (EnemiesPanel.visible)
+                    {
+                        EnemiesPanel.RefreshEnemyList();
+                    }
                 }
                 if (Input.GetKeyUp(KeyCode.F2))
                 {
@@ -478,7 +483,7 @@ namespace DebugMod
 
                     if (EnemiesPanel.visible)
                     {
-                        EnemiesPanel.RefreshEnemyList();
+                        EnemiesPanel.enemyUpdate(200f);
                     }
                 }
                 if (!string.IsNullOrEmpty(respawnSceneWatch) && respawnSceneWatch != PlayerData.instance.respawnScene)

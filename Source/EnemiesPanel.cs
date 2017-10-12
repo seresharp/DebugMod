@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using GlobalEnums;
+using HutongGames.PlayMaker;
 
 namespace DebugMod
 {
@@ -152,6 +153,11 @@ namespace DebugMod
             {
                 panel.GetPanel("Pause").SetActive(true, false);
                 panel.GetPanel("Play").SetActive(false, true);
+            }
+
+            if (!panel.active && enemyPool.Count > 0)
+            {
+                Reset();
             }
 
             if (panel.active)
@@ -344,6 +350,11 @@ namespace DebugMod
 
         public static void Reset()
         {
+            foreach(EnemyData dat in enemyPool)
+            {
+                dat.hitbox.Destroy();
+                dat.hpBar.Destroy();
+            }
             enemyPool.Clear();
         }
 
@@ -459,7 +470,7 @@ namespace DebugMod
             }
         }
 
-        private static void enemyUpdate(float boxSize)
+        public static void enemyUpdate(float boxSize)
         {
             if (autoUpdate)
             {
