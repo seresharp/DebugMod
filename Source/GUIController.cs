@@ -183,12 +183,12 @@ namespace DebugMod
                     PlayerData.instance.MPCharge = 100;
                 }
 
-                if (DebugMod.infiniteHP && !HeroController.instance.cState.dead && GameManager.instance.IsGameplayScene() && PlayerData.instance.health < PlayerData.instance.maxHealth)
+                /*if (DebugMod.infiniteHP && !HeroController.instance.cState.dead && GameManager.instance.IsGameplayScene() && PlayerData.instance.health < PlayerData.instance.maxHealth)
                 {
                     int amount = PlayerData.instance.maxHealth - PlayerData.instance.health;
                     PlayerData.instance.health = PlayerData.instance.maxHealth;
                     HeroController.instance.AddHealth(amount);
-                }
+                }*/
 
                 if (DebugMod.playerInvincible && PlayerData.instance != null)
                 {

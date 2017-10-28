@@ -41,6 +41,7 @@ namespace DebugMod
             ModHooks.Instance.SavegameLoadHook += LoadCharacter;
             ModHooks.Instance.NewGameHook += NewCharacter;
             ModHooks.Instance.BeforeSceneLoadHook += OnLevelUnload;
+            ModHooks.Instance.TakeHealthHook += PlayerDamaged;
 
             BossHandler.PopulateBossLists();
             GUIController.instance.BuildMenus();
@@ -48,9 +49,19 @@ namespace DebugMod
             Console.AddLine("New session started " + DateTime.Now.ToString());
         }
 
+        public int PlayerDamaged(int damageAmount)
+        {
+            if (DebugMod.infiniteHP)
+            {
+                return 0;
+            }
+
+            return damageAmount;
+        }
+        
         public override string GetVersion()
         {
-            return "1.2";
+            return "1.2.1";
         }
 
         public void NewCharacter()
