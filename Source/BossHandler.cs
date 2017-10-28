@@ -59,6 +59,7 @@ namespace DebugMod
             bossData.Add("Fungus3_23", new KeyValuePair<bool, string>(true, "Battle Scene"));
             bossData.Add("Ruins2_11", new KeyValuePair<bool, string>(true, "Battle Scene"));
             bossData.Add("Deepnest_East_Hornet", new KeyValuePair<bool, string>(false, "hornetOutskirtsDefeated"));
+            bossData.Add("Grimm_Main_Tent", new KeyValuePair<bool, string>(false, "killedGrimm"));
             ghostData.Add("RestingGrounds_02", "xeroDefeated");
             ghostData.Add("Fungus1_35", "noEyesDefeated");
             ghostData.Add("Fungus2_32", "elderHuDefeated");
@@ -93,7 +94,18 @@ namespace DebugMod
                 }
                 else
                 {
-                    PlayerData.instance.GetType().GetField(bossData[DebugMod.GetSceneName()].Value).SetValue(PlayerData.instance, false);
+                    if (bossData[DebugMod.GetSceneName()].Value == "killedGrimm")
+                    {
+                        PlayerData.instance.grimmChildLevel = 2;
+                        PlayerData.instance.flamesCollected = 3;
+                        PlayerData.instance.grimmchildAwoken = false;
+                        PlayerData.instance.foughtGrimm = false;
+                        PlayerData.instance.killedGrimm = false;
+                    }
+                    else
+                    {
+                        PlayerData.instance.GetType().GetField(bossData[DebugMod.GetSceneName()].Value).SetValue(PlayerData.instance, false);
+                    }
                     Console.AddLine("Boss control for this scene was reset, re-enter scene or warp");
                 }
             }

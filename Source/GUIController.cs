@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Reflection;
 using GlobalEnums;
 using InControl;
 using UnityEngine;
@@ -287,16 +288,28 @@ namespace DebugMod
                 }
                 if (Input.GetKeyUp(KeyCode.F5))
                 {
-                    if (PlayerData.instance.disablePause && DebugMod.GetSceneName() != "Menu_Title" && DebugMod.gm.IsGameplayScene() && !HeroController.instance.cState.recoiling)
+                    try
                     {
-                        PlayerData.instance.disablePause = false;
-                        UIManager.instance.TogglePauseGame();
-                        Console.AddLine("Forcing Pause Menu because pause is disabled");
+                        FieldInfo timeSlowed = typeof(GameManager).GetField("timeSlowed", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
+                        FieldInfo ignoreUnpause = typeof(UIManager).GetField("ignoreUnpause", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
+
+                        if ((PlayerData.instance.disablePause || (bool)timeSlowed.GetValue(GameManager.instance) || (bool)ignoreUnpause.GetValue(UIManager.instance)) && DebugMod.GetSceneName() != "Menu_Title" && DebugMod.gm.IsGameplayScene())
+                        {
+                            timeSlowed.SetValue(GameManager.instance, false);
+                            ignoreUnpause.SetValue(UIManager.instance, false);
+                            PlayerData.instance.disablePause = false;
+                            UIManager.instance.TogglePauseGame();
+                            Console.AddLine("Forcing Pause Menu because pause is disabled");
+                        }
+                        else
+                        {
+                            Console.AddLine("Game does not report that Pause is disabled, requesting it normally.");
+                            UIManager.instance.TogglePauseGame();
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        Console.AddLine("Game does not report that Pause is disabled, requesting it normally.");
-                        UIManager.instance.TogglePauseGame();
+                        Console.AddLine(e.ToString());
                     }
                 }
                 if (Input.GetKeyUp(KeyCode.F6))

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 using UnityEngine;
 using GlobalEnums;
 using HutongGames.PlayMaker;
@@ -17,6 +18,8 @@ namespace DebugMod
         private static GameObject parent;
         private static bool hpBars;
         private static bool hitboxes;
+        private static MethodInfo takeDamage = typeof(HeroController).GetMethod("TakeDamage");
+        private static ParameterInfo[] parameters = takeDamage.GetParameters();
 
         public static bool visible;
 
@@ -378,7 +381,7 @@ namespace DebugMod
                 {
                     foreach (GameObject gameObject in rootGameObjects)
                     {
-                        if ((gameObject.layer == 11 || gameObject.layer == 17) && !Ignore(gameObject.name))
+                        if ((gameObject.layer == 11 || gameObject.layer == 17 || gameObject.tag == "Boss") && !Ignore(gameObject.name))
                         {
                             PlayMakerFSM playMakerFSM = FSMUtility.LocateFSM(gameObject, "health_manager_enemy");
                             Component component = gameObject.GetComponent<tk2dSprite>();
@@ -446,15 +449,37 @@ namespace DebugMod
                 Console.AddLine("Unable to locate a single enemy in the scene.");
                 return;
             }
-            System.Random random = new System.Random();
-            if (HeroController.instance.cState.facingRight)
+
+            GameObject enemyObj = enemyPool.ElementAt(new System.Random().Next(0, enemyPool.Count)).gameObject;
+            CollisionSide side = HeroController.instance.cState.facingRight ? CollisionSide.right : CollisionSide.left;
+            int damageAmount = 1;
+            int hazardType = (int)HazardType.NON_HAZARD;
+
+            PlayMakerFSM fsm = FSMUtility.LocateFSM(enemyObj, "damages_hero");
+            if (fsm != null)
             {
-                HeroController.instance.TakeDamage(enemyPool.ElementAt(random.Next(0, enemyPool.Count)).gameObject, CollisionSide.right);
-                Console.AddLine("Attempting self-damage, right side");
+                damageAmount = FSMUtility.GetInt(fsm, "damageDealt");
+                hazardType = FSMUtility.GetInt(fsm, "hazardType");
+            }
+
+            object[] paramArray;
+
+            if (parameters.Length == 2)
+            {
+                paramArray = new object[] { enemyObj, side };
+            }
+            else if (parameters.Length == 4)
+            {
+                paramArray = new object[] { enemyObj, side, damageAmount, hazardType };
+            }
+            else
+            {
+                Console.AddLine("Unexpected parameter count on HeroController.TakeDamage");
                 return;
             }
-            HeroController.instance.TakeDamage(enemyPool.ElementAt(random.Next(0, enemyPool.Count)).gameObject, CollisionSide.left);
-            Console.AddLine("Attempting self-damage, left side");
+
+            Console.AddLine("Attempting self damage");
+            takeDamage.Invoke(HeroController.instance, paramArray);
         }
 
         private static void CheckForAutoUpdate()

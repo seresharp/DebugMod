@@ -48,6 +48,11 @@ namespace DebugMod
             Console.AddLine("New session started " + DateTime.Now.ToString());
         }
 
+        public override string GetVersion()
+        {
+            return "1.2";
+        }
+
         public void NewCharacter()
         {
             LoadCharacter(0);
@@ -63,6 +68,8 @@ namespace DebugMod
             infiniteHP = false;
             infiniteSoul = false;
             noclip = false;
+
+            TopMenu.UpdateButtonColors();
 
             loadingChar = true;
         }

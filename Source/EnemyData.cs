@@ -53,6 +53,9 @@ namespace DebugMod
             hpBar.FixRenderOrder();
 
             hitbox = new CanvasPanel(parent, tex2, Vector2.zero, Vector2.zero, new Rect(0, 0, 1, 1));
+
+            hpBar.SetActive(false, true);
+            hitbox.SetActive(false, true);
         }
 
         public void SetHP(int health)
