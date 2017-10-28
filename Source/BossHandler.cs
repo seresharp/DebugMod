@@ -96,11 +96,11 @@ namespace DebugMod
                 {
                     if (bossData[DebugMod.GetSceneName()].Value == "killedGrimm")
                     {
-                        PlayerData.instance.grimmChildLevel = 2;
-                        PlayerData.instance.flamesCollected = 3;
-                        PlayerData.instance.grimmchildAwoken = false;
-                        PlayerData.instance.foughtGrimm = false;
-                        PlayerData.instance.killedGrimm = false;
+                        PlayerData.instance.SetIntInternal("grimmChildLevel", 2);
+                        PlayerData.instance.SetIntInternal("flamesCollected", 3);
+                        PlayerData.instance.SetBoolInternal("grimmChildAwoken", false);
+                        PlayerData.instance.SetBoolInternal("foughtGrimm", false);
+                        PlayerData.instance.SetBoolInternal("killedGrimm", false);
                     }
                     else
                     {

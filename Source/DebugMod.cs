@@ -118,6 +118,11 @@ namespace DebugMod
             return toScene;
         }
 
+        public static bool GrimmTroupe()
+        {
+            return typeof(PlayerData).GetField("killedGrimm") != null;
+        }
+
         public static string GetSceneName()
         {
             GameManager gm = GameManager.instance;

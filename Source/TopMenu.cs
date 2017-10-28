@@ -33,7 +33,7 @@ namespace DebugMod
 
             //Dropdown panels
             panel.AddPanel("Cheats Panel", GUIController.instance.images["DropdownBG"], new Vector2(45f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DropdownBG"].width, 210f));
-            panel.AddPanel("Charms Panel", GUIController.instance.images["DropdownBG"], new Vector2(145f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DropdownBG"].width, 210f));
+            panel.AddPanel("Charms Panel", GUIController.instance.images["DropdownBG"], new Vector2(145f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DropdownBG"].width, 240f));
             panel.AddPanel("Skills Panel", GUIController.instance.images["DropdownBG"], new Vector2(245f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DropdownBG"].width, GUIController.instance.images["DropdownBG"].height));
             panel.AddPanel("Items Panel", GUIController.instance.images["DropdownBG"], new Vector2(345f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DropdownBG"].width, GUIController.instance.images["DropdownBG"].height));
             panel.AddPanel("Bosses Panel", GUIController.instance.images["DropdownBG"], new Vector2(445f, 75f), Vector2.zero, new Rect(0, 0, GUIController.instance.images["DropdownBG"].width, 200f));
@@ -51,10 +51,11 @@ namespace DebugMod
             //Charms panel
             panel.GetPanel("Charms Panel").AddButton("All Charms", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 30f), Vector2.zero, AllCharmsClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "All Charms", 10);
             panel.GetPanel("Charms Panel").AddButton("Kingsoul", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 60f), Vector2.zero, KingsoulClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Kingsoul: " + PlayerData.instance.royalCharmState, 10);
-            panel.GetPanel("Charms Panel").AddButton("fHeart fix", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 90f), Vector2.zero, FragileHeartFixClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "fHeart fix", 10);
-            panel.GetPanel("Charms Panel").AddButton("fGreed fix", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 120f), Vector2.zero, FragileGreedFixClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "fGreed fix", 10);
-            panel.GetPanel("Charms Panel").AddButton("fStrength fix", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 150f), Vector2.zero, FragileStrengthFixClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "fStrength fix", 10);
-            panel.GetPanel("Charms Panel").AddButton("Grimmchild", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 180f), Vector2.zero, GrimmchildClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Grimmchild: -", 9);
+            panel.GetPanel("Charms Panel").AddButton("Grimmchild", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 90f), Vector2.zero, GrimmchildClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Grimmchild: -", 9);
+            panel.GetPanel("Charms Panel").AddButton("fHeart fix", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 120f), Vector2.zero, FragileHeartFixClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "fHeart fix", 10);
+            panel.GetPanel("Charms Panel").AddButton("fGreed fix", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 150f), Vector2.zero, FragileGreedFixClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "fGreed fix", 10);
+            panel.GetPanel("Charms Panel").AddButton("fStrength fix", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 180f), Vector2.zero, FragileStrengthFixClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "fStrength fix", 10);
+            panel.GetPanel("Charms Panel").AddButton("Overcharm", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 210f), Vector2.zero, OvercharmClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "Overcharm", 10);
 
             //Skills panel buttons
             panel.GetPanel("Skills Panel").AddButton("All Skills", GUIController.instance.images["ButtonRectEmpty"], new Vector2(5f, 30f), Vector2.zero, AllSkillsClicked, new Rect(0f, 0f, 80f, 20f), GUIController.instance.trajanNormal, "All Skills", 10);
@@ -163,11 +164,12 @@ namespace DebugMod
 
             if (panel.GetPanel("Charms Panel").active)
             {
+                panel.GetButton("Overcharm", "Charms Panel").SetTextColor(PlayerData.instance.overcharmed ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
                 panel.GetButton("Kingsoul", "Charms Panel").UpdateText("Kingsoul: " + PlayerData.instance.royalCharmState);
 
-                if (Convert.ToInt32(PlayerData.instance.version.Substring(2, 1)) >= 2)
+                if (DebugMod.GrimmTroupe())
                 {
-                    panel.GetButton("Grimmchild", "Charms Panel").UpdateText("Grimmchild: " + PlayerData.instance.grimmChildLevel);
+                    panel.GetButton("Grimmchild", "Charms Panel").UpdateText("Grimmchild: " + PlayerData.instance.GetIntInternal("grimmChildLevel"));
                 }
             }
 
@@ -179,9 +181,9 @@ namespace DebugMod
                 panel.GetButton("Soul Tyrant", "Bosses Panel").SetTextColor(PlayerData.instance.mageLordDreamDefeated ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
                 panel.GetButton("Lost Kin", "Bosses Panel").SetTextColor(PlayerData.instance.infectedKnightDreamDefeated ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
 
-                if (Convert.ToInt32(PlayerData.instance.version.Substring(2, 1)) >= 2)
+                if (DebugMod.GrimmTroupe())
                 {
-                    panel.GetButton("NK Grimm", "Bosses Panel").SetTextColor((PlayerData.instance.killedNightmareGrimm || PlayerData.instance.destroyedNightmareLantern) ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+                    panel.GetButton("NK Grimm", "Bosses Panel").SetTextColor((PlayerData.instance.GetBoolInternal("killedNightmareGrimm") || PlayerData.instance.GetBoolInternal("destroyedNightmareLantern")) ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
                 }
             }
             if (panel.GetPanel("DreamGate Panel").active)
@@ -425,7 +427,7 @@ namespace DebugMod
             {
                 PlayerData.instance.SetBoolInternal("gotCharm_" + i, true);
 
-                if (i == 36 && Convert.ToInt32(PlayerData.instance.version.Substring(2, 1)) < 2)
+                if (i == 36 && !DebugMod.GrimmTroupe())
                 {
                     break;
                 }
@@ -446,12 +448,12 @@ namespace DebugMod
             PlayerData.instance.salubraNotch3 = true;
             PlayerData.instance.salubraNotch4 = true;
 
-            if (Convert.ToInt32(PlayerData.instance.version.Substring(2, 1)) >= 2)
+            if (DebugMod.GrimmTroupe())
             {
-                PlayerData.instance.fragileGreed_unbreakable = true;
-                PlayerData.instance.fragileHealth_unbreakable = true;
-                PlayerData.instance.fragileStrength_unbreakable = true;
-                PlayerData.instance.grimmChildLevel = 5;
+                PlayerData.instance.SetBoolInternal("fragileGreed_unbreakable", true);
+                PlayerData.instance.SetBoolInternal("fragileHealth_unbreakable", true);
+                PlayerData.instance.SetBoolInternal("fragileStrength_unbreakable", true);
+                PlayerData.instance.SetIntInternal("grimmChildLevel", 5);
                 PlayerData.instance.charmSlots = 11;
             }
 
@@ -502,24 +504,32 @@ namespace DebugMod
             }
         }
 
+        private static void OvercharmClicked(string buttonName)
+        {
+            PlayerData.instance.canOvercharm = true;
+            PlayerData.instance.overcharmed = !PlayerData.instance.overcharmed;
+
+            Console.AddLine("Set overcharmed: " + PlayerData.instance.overcharmed);
+        }
+
         private static void GrimmchildClicked(string buttonName)
         {
-            if (Convert.ToInt32(PlayerData.instance.version.Substring(2, 1)) < 2)
+            if (!DebugMod.GrimmTroupe())
             {
                 Console.AddLine("Grimmchild does not exist on this patch");
                 return;
             }
 
-            if (!PlayerData.instance.gotCharm_40)
+            if (!PlayerData.instance.GetBoolInternal("gotCharm_40"))
             {
-                PlayerData.instance.gotCharm_40 = true;
+                PlayerData.instance.SetBoolInternal("gotCharm_40", true);
             }
 
-            PlayerData.instance.grimmChildLevel++;
+            PlayerData.instance.SetIntInternal("grimmChildLevel", PlayerData.instance.GetIntInternal("grimmChildLevel") + 1);
 
-            if (PlayerData.instance.grimmChildLevel >= 6)
+            if (PlayerData.instance.GetIntInternal("grimmChildLevel") >= 6)
             {
-                PlayerData.instance.grimmChildLevel = 0;
+                PlayerData.instance.SetIntInternal("grimmChildLevel", 0);
             }
 
             panel.GetButton("Kingsoul", "Charms Panel").UpdateText("Kingsoul: " + PlayerData.instance.royalCharmState);
@@ -829,31 +839,31 @@ namespace DebugMod
 
         private static void NKGrimmClicked(string buttonName)
         {
-            if (Convert.ToInt32(PlayerData.instance.version.Substring(2, 1)) < 2)
+            if (!DebugMod.GrimmTroupe())
             {
                 Console.AddLine("Nightmare King Grimm does not exist on this patch");
                 return;
             }
 
-            if (PlayerData.instance.killedNightmareGrimm || PlayerData.instance.destroyedNightmareLantern)
+            if (PlayerData.instance.GetBoolInternal("killedNightmareGrimm") || PlayerData.instance.GetBoolInternal("destroyedNightmareLantern"))
             {
-                PlayerData.instance.troupeInTown = true;
-                PlayerData.instance.killedNightmareGrimm = false;
-                PlayerData.instance.destroyedNightmareLantern = false;
-                PlayerData.instance.grimmChildLevel = 3;
-                PlayerData.instance.flamesCollected = 3;
-                PlayerData.instance.grimmchildAwoken = false;
-                PlayerData.instance.metGrimm = true;
-                PlayerData.instance.foughtGrimm = true;
-                PlayerData.instance.killedGrimm = true;
+                PlayerData.instance.SetBoolInternal("troupeInTown", true);
+                PlayerData.instance.SetBoolInternal("killedNightmareGrimm", false);
+                PlayerData.instance.SetBoolInternal("destroyedNightmareLantern", false);
+                PlayerData.instance.SetIntInternal("grimmChildLevel", 3);
+                PlayerData.instance.SetIntInternal("flamesCollected", 3);
+                PlayerData.instance.SetBoolInternal("grimmchildAwoken", false);
+                PlayerData.instance.SetBoolInternal("metGrimm", true);
+                PlayerData.instance.SetBoolInternal("foughtGrimm", true);
+                PlayerData.instance.SetBoolInternal("killedGrimm", true);
             }
             else
             {
-                PlayerData.instance.killedNightmareGrimm = true;
-                PlayerData.instance.troupeInTown = false;
+                PlayerData.instance.SetBoolInternal("troupeInTown", false);
+                PlayerData.instance.SetBoolInternal("killedNightmareGrimm", true);
             }
 
-            Console.AddLine("Set Nightmare King Grimm killed: " + PlayerData.instance.killedNightmareGrimm);
+            Console.AddLine("Set Nightmare King Grimm killed: " + PlayerData.instance.GetBoolInternal("killedNightmareGrimm"));
         }
 
         private static void PaleOreClicked(string buttonName)
