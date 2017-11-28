@@ -52,6 +52,7 @@
       <HintPath>..\..\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\PlayMaker.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
@@ -60,9 +61,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BindableMethod.cs" />
     <Compile Include="EnemiesPanel.cs" />
     <Compile Include="EnemyData.cs" />
     <Compile Include="HelpPanel.cs" />
+    <Compile Include="BindableFunctions.cs" />
+    <Compile Include="Pair.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="TopMenu.cs" />
     <Reference Include="UnityEngine">
       <HintPath>UnityEngine.dll</HintPath>
@@ -79,22 +89,60 @@
     <Compile Include="InfoPanel.cs" />
     <Compile Include="PlayerDeathWatcher.cs" />
   </ItemGroup>
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\AddEntry.png" />
+    <EmbeddedResource Include="Images\BlueGlow.png" />
+    <EmbeddedResource Include="Images\ButtonDel.png" />
+    <EmbeddedResource Include="Images\ButtonInf.png" />
+    <EmbeddedResource Include="Images\ButtonPlus.png" />
+    <EmbeddedResource Include="Images\ButtonRect.png" />
+    <EmbeddedResource Include="Images\ButtonRectEmpty.png" />
+    <EmbeddedResource Include="Images\ButtonsMenuBG.png" />
+    <EmbeddedResource Include="Images\CityKey.png" />
+    <EmbeddedResource Include="Images\ConsoleBg.png" />
+    <EmbeddedResource Include="Images\CrystalHeart.png" />
+    <EmbeddedResource Include="Images\DreamGate.png" />
+    <EmbeddedResource Include="Images\DreamGateDropdownBG.png" />
+    <EmbeddedResource Include="Images\DreamNail1.png" />
+    <EmbeddedResource Include="Images\DreamNail2.png" />
+    <EmbeddedResource Include="Images\DropdownBG.png" />
+    <EmbeddedResource Include="Images\ElegantKey.png" />
+    <EmbeddedResource Include="Images\EnemiesBg.png" />
+    <EmbeddedResource Include="Images\EnemiesPBg.png" />
+    <EmbeddedResource Include="Images\Essence.png" />
+    <EmbeddedResource Include="Images\Essence2.png" />
+    <EmbeddedResource Include="Images\Flower.png" />
+    <EmbeddedResource Include="Images\Geo.png" />
+    <EmbeddedResource Include="Images\HelpBG.png" />
+    <EmbeddedResource Include="Images\IsmasTear.png" />
+    <EmbeddedResource Include="Images\Kingsbrand.png" />
+    <EmbeddedResource Include="Images\Lantern.png" />
+    <EmbeddedResource Include="Images\LoveKey.png" />
+    <EmbeddedResource Include="Images\MantisClaw.png" />
+    <EmbeddedResource Include="Images\MapQuill.png" />
+    <EmbeddedResource Include="Images\MonarchWings.png" />
+    <EmbeddedResource Include="Images\MothwingCloak.png" />
+    <EmbeddedResource Include="Images\NailArt_CycloneSlash.png" />
+    <EmbeddedResource Include="Images\NailArt_DashSlash.png" />
+    <EmbeddedResource Include="Images\NailArt_GreatSlash.png" />
+    <EmbeddedResource Include="Images\PaleOre.png" />
+    <EmbeddedResource Include="Images\RancidEgg.png" />
+    <EmbeddedResource Include="Images\ScrollBarArrowDown.png" />
+    <EmbeddedResource Include="Images\ScrollBarArrowUp.png" />
+    <EmbeddedResource Include="Images\scrollbar_mid.png" />
+    <EmbeddedResource Include="Images\Scrollbar_point.png" />
+    <EmbeddedResource Include="Images\ShadeCloak.png" />
+    <EmbeddedResource Include="Images\SimpleKey.png" />
+    <EmbeddedResource Include="Images\SlyKey.png" />
+    <EmbeddedResource Include="Images\StatusPanelBG.png" />
+    <EmbeddedResource Include="Images\TramPass.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <_PostBuildHookTimestamp>@(IntermediateAssembly->'%(FullPath).timestamp')</_PostBuildHookTimestamp>
@@ -103,5 +151,4 @@
   <Target Name="PostBuildHooks" Inputs="@(IntermediateAssembly);@(ReferencePath)" Outputs="@(IntermediateAssembly);$(_PostBuildHookTimestamp)" AfterTargets="CoreCompile" BeforeTargets="AfterCompile">
     <Touch Files="$(_PostBuildHookTimestamp)" AlwaysCreate="True" />
   </Target>
-  <ItemGroup />
 </Project>

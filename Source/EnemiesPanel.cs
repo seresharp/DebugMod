@@ -1,53 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 using UnityEngine;
 using GlobalEnums;
-using HutongGames.PlayMaker;
 
 namespace DebugMod
 {
     public static class EnemiesPanel
     {
         private static CanvasPanel panel;
-        private static bool autoUpdate;
+        public static bool autoUpdate;
         private static float lastTime;
-        private static List<EnemyData> enemyPool = new List<EnemyData>();
+        public static List<EnemyData> enemyPool = new List<EnemyData>();
         private static GameObject parent;
-        private static bool hpBars;
-        private static bool hitboxes;
-        private static MethodInfo takeDamage = typeof(HeroController).GetMethod("TakeDamage");
-        private static ParameterInfo[] parameters = takeDamage.GetParameters();
-
-        public static bool visible;
+        public static bool hpBars;
+        public static bool hitboxes;
+        public static MethodInfo takeDamage = typeof(HeroController).GetMethod("TakeDamage");
+        public static ParameterInfo[] parameters = takeDamage.GetParameters();
 
         public static void BuildMenu(GameObject canvas)
         {
             parent = canvas;
 
-            panel = new CanvasPanel(canvas, new Texture2D(1, 1), new Vector2(1920f - GUIController.instance.images["EnemiesPBg"].width, 481f), Vector2.zero, new Rect(0, 0, 1, 1));
+            panel = new CanvasPanel(canvas, new Texture2D(1, 1), new Vector2(1920f - GUIController.Instance.images["EnemiesPBg"].width, 481f), Vector2.zero, new Rect(0, 0, 1, 1));
 
-            panel.AddText("Panel Label", "Enemies", new Vector2(125f, -25f), Vector2.zero, GUIController.instance.trajanBold, 30);
+            panel.AddText("Panel Label", "Enemies", new Vector2(125f, -25f), Vector2.zero, GUIController.Instance.trajanBold, 30);
 
-            panel.AddText("Enemy Names", "", new Vector2(90f, 20f), Vector2.zero, GUIController.instance.arial);
-            panel.AddText("Enemy HP", "", new Vector2(300f, 20f), Vector2.zero, GUIController.instance.arial);
+            panel.AddText("Enemy Names", "", new Vector2(90f, 20f), Vector2.zero, GUIController.Instance.arial);
+            panel.AddText("Enemy HP", "", new Vector2(300f, 20f), Vector2.zero, GUIController.Instance.arial);
 
-            panel.AddPanel("Pause", GUIController.instance.images["EnemiesPBg"], Vector2.zero, Vector2.zero, new Rect(0, 0, GUIController.instance.images["EnemiesPBg"].width, GUIController.instance.images["EnemiesPBg"].height));
-            panel.AddPanel("Play", GUIController.instance.images["EnemiesBg"], new Vector2(57f, 0f), Vector2.zero, new Rect(0f, 0f, GUIController.instance.images["EnemiesBg"].width, GUIController.instance.images["EnemiesBg"].height));
+            panel.AddPanel("Pause", GUIController.Instance.images["EnemiesPBg"], Vector2.zero, Vector2.zero, new Rect(0, 0, GUIController.Instance.images["EnemiesPBg"].width, GUIController.Instance.images["EnemiesPBg"].height));
+            panel.AddPanel("Play", GUIController.Instance.images["EnemiesBg"], new Vector2(57f, 0f), Vector2.zero, new Rect(0f, 0f, GUIController.Instance.images["EnemiesBg"].width, GUIController.Instance.images["EnemiesBg"].height));
 
             for (int i = 1; i <= 14; i++)
             {
-                panel.GetPanel("Pause").AddButton("Del" + i, GUIController.instance.images["ButtonDel"], new Vector2(20f, 20f + (i - 1) * 15f), new Vector2(12f, 12f), DelClicked, new Rect(0, 0, GUIController.instance.images["ButtonDel"].width, GUIController.instance.images["ButtonDel"].height));
-                panel.GetPanel("Pause").AddButton("Clone" + i, GUIController.instance.images["ButtonPlus"], new Vector2(40f, 20f + (i - 1) * 15f), new Vector2(12f, 12f), CloneClicked, new Rect(0, 0, GUIController.instance.images["ButtonPlus"].width, GUIController.instance.images["ButtonPlus"].height));
-                panel.GetPanel("Pause").AddButton("Inf" + i, GUIController.instance.images["ButtonInf"], new Vector2(60f, 20f + (i - 1) * 15f), new Vector2(12f, 12f), InfClicked, new Rect(0, 0, GUIController.instance.images["ButtonInf"].width, GUIController.instance.images["ButtonInf"].height));
+                panel.GetPanel("Pause").AddButton("Del" + i, GUIController.Instance.images["ButtonDel"], new Vector2(20f, 20f + (i - 1) * 15f), new Vector2(12f, 12f), DelClicked, new Rect(0, 0, GUIController.Instance.images["ButtonDel"].width, GUIController.Instance.images["ButtonDel"].height));
+                panel.GetPanel("Pause").AddButton("Clone" + i, GUIController.Instance.images["ButtonPlus"], new Vector2(40f, 20f + (i - 1) * 15f), new Vector2(12f, 12f), CloneClicked, new Rect(0, 0, GUIController.Instance.images["ButtonPlus"].width, GUIController.Instance.images["ButtonPlus"].height));
+                panel.GetPanel("Pause").AddButton("Inf" + i, GUIController.Instance.images["ButtonInf"], new Vector2(60f, 20f + (i - 1) * 15f), new Vector2(12f, 12f), InfClicked, new Rect(0, 0, GUIController.Instance.images["ButtonInf"].width, GUIController.Instance.images["ButtonInf"].height));
             }
 
-            panel.GetPanel("Pause").AddButton("Collision", GUIController.instance.images["ButtonRect"], new Vector2(30f, 250f), Vector2.zero, CollisionClicked, new Rect(0, 0, GUIController.instance.images["ButtonRect"].width, GUIController.instance.images["ButtonRect"].height), GUIController.instance.trajanBold, "Collision");
-            panel.GetPanel("Pause").AddButton("HP Bars", GUIController.instance.images["ButtonRect"], new Vector2(125f, 250f), Vector2.zero, HPBarsClicked, new Rect(0, 0, GUIController.instance.images["ButtonRect"].width, GUIController.instance.images["ButtonRect"].height), GUIController.instance.trajanBold, "HP Bars");
-            panel.GetPanel("Pause").AddButton("Auto", GUIController.instance.images["ButtonRect"], new Vector2(220f, 250f), Vector2.zero, AutoClicked, new Rect(0, 0, GUIController.instance.images["ButtonRect"].width, GUIController.instance.images["ButtonRect"].height), GUIController.instance.trajanBold, "Auto");
-            panel.GetPanel("Pause").AddButton("Scan", GUIController.instance.images["ButtonRect"], new Vector2(315f, 250f), Vector2.zero, ScanClicked, new Rect(0, 0, GUIController.instance.images["ButtonRect"].width, GUIController.instance.images["ButtonRect"].height), GUIController.instance.trajanBold, "Scan");
+            panel.GetPanel("Pause").AddButton("Collision", GUIController.Instance.images["ButtonRect"], new Vector2(30f, 250f), Vector2.zero, CollisionClicked, new Rect(0, 0, GUIController.Instance.images["ButtonRect"].width, GUIController.Instance.images["ButtonRect"].height), GUIController.Instance.trajanBold, "Collision");
+            panel.GetPanel("Pause").AddButton("HP Bars", GUIController.Instance.images["ButtonRect"], new Vector2(125f, 250f), Vector2.zero, HPBarsClicked, new Rect(0, 0, GUIController.Instance.images["ButtonRect"].width, GUIController.Instance.images["ButtonRect"].height), GUIController.Instance.trajanBold, "HP Bars");
+            panel.GetPanel("Pause").AddButton("Auto", GUIController.Instance.images["ButtonRect"], new Vector2(220f, 250f), Vector2.zero, AutoClicked, new Rect(0, 0, GUIController.Instance.images["ButtonRect"].width, GUIController.Instance.images["ButtonRect"].height), GUIController.Instance.trajanBold, "Auto");
+            panel.GetPanel("Pause").AddButton("Scan", GUIController.Instance.images["ButtonRect"], new Vector2(315f, 250f), Vector2.zero, ScanClicked, new Rect(0, 0, GUIController.Instance.images["ButtonRect"].width, GUIController.Instance.images["ButtonRect"].height), GUIController.Instance.trajanBold, "Scan");
 
             panel.FixRenderOrder();
         }
@@ -85,50 +81,22 @@ namespace DebugMod
 
         private static void CollisionClicked(string buttonName)
         {
-            hitboxes = !hitboxes;
-
-            if (hitboxes)
-            {
-                Console.AddLine("Enabled hitboxes");
-            }
-            else
-            {
-                Console.AddLine("Disabled hitboxes");
-            }
+            BindableFunctions.ToggleEnemyCollision();
         }
 
         private static void HPBarsClicked(string buttonName)
         {
-            hpBars = !hpBars;
-
-            if (hpBars)
-            {
-                Console.AddLine("Enabled HP bars");
-            }
-            else
-            {
-                Console.AddLine("Disabled HP bars");
-            }
+            BindableFunctions.ToggleEnemyHPBars();
         }
 
         private static void AutoClicked(string buttonName)
         {
-            autoUpdate = !autoUpdate;
-
-            if (autoUpdate)
-            {
-                Console.AddLine("Enabled auto-scan (May impact performance)");
-            }
-            else
-            {
-                Console.AddLine("Disabled auto-scan");
-            }
+            BindableFunctions.ToggleEnemyAutoScan();
         }
 
         private static void ScanClicked(string buttonName)
         {
-            enemyUpdate(200f);
-            Console.AddLine("Refreshing collider data...");
+            BindableFunctions.EnemyScan();
         }
 
         public static void Update()
@@ -138,21 +106,31 @@ namespace DebugMod
                 return;
             }
 
-            if (visible && !panel.active)
+            if (DebugMod.GM.IsNonGameplayScene())
+            {
+                if (panel.active)
+                {
+                    panel.SetActive(false, true);
+                }
+
+                return;
+            }
+
+            if (DebugMod.settings.EnemiesPanelVisible && !panel.active)
             {
                 panel.SetActive(true, false);
             }
-            else if (!visible && panel.active)
+            else if (!DebugMod.settings.EnemiesPanelVisible && panel.active)
             {
                 panel.SetActive(false, true);
             }
 
-            if (visible && UIManager.instance.uiState == UIState.PLAYING && (panel.GetPanel("Pause").active || !panel.GetPanel("Play").active))
+            if (DebugMod.settings.EnemiesPanelVisible && UIManager.instance.uiState == UIState.PLAYING && (panel.GetPanel("Pause").active || !panel.GetPanel("Play").active))
             {
                 panel.GetPanel("Pause").SetActive(false, true);
                 panel.GetPanel("Play").SetActive(true, false);
             }
-            else if (visible && UIManager.instance.uiState == UIState.PAUSED && (!panel.GetPanel("Pause").active || panel.GetPanel("Play").active))
+            else if (DebugMod.settings.EnemiesPanelVisible && UIManager.instance.uiState == UIState.PAUSED && (!panel.GetPanel("Pause").active || panel.GetPanel("Play").active))
             {
                 panel.GetPanel("Pause").SetActive(true, false);
                 panel.GetPanel("Play").SetActive(false, true);
@@ -165,11 +143,6 @@ namespace DebugMod
 
             if (panel.active)
             {
-                if (Input.GetKeyUp(KeyCode.F10))
-                {
-                    EnemiesPanel.selfDamage();
-                }
-
                 EnemiesPanel.CheckForAutoUpdate();
 
                 string enemyNames = "";
@@ -374,7 +347,7 @@ namespace DebugMod
 
         public static void RefreshEnemyList()
         {
-            if (visible)
+            if (DebugMod.settings.EnemiesPanelVisible)
             {
                 GameObject[] rootGameObjects = UnityEngine.SceneManagement.SceneManager.GetSceneByName(DebugMod.GetSceneName()).GetRootGameObjects();
                 if (rootGameObjects != null)
@@ -416,70 +389,9 @@ namespace DebugMod
             }
         }
 
-        private static void selfDamage()
+        private static void SelfDamage()
         {
-            if (PlayerData.instance.health <= 0 || HeroController.instance.cState.dead || !GameManager.instance.IsGameplayScene() || GameManager.instance.IsGamePaused() || HeroController.instance.cState.recoiling || HeroController.instance.cState.invulnerable)
-            {
-                Console.AddLine(string.Concat(new string[]
-                {
-                    "Unacceptable conditions for selfDamage(",
-                    PlayerData.instance.health.ToString(),
-                    ",",
-                    HeroController.instance.cState.dead.ToString(),
-                    ",",
-                    GameManager.instance.IsGameplayScene().ToString(),
-                    ",",
-                    HeroController.instance.cState.recoiling.ToString(),
-                    ",",
-                    GameManager.instance.IsGamePaused().ToString(),
-                    ",",
-                    HeroController.instance.cState.invulnerable.ToString(),
-                    ").",
-                    " Pressed too many times at once?"
-                }));
-                return;
-            }
-            if (!visible)
-            {
-                Console.AddLine("Enable EnemyPanel for self-damage");
-                return;
-            }
-            if (enemyPool.Count < 1)
-            {
-                Console.AddLine("Unable to locate a single enemy in the scene.");
-                return;
-            }
-
-            GameObject enemyObj = enemyPool.ElementAt(new System.Random().Next(0, enemyPool.Count)).gameObject;
-            CollisionSide side = HeroController.instance.cState.facingRight ? CollisionSide.right : CollisionSide.left;
-            int damageAmount = 1;
-            int hazardType = (int)HazardType.NON_HAZARD;
-
-            PlayMakerFSM fsm = FSMUtility.LocateFSM(enemyObj, "damages_hero");
-            if (fsm != null)
-            {
-                damageAmount = FSMUtility.GetInt(fsm, "damageDealt");
-                hazardType = FSMUtility.GetInt(fsm, "hazardType");
-            }
-
-            object[] paramArray;
-
-            if (parameters.Length == 2)
-            {
-                paramArray = new object[] { enemyObj, side };
-            }
-            else if (parameters.Length == 4)
-            {
-                paramArray = new object[] { enemyObj, side, damageAmount, hazardType };
-            }
-            else
-            {
-                Console.AddLine("Unexpected parameter count on HeroController.TakeDamage");
-                return;
-            }
-
-            Console.AddLine("Attempting self damage");
-            takeDamage.Invoke(HeroController.instance, paramArray);
+            BindableFunctions.SelfDamage();
         }
 
         private static void CheckForAutoUpdate()
@@ -502,11 +414,11 @@ namespace DebugMod
                 boxSize = 50f;
             }
 
-            if (visible && HeroController.instance != null && !HeroController.instance.cState.transitioning && DebugMod.gm.IsGameplayScene())
+            if (DebugMod.settings.EnemiesPanelVisible && HeroController.instance != null && !HeroController.instance.cState.transitioning && DebugMod.GM.IsGameplayScene())
             {
                 int count = enemyPool.Count;
                 int layerMask = 133120;
-                Collider2D[] array = Physics2D.OverlapBoxAll(DebugMod.refKnight.transform.position, new Vector2(boxSize, boxSize), 1f, layerMask);
+                Collider2D[] array = Physics2D.OverlapBoxAll(DebugMod.RefKnight.transform.position, new Vector2(boxSize, boxSize), 1f, layerMask);
                 if (array != null)
                 {
                     for (int i = 0; i < array.Length; i++)
@@ -534,7 +446,7 @@ namespace DebugMod
                     }
                 }
             }
-            else if (autoUpdate && (!visible || !GameManager.instance.IsGameplayScene() || HeroController.instance == null))
+            else if (autoUpdate && (!DebugMod.settings.EnemiesPanelVisible || !GameManager.instance.IsGameplayScene() || HeroController.instance == null))
             {
                 autoUpdate = false;
                 Console.AddLine("Cancelling enemy auto-scan due to weird conditions");
@@ -552,7 +464,7 @@ namespace DebugMod
                     PlayMakerFSM playMakerFSM = FSMUtility.LocateFSM(transform2.gameObject, "health_manager_enemy");
                     if (playMakerFSM == null)
                     {
-                        playMakerFSM = FSMUtility.LocateFSM(GUIController.instance.gameObject, "health_manager");
+                        playMakerFSM = FSMUtility.LocateFSM(GUIController.Instance.gameObject, "health_manager");
                     }
                     Component component = transform2.gameObject.GetComponent<tk2dSprite>();
                     if (playMakerFSM)
@@ -579,7 +491,7 @@ namespace DebugMod
                             PlayMakerFSM playMakerFSM2 = FSMUtility.LocateFSM(transform3.gameObject, "health_manager_enemy");
                             if (playMakerFSM2 == null)
                             {
-                                playMakerFSM2 = FSMUtility.LocateFSM(GUIController.instance.gameObject, "health_manager");
+                                playMakerFSM2 = FSMUtility.LocateFSM(GUIController.Instance.gameObject, "health_manager");
                             }
                             Component component2 = transform3.gameObject.GetComponent<tk2dSprite>();
                             if (playMakerFSM2)

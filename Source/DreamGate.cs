@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Globalization;
-using UnityEngine;
 
 namespace DebugMod
 {
@@ -35,8 +32,8 @@ namespace DebugMod
                     }
                     catch (Exception arg)
                     {
-                        Modding.ModHooks.ModLog("[DEBUG MOD] [DREAM GATE] Unable to delete existing dreamgate.dat " + arg);
-                        Console.AddLine("[DebugMod::DGata] Unable to delete existing dreamgate.dat " + arg);
+                        DebugMod.Instance.LogError("[DREAM GATE] Unable to delete existing dreamgate.dat " + arg);
+                        Console.AddLine("Unable to delete existing dreamgate.dat " + arg);
                         return;
                     }
                 }
@@ -82,7 +79,7 @@ namespace DebugMod
                 if (array == null || array.Length == 0)
                 {
                     Console.AddLine("Unable to read content of dreamgate.dat properly, file is empty?");
-                    Modding.ModHooks.ModLog("[DEBUG MOD] [DREAM GATE] Unable to read content of dreamgate.dat properly, file is empty?");
+                    DebugMod.Instance.LogWarn("[DREAM GATE] Unable to read content of dreamgate.dat properly, file is empty?");
                     dataBusy = false;
                     return;
                 }
@@ -113,14 +110,14 @@ namespace DebugMod
                                 }
                                 catch (FormatException)
                                 {
-                                    Modding.ModHooks.ModLog("[DEBUG MOD] [DREAM GATE] FormatException - incorrect float format");
+                                    DebugMod.Instance.LogError("[DREAM GATE] FormatException - incorrect float format");
                                     Console.AddLine("DGdata::FormatException - incorrect float format");
                                     dataBusy = false;
                                     return;
                                 }
                                 catch (OverflowException)
                                 {
-                                    Modding.ModHooks.ModLog("[DEBUG MOD] [DREAM GATE] OverflowException - incorrect float format");
+                                    DebugMod.Instance.LogError("[DREAM GATE] OverflowException - incorrect float format");
                                     Console.AddLine("DGdata::OverflowException - incorrect float format");
                                     dataBusy = false;
                                     return;
@@ -141,14 +138,14 @@ namespace DebugMod
                 if (DGData.Count > 0)
                 {
                     Console.AddLine("Filled DGdata: " + DGData.Count);
-                    Modding.ModHooks.ModLog("[DEBUG MOD] [DREAM GATE] Filled DGdata: " + DGData.Count);
+                    DebugMod.Instance.Log("[DREAM GATE] Filled DGdata: " + DGData.Count);
                     return;
                 }
             }
             else
             {
                 Console.AddLine("File dreamgate.dat not found!");
-                Modding.ModHooks.ModLog("[DEBUG MOD] [DREAM GATE] File dreamgate.dat not found!");
+                DebugMod.Instance.Log("[DREAM GATE] File dreamgate.dat not found!");
             }
         }
 
@@ -178,10 +175,10 @@ namespace DebugMod
         {
             if (!string.IsNullOrEmpty(name) && !name.Contains("|") && DGData != null && !DGData.ContainsKey(name) && !dataBusy)
             {
-                float[] value6 = new float[] { DebugMod.refKnight.transform.position.x, DebugMod.refKnight.transform.position.y };
+                float[] value6 = new float[] { DebugMod.RefKnight.transform.position.x, DebugMod.RefKnight.transform.position.y };
                 delMenu = false;
                 dataBusy = true;
-                DGData.Add(name, new KeyValuePair<string, float[]>(DebugMod.gm.sceneName, value6));
+                DGData.Add(name, new KeyValuePair<string, float[]>(DebugMod.GM.sceneName, value6));
                 dataBusy = false;
                 Console.AddLine("Added new DGdata entry named: " + name);
                 addMenu = false;

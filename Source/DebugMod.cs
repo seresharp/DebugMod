@@ -1,19 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Linq;
 using Modding;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using GlobalEnums;
 
 namespace DebugMod
 {
-    public class DebugMod : Mod
+    public class DebugMod : Mod<SaveSettings, GlobalSettings>
     {
         private static GameManager _gm;
         private static InputHandler _ih;
+        private static HeroController _hc;
         private static GameObject _refKnight;
         private static PlayMakerFSM _refKnightSlash;
         private static CameraController _refCamera;
@@ -23,53 +24,119 @@ namespace DebugMod
         private static float unloadTime;
         private static bool loadingChar;
 
+        public static GlobalSettings settings;
+
         public static bool infiniteHP;
         public static bool infiniteSoul;
         public static bool playerInvincible;
         public static bool noclip = false;
         public static Vector3 noclipPos;
         public static bool levelLoading;
+        public static bool cameraFollow;
+
+        public static Dictionary<string, Pair> bindMethods = new Dictionary<string, Pair>();
 
         public override void Initialize()
         {
-            ModHooks.ModLog("Initializing debug mod");
+            Instance.Log("Initializing");
+
+            float startTime = Time.realtimeSinceStartup;
+            Instance.Log("Building MethodInfo dict...");
+
+            bindMethods.Clear();
+            foreach (MethodInfo method in typeof(BindableFunctions).GetMethods(BindingFlags.Public | BindingFlags.Static))
+            {
+                object[] attributes = method.GetCustomAttributes(typeof(BindableMethod), false);
+
+                if (attributes.Any())
+                {
+                    BindableMethod attr = (BindableMethod)attributes[0];
+                    string name = attr.name;
+                    string cat = attr.category;
+
+                    bindMethods.Add(name, new Pair(cat, method));
+                }
+            }
+
+            Instance.Log("Done! Time taken: " + (Time.realtimeSinceStartup - startTime) + "s. Found " + bindMethods.Count + " methods");
+
+            settings = GlobalSettings;
+
+            if (settings.FirstRun)
+            {
+                Instance.Log("First run detected, setting default binds");
+
+                settings.FirstRun = false;
+                settings.binds.Clear();
+
+                settings.binds.Add("Toggle All UI", (int)KeyCode.F1);
+                settings.binds.Add("Toggle Info", (int)KeyCode.F2);
+                settings.binds.Add("Toggle Menu", (int)KeyCode.F3);
+                settings.binds.Add("Toggle Console", (int)KeyCode.F4);
+                settings.binds.Add("Force Pause", (int)KeyCode.F5);
+                settings.binds.Add("Hazard Respawn", (int)KeyCode.F6);
+                settings.binds.Add("Set Respawn", (int)KeyCode.F7);
+                settings.binds.Add("Force Camera Follow", (int)KeyCode.F8);
+                settings.binds.Add("Toggle Enemy Panel", (int)KeyCode.F9);
+                settings.binds.Add("Self Damage", (int)KeyCode.F10);
+                settings.binds.Add("Toggle Binds", (int)KeyCode.BackQuote);
+                settings.binds.Add("Nail Damage +4", (int)KeyCode.Equals);
+                settings.binds.Add("Nail Damage -4", (int)KeyCode.Minus);
+                settings.binds.Add("Increase Timescale", (int)KeyCode.KeypadPlus);
+                settings.binds.Add("Decrease Timescale", (int)KeyCode.KeypadMinus);
+                settings.binds.Add("Toggle Hero Light", (int)KeyCode.Home);
+                settings.binds.Add("Toggle Vignette", (int)KeyCode.Insert);
+                settings.binds.Add("Zoom In", (int)KeyCode.PageUp);
+                settings.binds.Add("Zoom Out", (int)KeyCode.PageDown);
+                settings.binds.Add("Reset Camera Zoom", (int)KeyCode.End);
+                settings.binds.Add("Toggle HUD", (int)KeyCode.Delete);
+                settings.binds.Add("Hide Hero", (int)KeyCode.Backspace);
+            }
+
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += LevelActivated;
-            UnityEngine.GameObject UIObj = new UnityEngine.GameObject();
+            GameObject UIObj = new GameObject();
             UIObj.AddComponent<GUIController>();
-            UnityEngine.GameObject.DontDestroyOnLoad(UIObj);
+            GameObject.DontDestroyOnLoad(UIObj);
 
             ModHooks.Instance.SavegameLoadHook += LoadCharacter;
             ModHooks.Instance.NewGameHook += NewCharacter;
             ModHooks.Instance.BeforeSceneLoadHook += OnLevelUnload;
             ModHooks.Instance.TakeHealthHook += PlayerDamaged;
+            ModHooks.Instance.ApplicationQuitHook += SaveSettings;
 
             BossHandler.PopulateBossLists();
-            GUIController.instance.BuildMenus();
+            GUIController.Instance.BuildMenus();
 
             Console.AddLine("New session started " + DateTime.Now.ToString());
         }
-
-        public int PlayerDamaged(int damageAmount)
+        
+        public override string GetVersion()
         {
-            if (DebugMod.infiniteHP)
+            return "1.3.0";
+        }
+
+        private void SaveSettings()
+        {
+            SaveGlobalSettings();
+            Instance.Log("Saved");
+        }
+
+        private int PlayerDamaged(int damageAmount)
+        {
+            if (infiniteHP)
             {
                 return 0;
             }
 
             return damageAmount;
         }
-        
-        public override string GetVersion()
-        {
-            return "1.2.1";
-        }
 
-        public void NewCharacter()
+        private void NewCharacter()
         {
             LoadCharacter(0);
         }
 
-        public void LoadCharacter(int saveId)
+        private void LoadCharacter(int saveId)
         {
             Console.Reset();
             EnemiesPanel.Reset();
@@ -80,12 +147,10 @@ namespace DebugMod
             infiniteSoul = false;
             noclip = false;
 
-            TopMenu.UpdateButtonColors();
-
             loadingChar = true;
         }
 
-        public void LevelActivated(Scene sceneFrom, Scene sceneTo)
+        private void LevelActivated(Scene sceneFrom, Scene sceneTo)
         {
             levelLoading = false;
 
@@ -100,12 +165,10 @@ namespace DebugMod
                 DateTime lastWriteTime = File.GetLastWriteTime(Application.persistentDataPath + saveFilename);
                 Console.AddLine("New savegame loaded. Profile playtime " + text + " Completion: " + PlayerData.instance.completionPercentage + " Save slot: " + profileID + " Game Version: " + PlayerData.instance.version + " Last Written: " + lastWriteTime);
 
-                GUIController.instance.SetMenusActive(true);
-
                 loadingChar = false;
             }
 
-            if (gm.IsGameplayScene())
+            if (GM.IsGameplayScene())
             {
                 loadTime = Time.realtimeSinceStartup;
                 Console.AddLine("New scene loaded: " + sceneName);
@@ -113,14 +176,9 @@ namespace DebugMod
                 PlayerDeathWatcher.Reset();
                 BossHandler.LookForBoss(sceneName);
             }
-
-            if (sceneName == "Menu_Title")
-            {
-                GUIController.instance.SetMenusActive(false);
-            }
         }
 
-        public string OnLevelUnload(string toScene)
+        private string OnLevelUnload(string toScene)
         {
             levelLoading = true;
 
@@ -131,7 +189,7 @@ namespace DebugMod
 
         public static bool GrimmTroupe()
         {
-            return typeof(PlayerData).GetField("killedGrimm") != null;
+            return ModHooks.Instance.version.gameVersion.minor >= 2;
         }
 
         public static string GetSceneName()
@@ -151,70 +209,79 @@ namespace DebugMod
             return (float)Math.Round((double)(loadTime - unloadTime), 2);
         }
 
-        public static GameManager gm
+        public static void Teleport(string scenename, Vector3 pos)
+        {
+            HC.transform.position = pos;
+
+            HC.EnterWithoutInput(false);
+            HC.proxyFSM.SendEvent("HeroCtrl-LeavingScene");
+            HC.transform.SetParent(null);
+
+            GM.NoLongerFirstGame();
+            GM.SaveLevelState();
+            GM.SetState(GameState.EXITING_LEVEL);
+            GM.entryGateName = "dreamGate";
+            RefCamera.FreezeInPlace(false);
+
+            HC.ResetState();
+
+            GM.LoadScene(scenename);
+        }
+
+        public static GameManager GM
         {
             get
             {
-                if (DebugMod._gm == null) DebugMod._gm = GameManager.instance;
-                return DebugMod._gm;
-            }
-            set
-            {
+                if (_gm == null) _gm = GameManager.instance;
+                return _gm;
             }
         }
-        public static InputHandler ih
+        public static InputHandler IH
         {
             get
             {
-                if (DebugMod._ih == null) DebugMod._ih = DebugMod.gm.inputHandler;
-                return DebugMod._ih;
-            }
-            set
-            {
+                if (_ih == null) _ih = GM.inputHandler;
+                return _ih;
             }
         }
-        public static GameObject refKnight
+        public static HeroController HC
         {
             get
             {
-                if (DebugMod._refKnight == null) DebugMod._refKnight = HeroController.instance.gameObject;
-                return DebugMod._refKnight;
-            }
-            set
-            {
+                if (_hc == null) _hc = GM.hero_ctrl;
+                return _hc;
             }
         }
-        public static PlayMakerFSM refKnightSlash
+        public static GameObject RefKnight
         {
             get
             {
-                if (DebugMod._refKnightSlash == null) DebugMod._refKnightSlash = DebugMod.refKnight.transform.Find("Attacks/Slash").GetComponent<PlayMakerFSM>();
-                return DebugMod._refKnightSlash;
-            }
-            set
-            {
+                if (_refKnight == null) _refKnight = HC.gameObject;
+                return _refKnight;
             }
         }
-        public static CameraController refCamera
+        public static PlayMakerFSM RefKnightSlash
         {
             get
             {
-                if (DebugMod._refCamera == null) DebugMod._refCamera = GameObject.Find("tk2dCamera").GetComponent<CameraController>();
-                return DebugMod._refCamera;
-            }
-            set
-            {
+                if (_refKnightSlash == null) _refKnightSlash = RefKnight.transform.Find("Attacks/Slash").GetComponent<PlayMakerFSM>();
+                return _refKnightSlash;
             }
         }
-        public static PlayMakerFSM refDreamNail
+        public static CameraController RefCamera
         {
             get
             {
-                if (DebugMod._refDreamNail == null) DebugMod._refDreamNail = FSMUtility.LocateFSM(refKnight, "Dream Nail");
-                return DebugMod._refDreamNail;
+                if (_refCamera == null) _refCamera = GM.cameraCtrl;
+                return _refCamera;
             }
-            set
+        }
+        public static PlayMakerFSM RefDreamNail
+        {
+            get
             {
+                if (_refDreamNail == null) _refDreamNail = FSMUtility.LocateFSM(RefKnight, "Dream Nail");
+                return _refDreamNail;
             }
         }
     }

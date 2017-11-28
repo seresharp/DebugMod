@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace DebugMod
+﻿namespace DebugMod
 {
     public static class PlayerDeathWatcher
     {
@@ -16,7 +11,7 @@ namespace DebugMod
 
         public static bool PlayerDied()
         {
-            return (!playerDead && PlayerData.instance.health <= 0 && DebugMod.gm.IsGameplayScene());
+            return (!playerDead && PlayerData.instance.health <= 0 && DebugMod.GM.IsGameplayScene());
         }
 
         public static void LogDeathDetails()

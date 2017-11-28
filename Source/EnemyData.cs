@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace DebugMod
 {
@@ -49,7 +45,7 @@ namespace DebugMod
             tex2.SetPixel(1, 1, yellow);
 
             hpBar = new CanvasPanel(parent, tex, Vector2.zero, Vector2.zero, new Rect(0, 0, 120, 40));
-            hpBar.AddText("HP", "", Vector2.zero, new Vector2(120, 40), GUIController.instance.arial, 20, FontStyle.Normal, TextAnchor.MiddleCenter);
+            hpBar.AddText("HP", "", Vector2.zero, new Vector2(120, 40), GUIController.Instance.arial, 20, FontStyle.Normal, TextAnchor.MiddleCenter);
             hpBar.FixRenderOrder();
 
             hitbox = new CanvasPanel(parent, tex2, Vector2.zero, Vector2.zero, new Rect(0, 0, 1, 1));

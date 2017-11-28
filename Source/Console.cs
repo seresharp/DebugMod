@@ -1,34 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using UnityEngine;
-using GlobalEnums;
 
 namespace DebugMod
 {
     public static class Console
     {
-        public static bool visible;
-
         private static CanvasPanel panel;
-        private static string GUIString = "";
-        private static float alpha = 1f;
         private static List<string> history = new List<string>();
         private static Vector2 scrollPosition = Vector2.zero;
-        private static float lastTime;
 
         public static void BuildMenu(GameObject canvas)
         {
-            panel = new CanvasPanel(canvas, GUIController.instance.images["ConsoleBg"], new Vector2(1275, 800), Vector2.zero, new Rect(0, 0, GUIController.instance.images["ConsoleBg"].width, GUIController.instance.images["ConsoleBg"].height));
-
-            panel.AddText("Console", "", new Vector2(10f, 25f), Vector2.zero, GUIController.instance.arial);
-            panel.AddText("NoConsole", "", new Vector2(10f, 180f), Vector2.zero, GUIController.instance.arial);
-
+            panel = new CanvasPanel(canvas, GUIController.Instance.images["ConsoleBg"], new Vector2(1275, 800), Vector2.zero, new Rect(0, 0, GUIController.Instance.images["ConsoleBg"].width, GUIController.Instance.images["ConsoleBg"].height));
+            panel.AddText("Console", "", new Vector2(10f, 25f), Vector2.zero, GUIController.Instance.arial);
             panel.FixRenderOrder();
 
-            GUIController.instance.arial.RequestCharactersInTexture("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/? ", 13);
+            GUIController.Instance.arial.RequestCharactersInTexture("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/? ", 13);
         }
 
         public static void Update()
@@ -38,11 +27,21 @@ namespace DebugMod
                 return;
             }
 
-            if (visible && !panel.active)
+            if (DebugMod.GM.IsNonGameplayScene())
+            {
+                if (panel.active)
+                {
+                    panel.SetActive(false, true);
+                }
+
+                return;
+            }
+
+            if (DebugMod.settings.ConsoleVisible && !panel.active)
             {
                 panel.SetActive(true, false);
             }
-            else if (!visible && panel.active)
+            else if (!DebugMod.settings.ConsoleVisible && panel.active)
             {
                 panel.SetActive(false, true);
             }
@@ -61,36 +60,11 @@ namespace DebugMod
 
                 panel.GetText("Console").UpdateText(consoleString);
             }
-
-            if (!panel.active)
-            {
-                float delta = Time.realtimeSinceStartup - lastTime;
-                lastTime = Time.realtimeSinceStartup;
-
-                alpha -= delta * .5f;
-
-                if (alpha > 0 && DebugMod.gm.IsGameplayScene())
-                {
-                    Color c = Color.white;
-                    c.a = alpha;
-
-                    panel.GetText("NoConsole").SetActive(true);
-                    panel.GetText("NoConsole").UpdateText(GUIString);
-                    panel.GetText("NoConsole").SetTextColor(c);
-                }
-                else
-                {
-                    panel.GetText("NoConsole").SetActive(false);
-                }
-            }
         }
 
         public static void Reset()
         {
             history.Clear();
-            alpha = 1f;
-            GUIString = "";
-            lastTime = Time.realtimeSinceStartup;
             scrollPosition = Vector2.zero;
         }
 
@@ -101,7 +75,7 @@ namespace DebugMod
                 history.RemoveAt(0);
             }
 
-            int wrap = WrapIndex(GUIController.instance.arial, 13, chatLine);
+            int wrap = WrapIndex(GUIController.Instance.arial, 13, chatLine);
 
             while (wrap != -1)
             {
@@ -111,7 +85,7 @@ namespace DebugMod
                 {
                     history.Add(chatLine.Substring(0, index));
                     chatLine = chatLine.Substring(index + 1);
-                    wrap = WrapIndex(GUIController.instance.arial, 13, chatLine);
+                    wrap = WrapIndex(GUIController.Instance.arial, 13, chatLine);
                 }
                 else
                 {
@@ -122,13 +96,6 @@ namespace DebugMod
             history.Add(chatLine);
 
             scrollPosition.y = scrollPosition.y + 50f;
-            alpha = 1f;
-            lastTime = Time.realtimeSinceStartup;
-
-            if (!visible)
-            {
-                GUIString = chatLine;
-            }
         }
 
         public static void SaveHistory()
@@ -140,7 +107,7 @@ namespace DebugMod
             }
             catch (Exception arg)
             {
-                Modding.ModHooks.ModLog("[DEBUG MOD] [CONSOLE] Unable to write console history: " + arg);
+                DebugMod.Instance.LogError("[CONSOLE] Unable to write console history: " + arg);
                 Console.AddLine("Unable to write console history");
             }
         }
