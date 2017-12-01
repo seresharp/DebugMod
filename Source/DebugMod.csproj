@@ -64,7 +64,7 @@
     <Compile Include="BindableMethod.cs" />
     <Compile Include="EnemiesPanel.cs" />
     <Compile Include="EnemyData.cs" />
-    <Compile Include="HelpPanel.cs" />
+    <Compile Include="KeyBindPanel.cs" />
     <Compile Include="BindableFunctions.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

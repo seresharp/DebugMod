@@ -24,6 +24,7 @@ namespace DebugMod
         private static float unloadTime;
         private static bool loadingChar;
 
+        public static DebugMod Instance;
         public static GlobalSettings settings;
 
         public static bool infiniteHP;
@@ -38,6 +39,8 @@ namespace DebugMod
 
         public override void Initialize()
         {
+            Instance = this;
+
             Instance.Log("Initializing");
 
             float startTime = Time.realtimeSinceStartup;
@@ -112,7 +115,7 @@ namespace DebugMod
         
         public override string GetVersion()
         {
-            return "1.3.0";
+            return "1.3.1";
         }
 
         private void SaveSettings()
