@@ -107,7 +107,7 @@ namespace DebugMod
             }
             catch (Exception arg)
             {
-                DebugMod.Instance.LogError("[CONSOLE] Unable to write console history: " + arg);
+                DebugMod.instance.LogError("[CONSOLE] Unable to write console history: " + arg);
                 Console.AddLine("Unable to write console history");
             }
         }
@@ -116,14 +116,12 @@ namespace DebugMod
         {
             int totalLength = 0;
 
-            CharacterInfo characterInfo;
-
             char[] arr = message.ToCharArray();
 
             for (int i = 0; i < arr.Length; i++)
             {
                 char c = arr[i];
-                font.GetCharacterInfo(c, out characterInfo, fontSize);
+                font.GetCharacterInfo(c, out CharacterInfo characterInfo, fontSize);
                 totalLength += characterInfo.advance;
 
                 if (totalLength >= 564) return i;

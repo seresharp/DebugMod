@@ -76,7 +76,7 @@ namespace DebugMod
                 }
             }
 
-            if (trajanBold == null || trajanNormal == null || arial == null) DebugMod.Instance.LogError("Could not find game fonts");
+            if (trajanBold == null || trajanNormal == null || arial == null) DebugMod.instance.LogError("Could not find game fonts");
 
             string[] resourceNames = Assembly.GetExecutingAssembly().GetManifestResourceNames();
 
@@ -97,53 +97,14 @@ namespace DebugMod
                         string internalName = split[split.Length - 2];
                         images.Add(internalName, tex);
 
-                        DebugMod.Instance.Log("Loaded image: " + internalName);
+                        DebugMod.instance.Log("Loaded image: " + internalName);
                     }
                     catch (Exception e)
                     {
-                        DebugMod.Instance.LogError("Failed to load image: " + res + "\n" + e.ToString());
+                        DebugMod.instance.LogError("Failed to load image: " + res + "\n" + e.ToString());
                     }
                 }
             }
-
-            /*if (Directory.Exists("DebugMod"))
-            {
-                foreach (string fileName in Directory.GetFiles("DebugMod"))
-                {
-                    string extension = "";
-                    if (fileName.Contains('.'))
-                    {
-                        extension = fileName.Substring(fileName.LastIndexOf('.'));
-                    }
-
-                    if (extension == ".png" || extension == ".jpg")
-                    {
-                        try
-                        {
-                            Texture2D tex = new Texture2D(1, 1);
-                            tex.LoadImage(File.ReadAllBytes(fileName));
-
-                            string[] split = fileName.Split(new char[] { '/', '\\' });
-                            string internalName = split[split.Length - 1].Substring(0, split[split.Length - 1].LastIndexOf('.'));
-                            images.Add(internalName, tex);
-
-                            DebugMod.Instance.Log("Loaded image: " + internalName);
-                        }
-                        catch (Exception e)
-                        {
-                            DebugMod.Instance.LogError("Failed to load image: " + fileName + "\n" + e.ToString());
-                        }
-                    }
-                    else
-                    {
-                        DebugMod.Instance.LogWarn("Non-image file in asset folder: " + fileName);
-                    }
-                }
-            }
-            else
-            {
-                DebugMod.Instance.LogError("Could not find asset folder");
-            }*/
         }
 
         public void Update()
@@ -153,7 +114,7 @@ namespace DebugMod
             EnemiesPanel.Update();
             Console.Update();
             KeyBindPanel.Update();
-
+            
             if (DebugMod.GetSceneName() != "Menu_Title")
             {
                 //Handle keybinds
@@ -197,13 +158,13 @@ namespace DebugMod
                             }
                             catch (Exception e)
                             {
-                                DebugMod.Instance.LogError("Error running keybind method " + bind.Key + ":\n" + e.ToString());
+                                DebugMod.instance.LogError("Error running keybind method " + bind.Key + ":\n" + e.ToString());
                             }
                         }
                     }
                     else
                     {
-                        DebugMod.Instance.LogWarn("Bind found without matching method, removing from binds: " + bind.Key);
+                        DebugMod.instance.LogWarn("Bind found without matching method, removing from binds: " + bind.Key);
                         DebugMod.settings.binds.Remove(bind.Key);
                     }
                 }
@@ -255,9 +216,10 @@ namespace DebugMod
                     UIManager.instance.TogglePauseGame();
                 }
 
-                if (DebugMod.cameraFollow && DebugMod.RefCamera.mode != CameraController.CameraMode.FOLLOWING)
+                if (DebugMod.cameraFollow)
                 {
-                    DebugMod.RefCamera.SetMode(CameraController.CameraMode.FOLLOWING);
+                    BindableFunctions.cameraGameplayScene.SetValue(DebugMod.RefCamera, false);
+                    DebugMod.RefCamera.SnapTo(DebugMod.RefKnight.transform.position.x, DebugMod.RefKnight.transform.position.y);
                 }
 
                 if (PlayerDeathWatcher.PlayerDied())
@@ -272,7 +234,7 @@ namespace DebugMod
 
                     if (DebugMod.settings.EnemiesPanelVisible)
                     {
-                        EnemiesPanel.enemyUpdate(200f);
+                        EnemiesPanel.EnemyUpdate(200f);
                     }
                 }
                 if (!string.IsNullOrEmpty(respawnSceneWatch) && respawnSceneWatch != PlayerData.instance.respawnScene)
@@ -300,7 +262,7 @@ namespace DebugMod
                     _instance = UnityEngine.Object.FindObjectOfType<GUIController>();
                     if (_instance == null)
                     {
-                        DebugMod.Instance.LogWarn("[DEBUG MOD] Couldn't find GUIController");
+                        DebugMod.instance.LogWarn("[DEBUG MOD] Couldn't find GUIController");
 
                         GameObject GUIObj = new GameObject();
                         _instance = GUIObj.AddComponent<GUIController>();

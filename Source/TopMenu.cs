@@ -212,7 +212,7 @@ namespace DebugMod
                 int i = 0;
                 int buttonNum = 1;
 
-                foreach (string entryName in DreamGate.DGData.Keys)
+                foreach (string entryName in DreamGate.dgData.Keys)
                 {
                     if (i >= DreamGate.scrollPosition)
                     {
@@ -590,7 +590,6 @@ namespace DebugMod
 
         private static void DeleteItemClicked(string buttonName)
         {
-            DreamGate.addMenu = false;
             DreamGate.delMenu = !DreamGate.delMenu;
         }
 
@@ -619,7 +618,7 @@ namespace DebugMod
 
         private static void ScrollDownClicked(string buttonName)
         {
-            if (DreamGate.scrollPosition + 6 < DreamGate.DGData.Count)
+            if (DreamGate.scrollPosition + 6 < DreamGate.dgData.Count)
             {
                 DreamGate.scrollPosition++;
             }

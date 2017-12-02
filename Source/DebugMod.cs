@@ -20,31 +20,38 @@ namespace DebugMod
         private static CameraController _refCamera;
         private static PlayMakerFSM _refDreamNail;
 
-        private static float loadTime;
-        private static float unloadTime;
-        private static bool loadingChar;
+        internal static GameManager GM => _gm ?? (_gm = GameManager.instance);
+        internal static InputHandler IH => _ih ?? (_ih = GM.inputHandler);
+        internal static HeroController HC => _hc ?? (_hc = GM.hero_ctrl);
+        internal static GameObject RefKnight => _refKnight ?? (_refKnight = HC.gameObject);
+        internal static PlayMakerFSM RefKnightSlash => _refKnightSlash ?? (_refKnightSlash = RefKnight.transform.Find("Attacks/Slash").GetComponent<PlayMakerFSM>());
+        internal static CameraController RefCamera => _refCamera ?? (_refCamera = GM.cameraCtrl);
+        internal static PlayMakerFSM RefDreamNail => _refDreamNail ?? (_refDreamNail = FSMUtility.LocateFSM(RefKnight, "Dream Nail"));
 
-        public static DebugMod Instance;
-        public static GlobalSettings settings;
+        internal static DebugMod instance;
+        internal static GlobalSettings settings;
 
-        public static bool infiniteHP;
-        public static bool infiniteSoul;
-        public static bool playerInvincible;
-        public static bool noclip = false;
-        public static Vector3 noclipPos;
-        public static bool levelLoading;
-        public static bool cameraFollow;
+        private static float _loadTime;
+        private static float _unloadTime;
+        private static bool _loadingChar;
 
-        public static Dictionary<string, Pair> bindMethods = new Dictionary<string, Pair>();
+        internal static bool infiniteHP;
+        internal static bool infiniteSoul;
+        internal static bool playerInvincible;
+        internal static bool noclip;
+        internal static Vector3 noclipPos;
+        internal static bool cameraFollow;
+
+        internal static Dictionary<string, Pair> bindMethods = new Dictionary<string, Pair>();
 
         public override void Initialize()
         {
-            Instance = this;
+            instance = this;
 
-            Instance.Log("Initializing");
+            instance.Log("Initializing");
 
             float startTime = Time.realtimeSinceStartup;
-            Instance.Log("Building MethodInfo dict...");
+            instance.Log("Building MethodInfo dict...");
 
             bindMethods.Clear();
             foreach (MethodInfo method in typeof(BindableFunctions).GetMethods(BindingFlags.Public | BindingFlags.Static))
@@ -61,13 +68,13 @@ namespace DebugMod
                 }
             }
 
-            Instance.Log("Done! Time taken: " + (Time.realtimeSinceStartup - startTime) + "s. Found " + bindMethods.Count + " methods");
+            instance.Log("Done! Time taken: " + (Time.realtimeSinceStartup - startTime) + "s. Found " + bindMethods.Count + " methods");
 
             settings = GlobalSettings;
 
             if (settings.FirstRun)
             {
-                Instance.Log("First run detected, setting default binds");
+                instance.Log("First run detected, setting default binds");
 
                 settings.FirstRun = false;
                 settings.binds.Clear();
@@ -110,34 +117,36 @@ namespace DebugMod
             BossHandler.PopulateBossLists();
             GUIController.Instance.BuildMenus();
 
-            Console.AddLine("New session started " + DateTime.Now.ToString());
+            Console.AddLine("New session started " + DateTime.Now);
         }
         
         public override string GetVersion()
         {
-            return "1.3.1";
+            return "1.3.2";
+        }
+
+        public override bool IsCurrent()
+        {
+            try
+            {
+                GithubVersionHelper helper = new GithubVersionHelper("seanpr96/DebugMod");
+                return helper.GetVersion() == GetVersion();
+            }
+            catch (Exception)
+            {
+                return true;
+            }
         }
 
         private void SaveSettings()
         {
             SaveGlobalSettings();
-            Instance.Log("Saved");
+            instance.Log("Saved");
         }
 
-        private int PlayerDamaged(int damageAmount)
-        {
-            if (infiniteHP)
-            {
-                return 0;
-            }
+        private int PlayerDamaged(int damageAmount) => infiniteHP ? 0 : damageAmount;
 
-            return damageAmount;
-        }
-
-        private void NewCharacter()
-        {
-            LoadCharacter(0);
-        }
+        private void NewCharacter() => LoadCharacter(0);
 
         private void LoadCharacter(int saveId)
         {
@@ -150,30 +159,28 @@ namespace DebugMod
             infiniteSoul = false;
             noclip = false;
 
-            loadingChar = true;
+            _loadingChar = true;
         }
 
         private void LevelActivated(Scene sceneFrom, Scene sceneTo)
         {
-            levelLoading = false;
-
             string sceneName = sceneTo.name;
             
-            if (loadingChar)
+            if (_loadingChar)
             {
-                TimeSpan timeSpan = TimeSpan.FromSeconds((double)PlayerData.instance.playTime);
+                TimeSpan timeSpan = TimeSpan.FromSeconds(PlayerData.instance.playTime);
                 string text = string.Format("{0:00}.{1:00}", Math.Floor(timeSpan.TotalHours), timeSpan.Minutes);
                 int profileID = PlayerData.instance.profileID;
                 string saveFilename = GameManager.instance.GetSaveFilename(profileID);
                 DateTime lastWriteTime = File.GetLastWriteTime(Application.persistentDataPath + saveFilename);
                 Console.AddLine("New savegame loaded. Profile playtime " + text + " Completion: " + PlayerData.instance.completionPercentage + " Save slot: " + profileID + " Game Version: " + PlayerData.instance.version + " Last Written: " + lastWriteTime);
 
-                loadingChar = false;
+                _loadingChar = false;
             }
 
             if (GM.IsGameplayScene())
             {
-                loadTime = Time.realtimeSinceStartup;
+                _loadTime = Time.realtimeSinceStartup;
                 Console.AddLine("New scene loaded: " + sceneName);
                 EnemiesPanel.Reset();
                 PlayerDeathWatcher.Reset();
@@ -183,9 +190,7 @@ namespace DebugMod
 
         private string OnLevelUnload(string toScene)
         {
-            levelLoading = true;
-
-            unloadTime = Time.realtimeSinceStartup;
+            _unloadTime = Time.realtimeSinceStartup;
 
             return toScene;
         }
@@ -195,21 +200,11 @@ namespace DebugMod
             return ModHooks.Instance.version.gameVersion.minor >= 2;
         }
 
-        public static string GetSceneName()
-        {
-            GameManager gm = GameManager.instance;
-
-            if (gm != null)
-            {
-                return gm.GetSceneNameString();
-            }
-
-            return "";
-        }
+        public static string GetSceneName() => GM != null ? GM.GetSceneNameString() : "";
 
         public static float GetLoadTime()
         {
-            return (float)Math.Round((double)(loadTime - unloadTime), 2);
+            return (float)Math.Round(_loadTime - _unloadTime, 2);
         }
 
         public static void Teleport(string scenename, Vector3 pos)
@@ -224,68 +219,11 @@ namespace DebugMod
             GM.SaveLevelState();
             GM.SetState(GameState.EXITING_LEVEL);
             GM.entryGateName = "dreamGate";
-            RefCamera.FreezeInPlace(false);
+            RefCamera.FreezeInPlace();
 
             HC.ResetState();
 
             GM.LoadScene(scenename);
-        }
-
-        public static GameManager GM
-        {
-            get
-            {
-                if (_gm == null) _gm = GameManager.instance;
-                return _gm;
-            }
-        }
-        public static InputHandler IH
-        {
-            get
-            {
-                if (_ih == null) _ih = GM.inputHandler;
-                return _ih;
-            }
-        }
-        public static HeroController HC
-        {
-            get
-            {
-                if (_hc == null) _hc = GM.hero_ctrl;
-                return _hc;
-            }
-        }
-        public static GameObject RefKnight
-        {
-            get
-            {
-                if (_refKnight == null) _refKnight = HC.gameObject;
-                return _refKnight;
-            }
-        }
-        public static PlayMakerFSM RefKnightSlash
-        {
-            get
-            {
-                if (_refKnightSlash == null) _refKnightSlash = RefKnight.transform.Find("Attacks/Slash").GetComponent<PlayMakerFSM>();
-                return _refKnightSlash;
-            }
-        }
-        public static CameraController RefCamera
-        {
-            get
-            {
-                if (_refCamera == null) _refCamera = GM.cameraCtrl;
-                return _refCamera;
-            }
-        }
-        public static PlayMakerFSM RefDreamNail
-        {
-            get
-            {
-                if (_refDreamNail == null) _refDreamNail = FSMUtility.LocateFSM(RefKnight, "Dream Nail");
-                return _refDreamNail;
-            }
         }
     }
 }

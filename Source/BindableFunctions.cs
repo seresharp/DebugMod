@@ -1,17 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.UI;
-using Modding;
 using GlobalEnums;
 
 namespace DebugMod
 {
     public static class BindableFunctions
     {
+        private static readonly FieldInfo TimeSlowed = typeof(GameManager).GetField("timeSlowed", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
+        private static readonly FieldInfo IgnoreUnpause = typeof(UIManager).GetField("ignoreUnpause", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
+
+        internal static readonly FieldInfo cameraGameplayScene = typeof(CameraController).GetField("isGameplayScene", BindingFlags.Instance | BindingFlags.NonPublic);
+
         #region Misc
 
         [BindableMethod(name = "Nail Damage +4", category = "Misc")]
@@ -30,7 +31,6 @@ namespace DebugMod
         [BindableMethod(name = "Nail Damage -4", category = "Misc")]
         public static void DecreaseNailDamage()
         {
-            int nailDamage = PlayerData.instance.nailDamage;
             int num2 = PlayerData.instance.nailDamage - 4;
             if (num2 >= 0)
             {
@@ -51,13 +51,10 @@ namespace DebugMod
         {
             try
             {
-                FieldInfo timeSlowed = typeof(GameManager).GetField("timeSlowed", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
-                FieldInfo ignoreUnpause = typeof(UIManager).GetField("ignoreUnpause", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
-
-                if ((PlayerData.instance.disablePause || (bool)timeSlowed.GetValue(GameManager.instance) || (bool)ignoreUnpause.GetValue(UIManager.instance)) && DebugMod.GetSceneName() != "Menu_Title" && DebugMod.GM.IsGameplayScene())
+                if ((PlayerData.instance.disablePause || (bool)TimeSlowed.GetValue(GameManager.instance) || (bool)IgnoreUnpause.GetValue(UIManager.instance)) && DebugMod.GetSceneName() != "Menu_Title" && DebugMod.GM.IsGameplayScene())
                 {
-                    timeSlowed.SetValue(GameManager.instance, false);
-                    ignoreUnpause.SetValue(UIManager.instance, false);
+                    TimeSlowed.SetValue(GameManager.instance, false);
+                    IgnoreUnpause.SetValue(UIManager.instance, false);
                     PlayerData.instance.disablePause = false;
                     UIManager.instance.TogglePauseGame();
                     Console.AddLine("Forcing Pause Menu because pause is disabled");
@@ -71,7 +68,7 @@ namespace DebugMod
             catch (Exception e)
             {
                 Console.AddLine("Error while attempting to pause, check ModLog.txt");
-                DebugMod.Instance.Log("Error while attempting force pause:\n" + e.ToString());
+                DebugMod.instance.Log("Error while attempting force pause:\n" + e);
             }
         }
 
@@ -110,15 +107,16 @@ namespace DebugMod
         [BindableMethod(name = "Force Camera Follow", category = "Misc")]
         public static void ForceCameraFollow()
         {
-            if (!DebugMod.cameraFollow && DebugMod.RefCamera.mode != CameraController.CameraMode.FOLLOWING)
+            if (!DebugMod.cameraFollow)
             {
-                Console.AddLine("Setting Camera Mode to FOLLOW. Previous mode: " + DebugMod.RefCamera.mode.ToString());
+                Console.AddLine("Forcing camera follow");
                 DebugMod.cameraFollow = true;
             }
-            else if (DebugMod.cameraFollow)
+            else
             {
                 DebugMod.cameraFollow = false;
-                Console.AddLine("Camera Mode is no longer forced");
+                BindableFunctions.cameraGameplayScene.SetValue(DebugMod.RefCamera, true);
+                Console.AddLine("Returning camera to normal settings");
             }
         }
 
@@ -169,7 +167,7 @@ namespace DebugMod
         {
             GameObject gameObject = DebugMod.RefKnight.transform.Find("HeroLight").gameObject;
             Color color = gameObject.GetComponent<SpriteRenderer>().color;
-            if (color.a != 0f)
+            if (Math.Abs(color.a) > 0f)
             {
                 color.a = 0f;
                 gameObject.GetComponent<SpriteRenderer>().color = color;
@@ -225,17 +223,17 @@ namespace DebugMod
         public static void HideHero()
         {
             tk2dSprite component = DebugMod.RefKnight.GetComponent<tk2dSprite>();
-            Color color2 = component.color;
-            if (color2.a != 0f)
+            Color color = component.color;
+            if (Math.Abs(color.a) > 0f)
             {
-                color2.a = 0f;
-                component.color = color2;
+                color.a = 0f;
+                component.color = color;
                 Console.AddLine("Rendering Hero sprite invisible...");
             }
             else
             {
-                color2.a = 1f;
-                component.color = color2;
+                color.a = 1f;
+                component.color = color;
                 Console.AddLine("Rendering Hero sprite visible...");
             }
         }
@@ -347,7 +345,7 @@ namespace DebugMod
         [BindableMethod(name = "Enemy Scan", category = "Enemy Panel")]
         public static void EnemyScan()
         {
-            EnemiesPanel.enemyUpdate(200f);
+            EnemiesPanel.EnemyUpdate(200f);
             Console.AddLine("Refreshing collider data...");
         }
 
@@ -1128,7 +1126,6 @@ namespace DebugMod
         [BindableMethod(name = "Update DG Data", category = "Dreamgate")]
         public static void ReadDGData()
         {
-            DreamGate.addMenu = false;
             DreamGate.delMenu = false;
             if (!DreamGate.dataBusy)
             {
@@ -1140,7 +1137,6 @@ namespace DebugMod
         [BindableMethod(name = "Save DG Data", category = "Dreamgate")]
         public static void SaveDGData()
         {
-            DreamGate.addMenu = false;
             DreamGate.delMenu = false;
             if (!DreamGate.dataBusy)
             {
@@ -1152,7 +1148,6 @@ namespace DebugMod
         [BindableMethod(name = "Add DG Position", category = "Dreamgate")]
         public static void AddDGPosition()
         {
-            DreamGate.addMenu = true;
             DreamGate.delMenu = false;
 
             string entryName = DebugMod.GM.GetSceneNameString();
@@ -1160,7 +1155,7 @@ namespace DebugMod
 
             if (entryName.Length > 5) entryName = entryName.Substring(0, 5);
 
-            while (DreamGate.DGData.ContainsKey(entryName))
+            while (DreamGate.dgData.ContainsKey(entryName))
             {
                 entryName = DebugMod.GM.GetSceneNameString() + i;
                 i++;

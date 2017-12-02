@@ -16,8 +16,8 @@ namespace DebugMod
         private static GameObject parent;
         public static bool hpBars;
         public static bool hitboxes;
-        public static MethodInfo takeDamage = typeof(HeroController).GetMethod("TakeDamage");
-        public static ParameterInfo[] parameters = takeDamage.GetParameters();
+        public static readonly MethodInfo takeDamage = typeof(HeroController).GetMethod("TakeDamage");
+        public static readonly ParameterInfo[] parameters = takeDamage.GetParameters();
 
         public static void BuildMenu(GameObject canvas)
         {
@@ -378,20 +378,15 @@ namespace DebugMod
                                 enemyPool.Add(new EnemyData(value, playMakerFSM, component, parent, gameObject));
                             }
                         }
-                        enemyDescendants(gameObject.transform);
+                        EnemyDescendants(gameObject.transform);
                     }
                 }
                 if (enemyPool.Count > 0)
                 {
                     Console.AddLine("Enemy data filled, entries added: " + enemyPool.Count);
                 }
-                enemyUpdate(200f);
+                EnemyUpdate(200f);
             }
-        }
-
-        private static void SelfDamage()
-        {
-            BindableFunctions.SelfDamage();
         }
 
         private static void CheckForAutoUpdate()
@@ -403,11 +398,11 @@ namespace DebugMod
             if (deltaTime >= 2f)
             {
                 lastTime = Time.realtimeSinceStartup;
-                enemyUpdate(0f);
+                EnemyUpdate(0f);
             }
         }
 
-        public static void enemyUpdate(float boxSize)
+        public static void EnemyUpdate(float boxSize)
         {
             if (autoUpdate)
             {
@@ -453,7 +448,7 @@ namespace DebugMod
             }
         }
 
-        private static void enemyDescendants(Transform transform)
+        private static void EnemyDescendants(Transform transform)
         {
             List<Transform> list = new List<Transform>();
             foreach (object obj in transform)

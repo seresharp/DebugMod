@@ -99,7 +99,7 @@ namespace DebugMod
 
             if (num < 0 || num >= bindPages[pageKeys[page]].Count)
             {
-                DebugMod.Instance.LogWarn("Invalid bind change button clicked. Should not be possible");
+                DebugMod.instance.LogWarn("Invalid bind change button clicked. Should not be possible");
                 return;
             }
 
