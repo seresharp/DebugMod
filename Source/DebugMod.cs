@@ -20,13 +20,13 @@ namespace DebugMod
         private static CameraController _refCamera;
         private static PlayMakerFSM _refDreamNail;
 
-        internal static GameManager GM => _gm ?? (_gm = GameManager.instance);
-        internal static InputHandler IH => _ih ?? (_ih = GM.inputHandler);
-        internal static HeroController HC => _hc ?? (_hc = GM.hero_ctrl);
-        internal static GameObject RefKnight => _refKnight ?? (_refKnight = HC.gameObject);
-        internal static PlayMakerFSM RefKnightSlash => _refKnightSlash ?? (_refKnightSlash = RefKnight.transform.Find("Attacks/Slash").GetComponent<PlayMakerFSM>());
-        internal static CameraController RefCamera => _refCamera ?? (_refCamera = GM.cameraCtrl);
-        internal static PlayMakerFSM RefDreamNail => _refDreamNail ?? (_refDreamNail = FSMUtility.LocateFSM(RefKnight, "Dream Nail"));
+        internal static GameManager GM => _gm != null ? _gm : (_gm = GameManager.instance);
+        internal static InputHandler IH => _ih != null ? _ih : (_ih = GM.inputHandler);
+        internal static HeroController HC => _hc != null ? _hc : (_hc = GM.hero_ctrl);
+        internal static GameObject RefKnight => _refKnight != null ? _refKnight : (_refKnight = HC.gameObject);
+        internal static PlayMakerFSM RefKnightSlash => _refKnightSlash != null ? _refKnightSlash : (_refKnightSlash = RefKnight.transform.Find("Attacks/Slash").GetComponent<PlayMakerFSM>());
+        internal static CameraController RefCamera => _refCamera != null ? _refCamera : (_refCamera = GM.cameraCtrl);
+        internal static PlayMakerFSM RefDreamNail => _refDreamNail != null ? _refDreamNail : (_refDreamNail = FSMUtility.LocateFSM(RefKnight, "Dream Nail"));
 
         internal static DebugMod instance;
         internal static GlobalSettings settings;
@@ -122,7 +122,7 @@ namespace DebugMod
         
         public override string GetVersion()
         {
-            return "1.3.2";
+            return "1.3.3";
         }
 
         public override bool IsCurrent()
@@ -130,6 +130,7 @@ namespace DebugMod
             try
             {
                 GithubVersionHelper helper = new GithubVersionHelper("seanpr96/DebugMod");
+                Log("Github = " + helper.GetVersion());
                 return helper.GetVersion() == GetVersion();
             }
             catch (Exception)
@@ -200,7 +201,17 @@ namespace DebugMod
             return ModHooks.Instance.version.gameVersion.minor >= 2;
         }
 
-        public static string GetSceneName() => GM != null ? GM.GetSceneNameString() : "";
+        public static string GetSceneName()
+        {
+            if (GM == null)
+            {
+                instance.LogWarn("GameManager reference is null in GetSceneName");
+                return "";
+            }
+
+            string sceneName = GM.GetSceneNameString();
+            return sceneName;
+        }
 
         public static float GetLoadTime()
         {
