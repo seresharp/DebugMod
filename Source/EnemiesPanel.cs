@@ -51,7 +51,7 @@ namespace DebugMod
         private static void DelClicked(string buttonName)
         {
             int num = Convert.ToInt32(buttonName.Substring(3));
-            EnemyData dat = enemyPool.FindAll(ed => ed.gameObject != null && ed.gameObject.activeSelf)[num - 1];
+            EnemyData dat = enemyPool.FindAll(ed => ed.gameObject?.activeSelf == true)[num - 1];
 
             Console.AddLine("Destroying enemy: " + dat.gameObject.name);
             UnityEngine.Object.DestroyImmediate(dat.gameObject);
@@ -60,13 +60,13 @@ namespace DebugMod
         private static void CloneClicked(string buttonName)
         {
             int num = Convert.ToInt32(buttonName.Substring(5));
-            EnemyData dat = enemyPool.FindAll(ed => ed.gameObject != null && ed.gameObject.activeSelf)[num - 1];
+            EnemyData dat = enemyPool.FindAll(ed => ed.gameObject?.activeSelf == true)[num - 1];
 
             GameObject gameObject2 = UnityEngine.Object.Instantiate(dat.gameObject, dat.gameObject.transform.position, dat.gameObject.transform.rotation) as GameObject;
             Component component = gameObject2.GetComponent<tk2dSprite>();
-            PlayMakerFSM playMakerFSM2 = FSMUtility.LocateFSM(gameObject2, dat.FSM.FsmName);
-            int value8 = playMakerFSM2.FsmVariables.GetFsmInt("HP").Value;
-            enemyPool.Add(new EnemyData(value8, playMakerFSM2, component, parent, gameObject2));
+            HealthManager HM2 = gameObject2.GetComponent<HealthManager>();
+            int value8 = HM2.hp;
+            enemyPool.Add(new EnemyData(value8, HM2, component, parent, gameObject2));
             Console.AddLine("Cloning enemy as: " + gameObject2.name);
         }
 
@@ -170,7 +170,7 @@ namespace DebugMod
                     }
                     else
                     {
-                        int hp = dat.FSM.FsmVariables.GetFsmInt("HP").Value;
+                        int hp = dat.HM.hp;
 
                         if (hp != dat.HP)
                         {
@@ -265,7 +265,7 @@ namespace DebugMod
                             enemyPos.x -= 60;
 
                             dat.hpBar.SetPosition(enemyPos);
-                            dat.hpBar.GetText("HP").UpdateText(dat.FSM.FsmVariables.GetFsmInt("HP").Value + "/" + dat.maxHP);
+                            dat.hpBar.GetText("HP").UpdateText(dat.HM.hp + "/" + dat.maxHP);
 
                             if (!dat.hpBar.active)
                             {
@@ -286,7 +286,7 @@ namespace DebugMod
                         if (++enemyCount <= 14)
                         {
                             enemyNames += obj.name + "\n";
-                            enemyHP += dat.FSM.FsmVariables.GetFsmInt("HP").Value + "/" + dat.maxHP + "\n";
+                            enemyHP += dat.HM.hp + "/" + dat.maxHP + "\n";
                         }
                     }
                 }
@@ -356,26 +356,22 @@ namespace DebugMod
                     {
                         if ((gameObject.layer == 11 || gameObject.layer == 17 || gameObject.tag == "Boss") && !Ignore(gameObject.name))
                         {
-                            PlayMakerFSM playMakerFSM = FSMUtility.LocateFSM(gameObject, "health_manager_enemy");
+                            HealthManager healthManager = gameObject.GetComponent<HealthManager>();
                             Component component = gameObject.GetComponent<tk2dSprite>();
-                            if (playMakerFSM == null)
-                            {
-                                playMakerFSM = FSMUtility.LocateFSM(gameObject, "health_manager");
-                            }
                             int num3 = gameObject.name.IndexOf("grass", StringComparison.OrdinalIgnoreCase);
                             int num2 = gameObject.name.IndexOf("hopper", StringComparison.OrdinalIgnoreCase);
                             if (num3 >= 0 && num2 >= 0)
                             {
                                 component = gameObject.transform.FindChild("Sprite").gameObject.gameObject.GetComponent<tk2dSprite>();
                             }
-                            if (playMakerFSM != null)
+                            if (healthManager != null)
                             {
                                 if (component == null)
                                 {
                                     component = null;
                                 }
-                                int value = playMakerFSM.FsmVariables.GetFsmInt("HP").Value;
-                                enemyPool.Add(new EnemyData(value, playMakerFSM, component, parent, gameObject));
+                                int value = healthManager.hp;
+                                enemyPool.Add(new EnemyData(value, healthManager, component, parent, gameObject));
                             }
                         }
                         EnemyDescendants(gameObject.transform);
@@ -418,20 +414,16 @@ namespace DebugMod
                 {
                     for (int i = 0; i < array.Length; i++)
                     {
-                        PlayMakerFSM playMakerFSM = FSMUtility.LocateFSM(array[i].gameObject, "health_manager_enemy");
-                        if (playMakerFSM == null)
-                        {
-                            FSMUtility.LocateFSM(array[i].gameObject, "health_manager");
-                        }
-                        if (playMakerFSM && !enemyPool.Any(ed => ed.gameObject == array[i].gameObject) && !Ignore(array[i].gameObject.name))
+                        HealthManager healthManager = array[i].gameObject.GetComponent<HealthManager>();
+                        if (healthManager && !enemyPool.Any(ed => ed.gameObject == array[i].gameObject) && !Ignore(array[i].gameObject.name))
                         {
                             Component component = array[i].gameObject.GetComponent<tk2dSprite>();
                             if (component == null)
                             {
                                 component = null;
                             }
-                            int value = playMakerFSM.FsmVariables.GetFsmInt("HP").Value;
-                            enemyPool.Add(new EnemyData(value, playMakerFSM, component, parent, array[i].gameObject));
+                            int value = healthManager.hp;
+                            enemyPool.Add(new EnemyData(value, healthManager, component, parent, array[i].gameObject));
                         }
                     }
                     if (enemyPool.Count > count)
@@ -456,20 +448,16 @@ namespace DebugMod
                 Transform transform2 = (Transform)obj;
                 if ((transform2.gameObject.layer == 11 || transform2.gameObject.layer == 17) && !enemyPool.Any(ed => ed.gameObject == transform2.gameObject) && !Ignore(transform2.gameObject.name))
                 {
-                    PlayMakerFSM playMakerFSM = FSMUtility.LocateFSM(transform2.gameObject, "health_manager_enemy");
-                    if (playMakerFSM == null)
-                    {
-                        playMakerFSM = FSMUtility.LocateFSM(GUIController.Instance.gameObject, "health_manager");
-                    }
+                    HealthManager healthManager = transform2.gameObject.GetComponent<HealthManager>();
                     Component component = transform2.gameObject.GetComponent<tk2dSprite>();
-                    if (playMakerFSM)
+                    if (healthManager)
                     {
                         if (component == null)
                         {
                             component = null;
                         }
-                        int value = playMakerFSM.FsmVariables.GetFsmInt("HP").Value;
-                        enemyPool.Add(new EnemyData(value, playMakerFSM, component, parent, transform2.gameObject));
+                        int value = healthManager.hp;
+                        enemyPool.Add(new EnemyData(value, healthManager, component, parent, transform2.gameObject));
                     }
                 }
                 list.Add(transform2);
@@ -483,20 +471,16 @@ namespace DebugMod
                         Transform transform3 = (Transform)obj2;
                         if ((transform3.gameObject.layer == 11 || transform3.gameObject.layer == 17) && !enemyPool.Any(ed => ed.gameObject == transform3.gameObject) && !Ignore(transform3.gameObject.name))
                         {
-                            PlayMakerFSM playMakerFSM2 = FSMUtility.LocateFSM(transform3.gameObject, "health_manager_enemy");
-                            if (playMakerFSM2 == null)
-                            {
-                                playMakerFSM2 = FSMUtility.LocateFSM(GUIController.Instance.gameObject, "health_manager");
-                            }
+                            HealthManager healthManager2 = transform3.gameObject.GetComponent<HealthManager>();
                             Component component2 = transform3.gameObject.GetComponent<tk2dSprite>();
-                            if (playMakerFSM2)
+                            if (healthManager2)
                             {
                                 if (component2 == null)
                                 {
                                     component2 = null;
                                 }
-                                int value2 = playMakerFSM2.FsmVariables.GetFsmInt("HP").Value;
-                                enemyPool.Add(new EnemyData(value2, playMakerFSM2, component2, parent, transform3.gameObject));
+                                int value2 = healthManager2.hp;
+                                enemyPool.Add(new EnemyData(value2, healthManager2, component2, parent, transform3.gameObject));
                             }
                         }
                         list.Add(transform3);

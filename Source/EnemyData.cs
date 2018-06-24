@@ -6,17 +6,18 @@ namespace DebugMod
     {
         public int HP;
         public int maxHP;
-        public PlayMakerFSM FSM;
+        // public PlayMakerFSM FSM;
+        public HealthManager HM;
         public Component Spr;
         public CanvasPanel hpBar;
         public CanvasPanel hitbox;
         public GameObject gameObject;
 
-        public EnemyData(int hp, PlayMakerFSM fsm, Component spr, GameObject parent = null, GameObject go = null)
+        public EnemyData(int hp, HealthManager hm, Component spr, GameObject parent = null, GameObject go = null)
         {
             HP = hp;
             maxHP = hp;
-            FSM = fsm;
+            HM = hm;
             Spr = spr;
             gameObject = go;
 
@@ -57,7 +58,7 @@ namespace DebugMod
         public void SetHP(int health)
         {
             HP = health;
-            FSM.FsmVariables.GetFsmInt("HP").Value = health;
+            HM.hp = health;
         }
     }
 }
