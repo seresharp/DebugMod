@@ -410,27 +410,22 @@ namespace DebugMod
                 int count = enemyPool.Count;
                 int layerMask = 133120;
                 Collider2D[] array = Physics2D.OverlapBoxAll(DebugMod.RefKnight.transform.position, new Vector2(boxSize, boxSize), 1f, layerMask);
-                if (array != null)
+                if (array == null) return;
+                
+                foreach (Collider2D t in array)
                 {
-                    for (int i = 0; i < array.Length; i++)
+                    HealthManager healthManager = t.gameObject.GetComponent<HealthManager>();
+                    if (healthManager && enemyPool.All(ed => ed.gameObject != t.gameObject) && !Ignore(t.gameObject.name))
                     {
-                        HealthManager healthManager = array[i].gameObject.GetComponent<HealthManager>();
-                        if (healthManager && !enemyPool.Any(ed => ed.gameObject == array[i].gameObject) && !Ignore(array[i].gameObject.name))
-                        {
-                            Component component = array[i].gameObject.GetComponent<tk2dSprite>();
-                            if (component == null)
-                            {
-                                component = null;
-                            }
-                            int value = healthManager.hp;
-                            enemyPool.Add(new EnemyData(value, healthManager, component, parent, array[i].gameObject));
-                        }
+                        Component component = t.gameObject.GetComponent<tk2dSprite>();
+                        int value = healthManager.hp;
+                        enemyPool.Add(new EnemyData(value, healthManager, component, parent, t.gameObject));
                     }
-                    if (enemyPool.Count > count)
-                    {
-                        Console.AddLine("EnemyList updated: +" + (enemyPool.Count - count));
-                        return;
-                    }
+                }
+
+                if (enemyPool.Count > count)
+                {
+                    Console.AddLine("EnemyList updated: +" + (enemyPool.Count - count));
                 }
             }
             else if (autoUpdate && (!DebugMod.settings.EnemiesPanelVisible || !GameManager.instance.IsGameplayScene() || HeroController.instance == null))
