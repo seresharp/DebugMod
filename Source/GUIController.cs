@@ -17,7 +17,7 @@ namespace DebugMod
         public Vector3 hazardLocation;
         public string respawnSceneWatch;
 
-        private GameObject canvas;
+        public GameObject canvas;
         private static GUIController _instance;
 
         public void Awake()
@@ -43,7 +43,7 @@ namespace DebugMod
             Console.BuildMenu(canvas);
             KeyBindPanel.BuildMenu(canvas);
 
-            GameObject.DontDestroyOnLoad(canvas);
+            DontDestroyOnLoad(canvas);
         }
 
         private void LoadResources()

@@ -122,22 +122,10 @@ namespace DebugMod
         
         public override string GetVersion()
         {
-            return "1.3.3";
+            return "1.3.6";
         }
 
-        public override bool IsCurrent()
-        {
-            try
-            {
-                GithubVersionHelper helper = new GithubVersionHelper("seanpr96/DebugMod");
-                Log("Github = " + helper.GetVersion());
-                return helper.GetVersion() == GetVersion();
-            }
-            catch (Exception)
-            {
-                return true;
-            }
-        }
+        public override bool IsCurrent() => true;
 
         private void SaveSettings()
         {
