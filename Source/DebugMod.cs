@@ -172,9 +172,9 @@ namespace DebugMod
                 TimeSpan timeSpan = TimeSpan.FromSeconds(PlayerData.instance.playTime);
                 string text = string.Format("{0:00}.{1:00}", Math.Floor(timeSpan.TotalHours), timeSpan.Minutes);
                 int profileID = PlayerData.instance.profileID;
-                string saveFilename = GameManager.instance.GetSaveFilename(profileID);
-                DateTime lastWriteTime = File.GetLastWriteTime(Application.persistentDataPath + saveFilename);
-                Console.AddLine("New savegame loaded. Profile playtime " + text + " Completion: " + PlayerData.instance.completionPercentage + " Save slot: " + profileID + " Game Version: " + PlayerData.instance.version + " Last Written: " + lastWriteTime);
+                //string saveFilename = GameManager.instance.GetSaveFilename(profileID);
+                //DateTime lastWriteTime = File.GetLastWriteTime(Application.persistentDataPath + saveFilename);
+                Console.AddLine("New savegame loaded. Profile playtime " + text + " Completion: " + PlayerData.instance.completionPercentage + " Save slot: " + profileID + " Game Version: " + PlayerData.instance.version);// + " Last Written: " + lastWriteTime);
 
                 _loadingChar = false;
             }
