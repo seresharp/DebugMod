@@ -238,6 +238,63 @@ namespace DebugMod
             }
         }
 
+        [BindableMethod(name = "Take Screenshot", category = "Visual")]
+        public static void TakeScreenshot()
+        {
+            try
+            {
+                var dirName = Application.persistentDataPath + System.IO.Path.DirectorySeparatorChar + "screenshots";
+                System.IO.Directory.CreateDirectory(dirName);
+                var imageFilename = dirName + System.IO.Path.DirectorySeparatorChar + $"screenshot{DateTime.Now.ToFileTimeUtc()}.png";
+
+                ScreenCapture.CaptureScreenshot(imageFilename);
+            }
+            catch (Exception e)
+            {
+                Console.AddLine("Error while attempting to take screenshot, check ModLog.txt");
+                DebugMod.instance.Log("Error while attempting to take screenshot:\n" + e);
+            }
+        }
+
+        [BindableMethod(name = "Hide Foreground Elements", category = "Visual")]
+        public static void HideForegroundElements()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager
+                .GetSceneByName(DebugMod.GetSceneName());
+            GameObject[] rootGameObjects = scene.GetRootGameObjects();
+            if (rootGameObjects != null)
+            {
+                foreach (GameObject gameObject in rootGameObjects)
+                {
+                    HideUnwantedElementsInTree(gameObject.transform);
+                }
+            }
+        }
+
+        private static void HideUnwantedElementsInTree(Transform transform)
+        {
+            var go = transform.gameObject;
+            var zPos = transform.GetPositionZ();
+            if (zPos <= -3) // If object is a decorative foreground element
+                Hide(go);
+
+            foreach (Transform child in transform)
+            {
+                HideUnwantedElementsInTree(child);
+            }
+        }
+
+        private static void Hide(GameObject gameObject)
+        {
+            var spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                var color = spriteRenderer.color;
+                color.a = 0;
+                spriteRenderer.color = color;
+            }
+        }
+
         #endregion
 
         #region Panels

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
@@ -101,6 +100,8 @@ namespace DebugMod
                 settings.binds.Add("Reset Camera Zoom", (int)KeyCode.End);
                 settings.binds.Add("Toggle HUD", (int)KeyCode.Delete);
                 settings.binds.Add("Hide Hero", (int)KeyCode.Backspace);
+                settings.binds.Add("Take Screenshot", (int)KeyCode.KeypadEnter);
+                settings.binds.Add("Hide Foreground Elements", (int)KeyCode.Keypad5);
             }
 
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += LevelActivated;
