@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -256,42 +257,64 @@ namespace DebugMod
             }
         }
 
-        [BindableMethod(name = "Hide Foreground Elements", category = "Visual")]
-        public static void HideForegroundElements()
+        private static float fgThreshold = -3f;
+
+        [BindableMethod(name = "Toggle Foreground Elements", category = "Visual")]
+        public static void ToggleForegroundElements()
         {
+            DebugMod.showingFgObjs = !DebugMod.showingFgObjs;
+
             var scene = UnityEngine.SceneManagement.SceneManager
                 .GetSceneByName(DebugMod.GetSceneName());
             GameObject[] rootGameObjects = scene.GetRootGameObjects();
             if (rootGameObjects != null)
             {
+                Console.AddLine("Toggling visibility of objects beyond z = " + fgThreshold);
+
                 foreach (GameObject gameObject in rootGameObjects)
                 {
-                    HideUnwantedElementsInTree(gameObject.transform);
+                    AdjustVisibilityOfElementsInTree(gameObject.transform, DebugMod.showingFgObjs);
                 }
             }
         }
 
-        private static void HideUnwantedElementsInTree(Transform transform)
+        private static void AdjustVisibilityOfElementsInTree(Transform transform, bool show)
         {
             var go = transform.gameObject;
             var zPos = transform.GetPositionZ();
-            if (zPos <= -3) // If object is a decorative foreground element
-                Hide(go);
+            if (show || zPos < fgThreshold)
+                AdjustVisibility(go, show);
 
             foreach (Transform child in transform)
             {
-                HideUnwantedElementsInTree(child);
+                AdjustVisibilityOfElementsInTree(child, show);
             }
         }
 
-        private static void Hide(GameObject gameObject)
+        private static void AdjustVisibility(GameObject gameObject, bool show)
         {
-            var spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
+            try
             {
+                var spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+                if (spriteRenderer == null)
+                    return;
+
                 var color = spriteRenderer.color;
-                color.a = 0;
+
+                if (!show)
+                {
+                    DebugMod.PreviousAlphaValues[gameObject.GetInstanceID()] = color.a;
+                    color.a = 0;
+                }
+                else if (DebugMod.PreviousAlphaValues.TryGetValue(gameObject.GetInstanceID(), out var prevValue)) {
+                    color.a = prevValue;
+                }
+
                 spriteRenderer.color = color;
+            }
+            catch (Exception e)
+            {
+                Console.AddLine("Problem while adjusting object visibility:\n" + e);
             }
         }
 

@@ -70,10 +70,10 @@ namespace DebugMod
 
         public static void AddLine(string chatLine)
         {
-            while (history.Count > 1000)
-            {
-                history.RemoveAt(0);
-            }
+//            while (history.Count > 1000)
+//            {
+//                history.RemoveAt(0);
+//            }
 
             int wrap = WrapIndex(GUIController.Instance.arial, 13, chatLine);
 
@@ -103,6 +103,7 @@ namespace DebugMod
             try
             {
                 File.WriteAllLines("console.txt", history.ToArray());
+                Reset();
                 Console.AddLine("Written history to console.txt");
             }
             catch (Exception arg)
