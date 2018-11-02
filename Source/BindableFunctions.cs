@@ -582,7 +582,7 @@ namespace DebugMod
             if (DebugMod.GM.isPaused) UIManager.instance.TogglePauseGame();
             HeroController.instance.TakeHealth(9999);
             HeroController.instance.heroDeathPrefab.SetActive(true);
-            DebugMod.GM.ReadyForRespawn(false);
+            DebugMod.GM.ReadyForRespawn();
             GameCameras.instance.hudCanvas.gameObject.SetActive(false);
             GameCameras.instance.hudCanvas.gameObject.SetActive(true);
         }
