@@ -263,35 +263,56 @@ namespace DebugMod
         public static void ToggleForegroundElements()
         {
             DebugMod.showingFgObjs = !DebugMod.showingFgObjs;
+            Console.AddLine($"{(DebugMod.showingFgObjs ? "Showing" : "Hiding")} objects beyond z = {fgThreshold}");
 
-            var scene = UnityEngine.SceneManagement.SceneManager
-                .GetSceneByName(DebugMod.GetSceneName());
+            AdjustVisibilityOfAllElements();
+        }
+
+        [BindableMethod(name = "Show More Foreground Elements", category = "Visual")]
+        public static void ShowMoreForegroundElements()
+        {
+            fgThreshold -= 0.5f;
+
+            Console.AddLine("Foreground visibility threshold at z = " + fgThreshold);
+            if (!DebugMod.showingFgObjs)
+                AdjustVisibilityOfAllElements();
+        }
+
+        [BindableMethod(name = "Show Fewer Foreground Elements", category = "Visual")]
+        public static void ShowFewerForegroundElements()
+        {
+            if (fgThreshold < -0.5f)
+                fgThreshold += 0.5f;
+
+            Console.AddLine("Foreground visibility threshold at z = " + fgThreshold);
+            if (!DebugMod.showingFgObjs)
+                AdjustVisibilityOfAllElements();
+        }
+
+        private static void AdjustVisibilityOfAllElements()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetSceneByName(DebugMod.GetSceneName());
             GameObject[] rootGameObjects = scene.GetRootGameObjects();
             if (rootGameObjects != null)
             {
-                Console.AddLine("Toggling visibility of objects beyond z = " + fgThreshold);
-
                 foreach (GameObject gameObject in rootGameObjects)
                 {
-                    AdjustVisibilityOfElementsInTree(gameObject.transform, DebugMod.showingFgObjs);
+                    AdjustVisibilityOfElementsInTree(gameObject.transform);
                 }
             }
         }
 
-        private static void AdjustVisibilityOfElementsInTree(Transform transform, bool show)
+        private static void AdjustVisibilityOfElementsInTree(Transform transform)
         {
-            var go = transform.gameObject;
-            var zPos = transform.GetPositionZ();
-            if (show || zPos < fgThreshold)
-                AdjustVisibility(go, show);
+            AdjustVisibility(transform.gameObject);
 
             foreach (Transform child in transform)
             {
-                AdjustVisibilityOfElementsInTree(child, show);
+                AdjustVisibilityOfElementsInTree(child);
             }
         }
 
-        private static void AdjustVisibility(GameObject gameObject, bool show)
+        private static void AdjustVisibility(GameObject gameObject)
         {
             try
             {
@@ -299,15 +320,23 @@ namespace DebugMod
                 if (spriteRenderer == null)
                     return;
 
+                var zPos = gameObject.transform.GetPositionZ();
+
                 var color = spriteRenderer.color;
 
-                if (!show)
+                var goId = gameObject.GetInstanceID();
+                if (!DebugMod.showingFgObjs && zPos < fgThreshold) // If should hide object
                 {
-                    DebugMod.PreviousAlphaValues[gameObject.GetInstanceID()] = color.a;
-                    color.a = 0;
+                    if (!DebugMod.PreviousAlphaValues.ContainsKey(goId)) // If not already hidden
+                    {
+                        DebugMod.PreviousAlphaValues[goId] = color.a;
+                        color.a = 0;
+                    }
                 }
-                else if (DebugMod.PreviousAlphaValues.TryGetValue(gameObject.GetInstanceID(), out var prevValue)) {
+                else if (DebugMod.PreviousAlphaValues.TryGetValue(gameObject.GetInstanceID(), out var prevValue)) // If should show and was previously hidden
+                {
                     color.a = prevValue;
+                    DebugMod.PreviousAlphaValues.Remove(goId);
                 }
 
                 spriteRenderer.color = color;

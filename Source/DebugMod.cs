@@ -104,6 +104,8 @@ namespace DebugMod
                 settings.binds.Add("Hide Hero", (int)KeyCode.Backspace);
                 settings.binds.Add("Take Screenshot", (int)KeyCode.KeypadEnter);
                 settings.binds.Add("Toggle Foreground Elements", (int)KeyCode.Keypad5);
+                settings.binds.Add("Show More Foreground Elements", (int)KeyCode.Keypad2);
+                settings.binds.Add("Show Fewer Foreground Elements", (int)KeyCode.Keypad8);
             }
 
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += LevelActivated;
