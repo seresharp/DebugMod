@@ -1,5 +1,7 @@
 ﻿using System;
+using Modding;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace DebugMod
 {
@@ -290,6 +292,18 @@ namespace DebugMod
 
         private static void HideMenuClicked(string buttonName)
         {
+            Text text = CanvasUtil.CreateTextPanel(GUIController.Instance.canvas, "", 27, TextAnchor.MiddleCenter,
+                new CanvasUtil.RectData(
+                    new Vector2(0, 50),
+                    new Vector2(0, 45),
+                    new Vector2(0, 0),
+                    new Vector2(1, 0),
+                    new Vector2(0.5f, 0.5f))).GetComponent<Text>();
+            text.font = CanvasUtil.TrajanBold;
+            text.text = $"Press {Enum.GetName(typeof(KeyCode), DebugMod.settings.binds["Toggle All UI"])} to unhide the menu!";
+            text.fontSize = 42;
+            text.CrossFadeAlpha(1f, 0f, false);
+            text.CrossFadeAlpha(0f, 6f, false);
             BindableFunctions.ToggleAllPanels();
         }
 

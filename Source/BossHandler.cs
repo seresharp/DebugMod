@@ -1,5 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Drawing.Text;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace DebugMod
 {
@@ -21,6 +27,7 @@ namespace DebugMod
                 Console.AddLine("Found stored Boss in this scene, respawn available");
                 bossFound = true;
             }
+
             if (ghostData != null && ghostData.ContainsKey(sceneName))
             {
                 Console.AddLine("Found stored Ghost Boss in this scene, respawn available");
@@ -34,10 +41,12 @@ namespace DebugMod
             {
                 bossData = new Dictionary<string, KeyValuePair<bool, string>>(16);
             }
+
             if (ghostData == null)
             {
                 ghostData = new Dictionary<string, string>(7);
             }
+
             bossData.Clear();
             ghostData.Clear();
             bossData.Add("Ruins2_03", new KeyValuePair<bool, string>(true, "Battle Control"));
@@ -72,22 +81,54 @@ namespace DebugMod
             {
                 if (bossData[DebugMod.GetSceneName()].Key)
                 {
-                    PlayMakerFSM[] components = GameObject.Find(bossData[DebugMod.GetSceneName()].Value).GetComponents<PlayMakerFSM>();
-                    if (components != null)
+                    SceneAdditiveLoadConditional bossLoader =
+                        GameObject.Find("BossLoader")?.GetComponent<SceneAdditiveLoadConditional>();
+
+                    if (bossLoader != null)
                     {
-                        foreach (PlayMakerFSM playMakerFSM in components)
+                        Console.AddLine(bossLoader.ToString());
+                        Console.AddLine(bossLoader.sceneNameToLoad);
+                    }
+
+                    IEnumerator ResetBoss(string scene)
+                    {
+                        if (bossLoader != null && scene != null)
                         {
-                            if (playMakerFSM.FsmVariables.GetFsmBool("Activated") != null)
+                            yield return null;
+                            yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(scene,
+                                LoadSceneMode.Additive);
+
+                            FieldInfo fi = typeof(SceneAdditiveLoadConditional).GetField("sceneLoaded",
+                                BindingFlags.Instance | BindingFlags.NonPublic);
+
+                            fi.SetValue(bossLoader, true);
+                            yield return null;
+                            GameManager.instance.LoadedBoss();
+                        }
+
+                        PlayMakerFSM[] components = GameObject.Find(bossData[DebugMod.GetSceneName()].Value)
+                            .GetComponents<PlayMakerFSM>();
+
+                        if (components != null)
+                        {
+                            foreach (PlayMakerFSM playMakerFSM in components)
                             {
-                                playMakerFSM.FsmVariables.GetFsmBool("Activated").Value = false;
-                                Console.AddLine("Boss control for this scene was reset, re-enter scene or warp");
+                                if (playMakerFSM.FsmVariables.GetFsmBool("Activated") != null)
+                                {
+                                    Modding.Logger.Log(playMakerFSM.Fsm.GetFsmBool("Activated").Value);
+                                    playMakerFSM.FsmVariables.GetFsmBool("Activated").Value = false;
+                                    Modding.Logger.Log(playMakerFSM.Fsm.GetFsmBool("Activated").Value);
+                                    Console.AddLine("Boss control for this scene was reset, re-enter scene or warp");
+                                }
                             }
                         }
+                        else
+                        {
+                            Console.AddLine("GO does not exist or no FSM on it");
+                        }
                     }
-                    else
-                    {
-                        Console.AddLine("GO does not exist or no FSM on it");
-                    }
+
+                    GameManager.instance.StartCoroutine(ResetBoss(bossLoader != null ? bossLoader.sceneNameToLoad : null));
                 }
                 else
                 {
@@ -101,8 +142,10 @@ namespace DebugMod
                     }
                     else
                     {
-                        PlayerData.instance.GetType().GetField(bossData[DebugMod.GetSceneName()].Value).SetValue(PlayerData.instance, false);
+                        PlayerData.instance.GetType().GetField(bossData[DebugMod.GetSceneName()].Value)
+                            .SetValue(PlayerData.instance, false);
                     }
+
                     Console.AddLine("Boss control for this scene was reset, re-enter scene or warp");
                 }
             }
@@ -116,7 +159,8 @@ namespace DebugMod
         {
             if (ghostFound)
             {
-                PlayerData.instance.GetType().GetField(ghostData[DebugMod.GetSceneName()]).SetValue(PlayerData.instance, 0);
+                PlayerData.instance.GetType().GetField(ghostData[DebugMod.GetSceneName()])
+                    .SetValue(PlayerData.instance, 0);
                 Console.AddLine("Ghost Boss for this scene was reset, re-enter scene or warp");
             }
             else

@@ -122,22 +122,10 @@ namespace DebugMod
         
         public override string GetVersion()
         {
-            return "1.3.3";
+            return "1.3.6";
         }
 
-        public override bool IsCurrent()
-        {
-            try
-            {
-                GithubVersionHelper helper = new GithubVersionHelper("seanpr96/DebugMod");
-                Log("Github = " + helper.GetVersion());
-                return helper.GetVersion() == GetVersion();
-            }
-            catch (Exception)
-            {
-                return true;
-            }
-        }
+        public override bool IsCurrent() => true;
 
         private void SaveSettings()
         {
@@ -172,7 +160,7 @@ namespace DebugMod
                 TimeSpan timeSpan = TimeSpan.FromSeconds(PlayerData.instance.playTime);
                 string text = string.Format("{0:00}.{1:00}", Math.Floor(timeSpan.TotalHours), timeSpan.Minutes);
                 int profileID = PlayerData.instance.profileID;
-                string saveFilename = GameManager.instance.GetSaveFilename(profileID);
+                string saveFilename = "no";// Platform.Current.getsavefilename(profileID);
                 DateTime lastWriteTime = File.GetLastWriteTime(Application.persistentDataPath + saveFilename);
                 Console.AddLine("New savegame loaded. Profile playtime " + text + " Completion: " + PlayerData.instance.completionPercentage + " Save slot: " + profileID + " Game Version: " + PlayerData.instance.version + " Last Written: " + lastWriteTime);
 
