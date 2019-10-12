@@ -103,12 +103,12 @@ namespace DebugMod
             try
             {
                 File.WriteAllLines("console.txt", history.ToArray());
-                Console.AddLine("Written history to console.txt");
+                AddLine("Written history to console.txt");
             }
             catch (Exception arg)
             {
                 DebugMod.instance.LogError("[CONSOLE] Unable to write console history: " + arg);
-                Console.AddLine("Unable to write console history");
+                AddLine("Unable to write console history");
             }
         }
 

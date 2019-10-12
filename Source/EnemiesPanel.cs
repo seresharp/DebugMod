@@ -143,7 +143,7 @@ namespace DebugMod
 
             if (panel.active)
             {
-                EnemiesPanel.CheckForAutoUpdate();
+                CheckForAutoUpdate();
 
                 string enemyNames = "";
                 string enemyHP = "";

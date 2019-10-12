@@ -259,14 +259,14 @@ namespace DebugMod
             {
                 if (_instance == null)
                 {
-                    _instance = UnityEngine.Object.FindObjectOfType<GUIController>();
+                    _instance = FindObjectOfType<GUIController>();
                     if (_instance == null)
                     {
                         DebugMod.instance.LogWarn("[DEBUG MOD] Couldn't find GUIController");
 
                         GameObject GUIObj = new GameObject();
                         _instance = GUIObj.AddComponent<GUIController>();
-                        GameObject.DontDestroyOnLoad(GUIObj);
+                        DontDestroyOnLoad(GUIObj);
                     }
                 }
                 return _instance;

@@ -7,6 +7,7 @@ using Modding;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using GlobalEnums;
+using Object = UnityEngine.Object;
 
 namespace DebugMod
 {
@@ -106,7 +107,7 @@ namespace DebugMod
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += LevelActivated;
             GameObject UIObj = new GameObject();
             UIObj.AddComponent<GUIController>();
-            GameObject.DontDestroyOnLoad(UIObj);
+            Object.DontDestroyOnLoad(UIObj);
 
             ModHooks.Instance.SavegameLoadHook += LoadCharacter;
             ModHooks.Instance.NewGameHook += NewCharacter;

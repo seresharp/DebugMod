@@ -1,8 +1,14 @@
 ﻿using System;
+using System.CodeDom;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
 using GlobalEnums;
+using MonoMod.RuntimeDetour.HookGen;
+using On.HutongGames.PlayMaker.Actions;
+using UnityEngine;
+using Random = System.Random;
+using USceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace DebugMod
 {
@@ -12,6 +18,18 @@ namespace DebugMod
         private static readonly FieldInfo IgnoreUnpause = typeof(UIManager).GetField("ignoreUnpause", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
 
         internal static readonly FieldInfo cameraGameplayScene = typeof(CameraController).GetField("isGameplayScene", BindingFlags.Instance | BindingFlags.NonPublic);
+        
+        private static string _saveScene;
+
+        private static PlayerData _savedPd;
+
+        private static object _lockArea;
+        
+        private static SceneData _savedSd;
+
+        private static Vector3 _savePos;
+
+        private static FieldInfo cameraLockArea = typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic);
 
         #region Misc
 
@@ -25,7 +43,7 @@ namespace DebugMod
             }
             PlayerData.instance.nailDamage = PlayerData.instance.nailDamage + num;
             PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
-            Console.AddLine("Increased base nailDamage by " + num.ToString());
+            Console.AddLine("Increased base nailDamage by " + num);
         }
 
         [BindableMethod(name = "Nail Damage -4", category = "Misc")]
@@ -101,7 +119,7 @@ namespace DebugMod
         {
             Vector3 manualRespawn = DebugMod.RefKnight.transform.position;
             HeroController.instance.SetHazardRespawn(manualRespawn, false);
-            Console.AddLine("Manual respawn point on this map set to" + manualRespawn.ToString());
+            Console.AddLine("Manual respawn point on this map set to" + manualRespawn);
         }
 
         [BindableMethod(name = "Force Camera Follow", category = "Misc")]
@@ -115,7 +133,7 @@ namespace DebugMod
             else
             {
                 DebugMod.cameraFollow = false;
-                BindableFunctions.cameraGameplayScene.SetValue(DebugMod.RefCamera, true);
+                cameraGameplayScene.SetValue(DebugMod.RefCamera, true);
                 Console.AddLine("Returning camera to normal settings");
             }
         }
@@ -354,7 +372,7 @@ namespace DebugMod
         {
             if (PlayerData.instance.health <= 0 || HeroController.instance.cState.dead || !GameManager.instance.IsGameplayScene() || GameManager.instance.IsGamePaused() || HeroController.instance.cState.recoiling || HeroController.instance.cState.invulnerable)
             {
-                Console.AddLine("Unacceptable conditions for selfDamage(" + PlayerData.instance.health.ToString() + "," + DebugMod.HC.cState.dead.ToString() + "," + DebugMod.GM.IsGameplayScene().ToString() + "," + DebugMod.HC.cState.recoiling.ToString() + "," + DebugMod.GM.IsGamePaused().ToString() + "," + DebugMod.HC.cState.invulnerable.ToString() + ")." + " Pressed too many times at once?");
+                Console.AddLine("Unacceptable conditions for selfDamage(" + PlayerData.instance.health + "," + DebugMod.HC.cState.dead + "," + DebugMod.GM.IsGameplayScene() + "," + DebugMod.HC.cState.recoiling + "," + DebugMod.GM.IsGamePaused() + "," + DebugMod.HC.cState.invulnerable + ")." + " Pressed too many times at once?");
                 return;
             }
             if (!DebugMod.settings.EnemiesPanelVisible)
@@ -368,7 +386,7 @@ namespace DebugMod
                 return;
             }
 
-            GameObject enemyObj = EnemiesPanel.enemyPool.ElementAt(new System.Random().Next(0, EnemiesPanel.enemyPool.Count)).gameObject;
+            GameObject enemyObj = EnemiesPanel.enemyPool.ElementAt(new Random().Next(0, EnemiesPanel.enemyPool.Count)).gameObject;
             CollisionSide side = HeroController.instance.cState.facingRight ? CollisionSide.right : CollisionSide.left;
             int damageAmount = 1;
             int hazardType = (int)HazardType.NON_HAZARD;
@@ -477,6 +495,78 @@ namespace DebugMod
             DebugMod.GM.ReadyForRespawn(false);
             GameCameras.instance.hudCanvas.gameObject.SetActive(false);
             GameCameras.instance.hudCanvas.gameObject.SetActive(true);
+        }
+        
+        
+		[BindableMethod(name = "Make Savestate", category = "Misc")]
+		public static void SaveState()
+		{
+			_savedPd = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(PlayerData.instance));
+			_savedSd = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(SceneData.instance));
+			_savePos = HeroController.instance.gameObject.transform.position;
+			_saveScene = GameManager.instance.GetSceneNameString();
+			_lockArea = cameraLockArea.GetValue(GameManager.instance.cameraCtrl);
+		}
+
+		[BindableMethod(name = "Load SaveState", category = "Misc")]
+		public static void LoadState()
+		{
+			GameManager.instance.StartCoroutine(LoadStateCoro());
+		}
+
+		private static IEnumerator LoadStateCoro()
+		{
+			USceneManager.LoadScene("Room_Sly_Storeroom");
+			
+			yield return new WaitUntil(() => USceneManager.GetActiveScene().name == "Room_Sly_Storeroom");
+			
+			GameManager.instance.sceneData = SceneData.instance = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(_savedSd));
+			GameManager.instance.ResetSemiPersistentItems();
+			
+			yield return null;
+			
+			HeroController.instance.gameObject.transform.position = _savePos;
+			
+			PlayerData.instance = GameManager.instance.playerData = HeroController.instance.playerData = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(_savedPd));
+
+            On.HeroController.EnterScene += Ok;
+
+			USceneManager.LoadScene(_saveScene);
+
+            yield return null;
+			
+			HeroController.instance.gameObject.transform.position = _savePos;
+
+            yield return null;
+            yield return null;
+            
+			cameraLockArea.SetValue(GameManager.instance.cameraCtrl, _lockArea);
+			GameManager.instance.cameraCtrl.LockToArea(_lockArea as CameraLockArea);
+			cameraGameplayScene.SetValue(GameManager.instance.cameraCtrl, true);
+			
+			yield return new WaitUntil(() => USceneManager.GetActiveScene().name == _saveScene);
+
+			HeroController.instance.gameObject.transform.position = _savePos;
+			
+			HeroController.instance.TakeMP(1);
+			HeroController.instance.AddMPChargeSpa(1);
+			HeroController.instance.TakeHealth(1);
+			HeroController.instance.AddHealth(1);
+			
+			GameCameras.instance.hudCanvas.gameObject.SetActive(true);
+			
+            On.HeroController.EnterScene -= Ok;
+        }
+
+        private static IEnumerator Ok(On.HeroController.orig_EnterScene orig, HeroController self, TransitionPoint entergate, float delaybeforeenter)
+        {
+            // Fix transition state, etc.
+            TransitionPoint gate2 = UnityEngine.Object.Instantiate(entergate);
+            
+            // Invalid gate name causes it not to put you wherever.
+            gate2.name = "no";
+            
+            yield return orig(self, gate2, delaybeforeenter);
         }
 
         #endregion
