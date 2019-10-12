@@ -39,7 +39,7 @@ namespace DebugMod
             buttonTransform.anchorMin = position;
             buttonTransform.anchorMax = position;
 
-            GameObject.DontDestroyOnLoad(buttonObj);
+            Object.DontDestroyOnLoad(buttonObj);
 
             if (font != null && text != null)
             {
@@ -52,7 +52,7 @@ namespace DebugMod
                 t.alignment = TextAnchor.MiddleCenter;
                 textObj.transform.SetParent(buttonObj.transform, false);
 
-                GameObject.DontDestroyOnLoad(textObj);
+                Object.DontDestroyOnLoad(textObj);
             }
 
             active = true;
@@ -172,8 +172,8 @@ namespace DebugMod
 
         public void Destroy()
         {
-            GameObject.Destroy(buttonObj);
-            GameObject.Destroy(textObj);
+            Object.Destroy(buttonObj);
+            Object.Destroy(textObj);
         }
     }
 }

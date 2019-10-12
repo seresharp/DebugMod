@@ -39,7 +39,7 @@ namespace DebugMod
             imageTransform.SetScaleX(size.x / subSprite.width);
             imageTransform.SetScaleY(size.y / subSprite.height);
 
-            GameObject.DontDestroyOnLoad(imageObj);
+            Object.DontDestroyOnLoad(imageObj);
 
             active = true;
         }
@@ -96,7 +96,7 @@ namespace DebugMod
 
         public void Destroy()
         {
-            GameObject.Destroy(imageObj); ;
+            Object.Destroy(imageObj); ;
         }
     }
 }

@@ -1,109 +1,41 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E3E4D0B7-656C-6C50-7567-696E2E57696E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>DebugMod</RootNamespace>
-    <AssemblyName>DebugMod</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <NoWarn>
-    </NoWarn>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
+    <NoWarn />
+    <TargetFramework>net35</TargetFramework>
     <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <Optimize>false</Optimize>
     <DebugType>full</DebugType>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
-    <OutputPath>bin\Debug\</OutputPath>
-    <IntermediateOutputPath>obj\Windows\AnyCPU\Debug</IntermediateOutputPath>
-    <DocumentationFile>bin\Debug\DebugMod.xml</DocumentationFile>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\Windows\$(Platform)\Debug</IntermediateOutputPath>
+    <DocumentationFile>bin\$(Configuration)\DebugMod.xml</DocumentationFile>
     <DefineConstants>DEBUG;PLATFORM_WINDOWS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>default</LangVersion>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <Optimize>true</Optimize>
     <DebugType>none</DebugType>
-    <OutputPath>bin\Windows\AnyCPU\Release</OutputPath>
-    <IntermediateOutputPath>obj\Windows\AnyCPU\Release</IntermediateOutputPath>
-    <DocumentationFile>bin\Windows\AnyCPU\Release\DebugMod.xml</DocumentationFile>
+    <OutputPath>bin\Windows\$(Platform)\Release</OutputPath>
+    <IntermediateOutputPath>obj\Windows\$(Platform)\Release</IntermediateOutputPath>
+    <DocumentationFile>bin\Windows\$(Platform)\$(Configuration)\DebugMod.xml</DocumentationFile>
     <DefineConstants>PLATFORM_WINDOWS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <_PostBuildHookTimestamp>@(IntermediateAssembly->'%(FullPath).timestamp')</_PostBuildHookTimestamp>
+    <_PostBuildHookHostPlatform>$(Platform)</_PostBuildHookHostPlatform>
+  </PropertyGroup>
+  <Target Name="PostBuildHooks" Inputs="@(IntermediateAssembly);@(ReferencePath)" Outputs="@(IntermediateAssembly);$(_PostBuildHookTimestamp)" AfterTargets="CoreCompile" BeforeTargets="AfterCompile">
+    <Touch Files="$(_PostBuildHookTimestamp)" AlwaysCreate="True" />
+  </Target>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\References\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="PlayMaker">
-      <HintPath>..\..\..\..\..\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\PlayMaker.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Physics2DModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\..\..\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\UnityEngine.UIModule.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="BindableMethod.cs" />
-    <Compile Include="EnemiesPanel.cs" />
-    <Compile Include="EnemyData.cs" />
-    <Compile Include="KeyBindPanel.cs" />
-    <Compile Include="BindableFunctions.cs" />
-    <Compile Include="Pair.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
+    <Compile Update="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
-    <Compile Include="TopMenu.cs" />
-    <Compile Include="BossHandler.cs" />
-    <Compile Include="CanvasButton.cs" />
-    <Compile Include="CanvasImage.cs" />
-    <Compile Include="CanvasPanel.cs" />
-    <Compile Include="CanvasText.cs" />
-    <Compile Include="Console.cs" />
-    <Compile Include="DebugMod.cs" />
-    <Compile Include="DreamGate.cs" />
-    <Compile Include="GUIController.cs" />
-    <Compile Include="InfoPanel.cs" />
-    <Compile Include="PlayerDeathWatcher.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\AddEntry.png" />
@@ -153,12 +85,45 @@
     <EmbeddedResource Include="Images\StatusPanelBG.png" />
     <EmbeddedResource Include="Images\TramPass.png" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <_PostBuildHookTimestamp>@(IntermediateAssembly->'%(FullPath).timestamp')</_PostBuildHookTimestamp>
-    <_PostBuildHookHostPlatform>$(Platform)</_PostBuildHookHostPlatform>
-  </PropertyGroup>
-  <Target Name="PostBuildHooks" Inputs="@(IntermediateAssembly);@(ReferencePath)" Outputs="@(IntermediateAssembly);$(_PostBuildHookTimestamp)" AfterTargets="CoreCompile" BeforeTargets="AfterCompile">
-    <Touch Files="$(_PostBuildHookTimestamp)" AlwaysCreate="True" />
-  </Target>
+  <ItemGroup>
+    <Compile Remove="Properties\Resources.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\PlayMaker.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\UnityEngine.JSONSerializeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Physics2DModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\UnityEngine.Physics2DModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\UnityEngine.UIElementsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\References\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

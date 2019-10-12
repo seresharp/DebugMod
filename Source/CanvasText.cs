@@ -43,7 +43,7 @@ namespace DebugMod
             textTransform.anchorMin = position;
             textTransform.anchorMax = position;
 
-            GameObject.DontDestroyOnLoad(textObj);
+            Object.DontDestroyOnLoad(textObj);
 
             active = true;
         }
@@ -109,7 +109,7 @@ namespace DebugMod
 
         public void Destroy()
         {
-            GameObject.Destroy(textObj);
+            Object.Destroy(textObj);
         }
     }
 }
