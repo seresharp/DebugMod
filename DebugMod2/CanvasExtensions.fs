@@ -7,8 +7,12 @@ open UnityEngine.UI
 [<AbstractClass; Sealed; Extension>]
 type CanvasExtensions() =
     [<Extension>]
-    static member CreateImagePanel(obj:Canvas, sprite, rect) =
-        let panel = CanvasUtil.CreateImagePanel(obj.gameObject, sprite, rect)
+    static member CreateImagePanel(obj, sprite, rect) =
+        let panel = CanvasUtil.CreateImagePanel(obj, sprite, rect)
         panel.GetComponent<Image>().preserveAspect <- false
 
         panel
+
+    [<Extension>]
+    static member CreateTextPanel(obj:GameObject, text:string, fontSize:int, textAnchor:TextAnchor, rectData:CanvasUtil.RectData, font:Font) =
+        CanvasUtil.CreateTextPanel(obj, text, fontSize, textAnchor, rectData, font)

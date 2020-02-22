@@ -1,4 +1,5 @@
 ﻿namespace DebugMod
+open System.Collections
 open Modding
 open UnityEngine
 
@@ -10,9 +11,9 @@ type DebugMod() =
     static let mutable _initialized = false
 
     interface ITogglableMod with
-        member __.Unload() =
-            EventManager.UnsubscribeAll()
-            DebugMenu.Instance.enabled <- false
+        member this.Unload() =
+            // Everything dies if the mod is disabled on startup unless you wait a frame
+            GameManager.instance.StartCoroutine(this.DisableNextFrame()) |> ignore
 
     static member Instance
         with get() = _instance
@@ -32,3 +33,10 @@ type DebugMod() =
             DebugMenu.Instance.enabled <- true
 
         EventManager.SubscribeAll()
+
+    member __.DisableNextFrame() =
+        seq {
+            yield new WaitForEndOfFrame()
+            EventManager.UnsubscribeAll()
+            DebugMenu.Instance.enabled <- false
+        } :?> IEnumerator

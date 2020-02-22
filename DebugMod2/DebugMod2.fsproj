@@ -42,14 +42,62 @@
   </PropertyGroup>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
-    <Compile Include="AssemblyInfo.fs" />
-    <None Include="Script.fsx" />
     <Content Include="packages.config" />
+    <Compile Include="AssemblyInfo.fs" />
     <EmbeddedResource Include="Resources\MissingTex.png" />
+    <EmbeddedResource Include="Resources\Scrollbar\Down.png" />
+    <EmbeddedResource Include="Resources\Scrollbar\Line.png" />
+    <EmbeddedResource Include="Resources\Scrollbar\Point.png" />
+    <EmbeddedResource Include="Resources\Scrollbar\Up.png" />
+    <EmbeddedResource Include="Resources\Misc\BlueGlow.png" />
+    <EmbeddedResource Include="Resources\Icons\CityKey.png" />
+    <EmbeddedResource Include="Resources\Icons\CrystalHeart.png" />
+    <EmbeddedResource Include="Resources\Icons\CycloneSlash.png" />
+    <EmbeddedResource Include="Resources\Icons\DashSlash.png" />
+    <EmbeddedResource Include="Resources\Icons\DreamGate.png" />
+    <EmbeddedResource Include="Resources\Icons\DreamNail1.png" />
+    <EmbeddedResource Include="Resources\Icons\DreamNail2.png" />
+    <EmbeddedResource Include="Resources\Icons\ElegantKey.png" />
+    <EmbeddedResource Include="Resources\Icons\Essence.png" />
+    <EmbeddedResource Include="Resources\Icons\Essence2.png" />
+    <EmbeddedResource Include="Resources\Icons\Flower.png" />
+    <EmbeddedResource Include="Resources\Icons\Geo.png" />
+    <EmbeddedResource Include="Resources\Icons\GreatSlash.png" />
+    <EmbeddedResource Include="Resources\Icons\IsmasTear.png" />
+    <EmbeddedResource Include="Resources\Icons\Kingsbrand.png" />
+    <EmbeddedResource Include="Resources\Icons\Lantern.png" />
+    <EmbeddedResource Include="Resources\Icons\LoveKey.png" />
+    <EmbeddedResource Include="Resources\Icons\MantisClaw.png" />
+    <EmbeddedResource Include="Resources\Icons\MapQuill.png" />
+    <EmbeddedResource Include="Resources\Icons\MonarchWings.png" />
+    <EmbeddedResource Include="Resources\Icons\MothwingCloak.png" />
+    <EmbeddedResource Include="Resources\Icons\PaleOre.png" />
+    <EmbeddedResource Include="Resources\Icons\RancidEgg.png" />
+    <EmbeddedResource Include="Resources\Icons\SimpleKey.png" />
+    <EmbeddedResource Include="Resources\Icons\ShadeCloak.png" />
+    <EmbeddedResource Include="Resources\Icons\SlyKey.png" />
+    <EmbeddedResource Include="Resources\Icons\TramPass.png" />
+    <EmbeddedResource Include="Resources\Buttons\ButtonRect.png" />
+    <EmbeddedResource Include="Resources\Buttons\ButtonRectEmpty.png" />
+    <EmbeddedResource Include="Resources\Buttons\Del.png" />
+    <EmbeddedResource Include="Resources\Buttons\Plus.png" />
+    <EmbeddedResource Include="Resources\Buttons\Inf.png" />
+    <EmbeddedResource Include="Resources\Backgrounds\Console.png" />
+    <EmbeddedResource Include="Resources\Backgrounds\DreamGateDropdown.png" />
+    <EmbeddedResource Include="Resources\Backgrounds\Dropdown.png" />
+    <EmbeddedResource Include="Resources\Backgrounds\EnemiesSmall.png" />
+    <EmbeddedResource Include="Resources\Backgrounds\EnemiesLarge.png" />
+    <EmbeddedResource Include="Resources\Backgrounds\Help.png" />
+    <EmbeddedResource Include="Resources\Backgrounds\Info.png" />
+    <EmbeddedResource Include="Resources\Backgrounds\TopButtons.png" />
     <Compile Include="Aliases.fs" />
     <Compile Include="CanvasExtensions.fs" />
     <Compile Include="SpriteManager.fs" />
     <Compile Include="EventManager.fs" />
+    <Compile Include="CanvasHelper.fs" />
+    <Compile Include="Panel.fs" />
+    <Compile Include="InfoPanel.fs" />
+    <Compile Include="FunctionPanel.fs" />
     <Compile Include="DebugMenu.fs" />
     <Compile Include="DebugMod.fs" />
   </ItemGroup>
@@ -78,11 +126,17 @@
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\References\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.Physics2DModule">
+      <HintPath>..\..\..\References\UnityEngine.Physics2DModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\References\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\..\References\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\..\Blasphemous Modding API\Vanilla\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>..\..\..\References\UnityEngine.UIModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
