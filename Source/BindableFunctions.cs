@@ -154,6 +154,80 @@ namespace DebugMod
 
         #endregion
 
+        #region SaveStates 
+
+        [BindableMethod(name = "Make Savestate", category = "Savestates")]
+        public static void SaveState()
+        {
+            BindableFunctions._saveStateIdentifier = "(tmp)_" + BindableFunctions._saveScene + "-" + DateTime.Now.ToString("H:mm d/MMM");
+            BindableFunctions.cameraLockArea = (BindableFunctions.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
+            BindableFunctions._savedPd = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(PlayerData.instance));
+            BindableFunctions._savedSd = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(SceneData.instance));
+            BindableFunctions._savePos = HeroController.instance.gameObject.transform.position;
+            BindableFunctions._saveScene = GameManager.instance.GetSceneNameString();
+            BindableFunctions._lockArea = BindableFunctions.cameraLockArea.GetValue(GameManager.instance.cameraCtrl);
+        }
+
+        [BindableMethod(name = "Load SaveState", category = "Savestates")]
+        public static void LoadState()
+        {
+            HeroController.instance.StartCoroutine(BindableFunctions.LoadStateCoro());
+        }
+
+        public static IEnumerator LoadStateCoro()
+        {
+            BindableFunctions.cameraLockArea = (BindableFunctions.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
+            GameManager.instance.ChangeToScene("Room_Sly_Storeroom", "", 0f);
+            while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Room_Sly_Storeroom")
+            {
+                yield return null;
+            }
+            GameManager.instance.sceneData = (SceneData.instance = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(BindableFunctions._savedSd)));
+            //if (!BindableFunctions.preserveThroughStates)
+            //{
+                GameManager.instance.ResetSemiPersistentItems();
+            //}
+            yield return null;
+            HeroController.instance.gameObject.transform.position = BindableFunctions._savePos;
+            PlayerData.instance = (GameManager.instance.playerData = (HeroController.instance.playerData = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(BindableFunctions._savedPd))));
+            GameManager.instance.ChangeToScene(BindableFunctions._saveScene, "", 0.4f);
+            try
+            {
+                BindableFunctions.cameraLockArea.SetValue(GameManager.instance.cameraCtrl, BindableFunctions._lockArea);
+                GameManager.instance.cameraCtrl.LockToArea(BindableFunctions._lockArea as CameraLockArea);
+                BindableFunctions.cameraGameplayScene.SetValue(GameManager.instance.cameraCtrl, true);
+            }
+            catch (Exception message)
+            {
+                Debug.LogError(message);
+            }
+            yield return new WaitUntil(() => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == BindableFunctions._saveScene);
+            HeroController.instance.playerData = PlayerData.instance;
+            if (PlayerData.instance.MPCharge >= 99)
+            {
+                HeroController.instance.AddMPChargeSpa(1);
+                HeroController.instance.TakeMP(1);
+            }
+            else if (PlayerData.instance.maxMP <= 99)
+            {
+                HeroController.instance.TakeMP(1);
+                HeroController.instance.AddMPChargeSpa(1);
+            }
+            HeroController.instance.proxyFSM.SendEvent("HeroCtrl-HeroDamaged");
+            HeroController.instance.geoCounter.playerData = PlayerData.instance;
+            HeroController.instance.geoCounter.TakeGeo(0);
+            HeroAnimationController component = HeroController.instance.GetComponent<HeroAnimationController>();
+            typeof(HeroAnimationController).GetField("pd", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(component, PlayerData.instance);
+            HeroController.instance.TakeHealth(1);
+            HeroController.instance.AddHealth(1);
+            GameCameras.instance.hudCanvas.gameObject.SetActive(true);
+            HeroController.instance.TakeHealth(1);
+            HeroController.instance.AddHealth(1);
+            yield break;
+        }
+
+        #endregion
+
         #region Visual
 
         [BindableMethod(name = "Toggle Vignette", category = "Visual")]
