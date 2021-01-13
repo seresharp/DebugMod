@@ -10,6 +10,9 @@ namespace DebugMod
     {
         private static readonly FieldInfo TimeSlowed = typeof(GameManager).GetField("timeSlowed", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly FieldInfo IgnoreUnpause = typeof(UIManager).GetField("ignoreUnpause", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
+        private static SaveStateHelper tmpSaveState;
+        internal static SaveStateHelper[] SaveStates;
+        internal static int CurrentSlot = -1;
 
         internal static readonly FieldInfo cameraGameplayScene = typeof(CameraController).GetField("isGameplayScene", BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -159,73 +162,37 @@ namespace DebugMod
         [BindableMethod(name = "Make Savestate", category = "Savestates")]
         public static void SaveState()
         {
-            BindableFunctions._saveStateIdentifier = "(tmp)_" + BindableFunctions._saveScene + "-" + DateTime.Now.ToString("H:mm d/MMM");
-            BindableFunctions.cameraLockArea = (BindableFunctions.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
-            BindableFunctions._savedPd = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(PlayerData.instance));
-            BindableFunctions._savedSd = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(SceneData.instance));
-            BindableFunctions._savePos = HeroController.instance.gameObject.transform.position;
-            BindableFunctions._saveScene = GameManager.instance.GetSceneNameString();
-            BindableFunctions._lockArea = BindableFunctions.cameraLockArea.GetValue(GameManager.instance.cameraCtrl);
+            tmpSaveState = new SaveStateHelper();
+            tmpSaveState.SaveState(SaveStateType.ToMemory);
         }
 
         [BindableMethod(name = "Load SaveState", category = "Savestates")]
         public static void LoadState()
         {
-            HeroController.instance.StartCoroutine(BindableFunctions.LoadStateCoro());
+            if (tmpSaveState.IsSet())
+            {
+                tmpSaveState.LoadState();
+            }
         }
 
-        public static IEnumerator LoadStateCoro()
+        [BindableMethod(name = "Save current to file", category = "Savestates")]
+        public static void CurrentSaveStateToFile()
         {
-            BindableFunctions.cameraLockArea = (BindableFunctions.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
-            GameManager.instance.ChangeToScene("Room_Sly_Storeroom", "", 0f);
-            while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Room_Sly_Storeroom")
-            {
-                yield return null;
-            }
-            GameManager.instance.sceneData = (SceneData.instance = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(BindableFunctions._savedSd)));
-            //if (!BindableFunctions.preserveThroughStates)
-            //{
-                GameManager.instance.ResetSemiPersistentItems();
-            //}
-            yield return null;
-            HeroController.instance.gameObject.transform.position = BindableFunctions._savePos;
-            PlayerData.instance = (GameManager.instance.playerData = (HeroController.instance.playerData = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(BindableFunctions._savedPd))));
-            GameManager.instance.ChangeToScene(BindableFunctions._saveScene, "", 0.4f);
-            try
-            {
-                BindableFunctions.cameraLockArea.SetValue(GameManager.instance.cameraCtrl, BindableFunctions._lockArea);
-                GameManager.instance.cameraCtrl.LockToArea(BindableFunctions._lockArea as CameraLockArea);
-                BindableFunctions.cameraGameplayScene.SetValue(GameManager.instance.cameraCtrl, true);
-            }
-            catch (Exception message)
-            {
-                Debug.LogError(message);
-            }
-            yield return new WaitUntil(() => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == BindableFunctions._saveScene);
-            HeroController.instance.playerData = PlayerData.instance;
-            if (PlayerData.instance.MPCharge >= 99)
-            {
-                HeroController.instance.AddMPChargeSpa(1);
-                HeroController.instance.TakeMP(1);
-            }
-            else if (PlayerData.instance.maxMP <= 99)
-            {
-                HeroController.instance.TakeMP(1);
-                HeroController.instance.AddMPChargeSpa(1);
-            }
-            HeroController.instance.proxyFSM.SendEvent("HeroCtrl-HeroDamaged");
-            HeroController.instance.geoCounter.playerData = PlayerData.instance;
-            HeroController.instance.geoCounter.TakeGeo(0);
-            HeroAnimationController component = HeroController.instance.GetComponent<HeroAnimationController>();
-            typeof(HeroAnimationController).GetField("pd", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(component, PlayerData.instance);
-            HeroController.instance.TakeHealth(1);
-            HeroController.instance.AddHealth(1);
-            GameCameras.instance.hudCanvas.gameObject.SetActive(true);
-            HeroController.instance.TakeHealth(1);
-            HeroController.instance.AddHealth(1);
-            yield break;
+            if (tmpSaveState) { tmpSaveState.SaveState(SaveStateType.ToMemory); }
         }
 
+        [BindableMethod(name = "Make Savestate (file)", category = "Savestates")]
+        public static void NewSaveStateToFile()
+        {
+            tmpSaveState = new SaveStateHelper();
+            tmpSaveState.SaveState(SaveStateType.ToMemory);
+
+        }
+        [BindableMethod(name = "Load Savestate (file)", category = "Savestates")]
+        public static void LoadFromFile()
+        {
+
+        }
         #endregion
 
         #region Visual

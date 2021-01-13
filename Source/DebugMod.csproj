@@ -72,6 +72,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SaveState.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TopMenu.cs" />
     <Reference Include="UnityEngine">
