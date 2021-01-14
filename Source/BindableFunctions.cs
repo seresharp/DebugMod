@@ -10,8 +10,8 @@ namespace DebugMod
     {
         private static readonly FieldInfo TimeSlowed = typeof(GameManager).GetField("timeSlowed", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly FieldInfo IgnoreUnpause = typeof(UIManager).GetField("ignoreUnpause", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
-        private static SaveStateHelper tmpSaveState;
-        internal static SaveStateHelper[] SaveStates;
+        private static SaveStateHandler tmpSaveState;
+        //public static string[] saveStateFiles = new string[10];
         internal static int CurrentSlot = -1;
 
         internal static readonly FieldInfo cameraGameplayScene = typeof(CameraController).GetField("isGameplayScene", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -162,8 +162,8 @@ namespace DebugMod
         [BindableMethod(name = "Make Savestate", category = "Savestates")]
         public static void SaveState()
         {
-            tmpSaveState = new SaveStateHelper();
-            tmpSaveState.SaveState(SaveStateType.ToMemory);
+            tmpSaveState = new SaveStateHandler();
+            tmpSaveState.SaveState(SaveStateType.Memory);
         }
 
         [BindableMethod(name = "Load SaveState", category = "Savestates")]
@@ -171,21 +171,21 @@ namespace DebugMod
         {
             if (tmpSaveState.IsSet())
             {
-                tmpSaveState.LoadState();
+                tmpSaveState.LoadState(SaveStateType.Memory);
             }
         }
 
         [BindableMethod(name = "Save current to file", category = "Savestates")]
         public static void CurrentSaveStateToFile()
         {
-            if (tmpSaveState) { tmpSaveState.SaveState(SaveStateType.ToMemory); }
+            if (tmpSaveState) { tmpSaveState.SaveState(SaveStateType.Memory); }
         }
 
         [BindableMethod(name = "Make Savestate (file)", category = "Savestates")]
         public static void NewSaveStateToFile()
         {
-            tmpSaveState = new SaveStateHelper();
-            tmpSaveState.SaveState(SaveStateType.ToMemory);
+            tmpSaveState = new SaveStateHandler();
+            tmpSaveState.SaveState(SaveStateType.Memory);
 
         }
         [BindableMethod(name = "Load Savestate (file)", category = "Savestates")]
@@ -513,11 +513,11 @@ namespace DebugMod
         public static void KillSelf()
         {
             if (DebugMod.GM.isPaused) UIManager.instance.TogglePauseGame();
-            HeroController.instance.TakeHealth(9999);
-            HeroController.instance.heroDeathPrefab.SetActive(true);
-            DebugMod.GM.ReadyForRespawn();
-            GameCameras.instance.hudCanvas.gameObject.SetActive(false);
-            GameCameras.instance.hudCanvas.gameObject.SetActive(true);
+            HeroController.instance.TakeHealth(PlayerData.instance.health);
+            //HeroController.instance.heroDeathPrefab.SetActive(true);
+            //DebugMod.GM.ReadyForRespawn();
+            //GameCameras.instance.hudCanvas.gameObject.SetActive(false);
+            //GameCameras.instance.hudCanvas.gameObject.SetActive(true);
         }
 
         #endregion
