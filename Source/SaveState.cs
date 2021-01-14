@@ -80,24 +80,34 @@ namespace DebugMod
 
         private void ConvertTempSaveToFile()
         {
-            if(autoSlotSelect) {
-                int i = 0;
-                int slotAtEntry = currentStateSlot;
-                while (++currentStateSlot != slotAtEntry || i++ < 10)
+            if (autoSlotSelect)
+            
+                switch (autoSlotSelect)
                 {
-                    if (currentStateSlot < 10)
-                    {
-                        if (String.IsNullOrEmpty(saveStateFiles[currentStateSlot]))
+                    case true:
+                        int i = 0;
+                        int slotAtEntry = currentStateSlot;
+                        while (++currentStateSlot != slotAtEntry || i++ < 10)
                         {
-                            SaveStateToFile();
+                            if (currentStateSlot < 10)
+                            {
+                                if (String.IsNullOrEmpty(saveStateFiles[currentStateSlot]))
+                                {
+                                    SaveStateToFile();
+                                }
+                            }
+                            else
+                            {
+                                currentStateSlot = -1;
+                            }
                         }
-                    }
-                    else
-                    {
-                        currentStateSlot = -1;
-                    }
+                        break;
+                    case false:
+                        saveStateHUD = true;
+                        break;
+                    default:
+                        break;
                 }
-            }
         }
 
         private void SaveStateToFile()
@@ -115,12 +125,12 @@ namespace DebugMod
                 if (saveStateIdentifier.StartsWith("(tmp)_"))
                 {
                     saveStateIdentifier = saveStateIdentifier.Substring(6);
-                    saveStateFiles[currentStateSlot] = saveStateIdentifier;
                 }
-                else
-                {   // This is bad
+                else if (String.IsNullOrEmpty(saveStateIdentifier))
+                {
                     saveStateFiles[currentStateSlot] = saveScene + "-" + DateTime.Now.ToString("H:mm_d-MMM");
                 }
+                saveStateFiles[currentStateSlot] = saveStateIdentifier;
 
                 File.WriteAllText(string.Concat(new object[]
                 {
@@ -158,7 +168,7 @@ namespace DebugMod
                     }
                     else
                     {
-                        Console.AddLine("No save state in current memory");
+                        Console.AddLine("No save state active");
                     }
                     break;
                 case SaveStateType.File:
