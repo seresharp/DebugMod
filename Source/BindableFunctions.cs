@@ -159,43 +159,43 @@ namespace DebugMod
         [BindableMethod(name = "Make Savestate", category = "Savestates")]
         public static void SaveState()
         {
-            DebugMod.saveStateManagers.SaveState(SaveStateType.Memory);
+            DebugMod.saveStateManager.SaveState(SaveStateType.Memory);
         }
 
         [BindableMethod(name = "Load SaveState", category = "Savestates")]
         public static void LoadState()
         {
-            DebugMod.saveStateManagers.LoadState(SaveStateType.Memory);
+            DebugMod.saveStateManager.LoadState(SaveStateType.Memory);
         }
 
         [BindableMethod(name = "Save current to file", category = "Savestates")]
         public static void CurrentSaveStateToFile()
         {
-            DebugMod.saveStateManagers.SaveState(SaveStateType.File);
+            DebugMod.saveStateManager.SaveState(SaveStateType.File);
         }
 
         [BindableMethod(name = "Load file to current", category = "Savestates")]
         public static void CurrentSlotToSaveMemory()
         {
-            DebugMod.saveStateManagers.LoadState(SaveStateType.File);
+            DebugMod.saveStateManager.LoadState(SaveStateType.File);
         }
 
         [BindableMethod(name = "Make Savestate (file)", category = "Savestates")]
         public static void NewSaveStateToFile()
         {
-            DebugMod.saveStateManagers.SaveState(SaveStateType.SkipOne);
+            DebugMod.saveStateManager.SaveState(SaveStateType.SkipOne);
 
         }
         [BindableMethod(name = "Load Savestate (file)", category = "Savestates")]
         public static void LoadFromFile()
         {
-            DebugMod.saveStateManagers.LoadState(SaveStateType.SkipOne);
+            DebugMod.saveStateManager.LoadState(SaveStateType.SkipOne);
         }
 
         [BindableMethod(name = "Toggle auto slot", category = "Savestates")]
         public static void ToggleAutoSlot()
         {
-            DebugMod.saveStateManagers.ToggleAutoSlot();
+            DebugMod.saveStateManager.ToggleAutoSlot();
         }
         #endregion
 
@@ -293,7 +293,6 @@ namespace DebugMod
             bool active = !(DebugMod.settings.HelpPanelVisible || DebugMod.settings.InfoPanelVisible || DebugMod.settings.EnemiesPanelVisible || DebugMod.settings.TopMenuVisible || DebugMod.settings.ConsoleVisible);
 
             DebugMod.settings.TopMenuVisible = active;
-            DebugMod.settings.InfoPanelVisible = active;
             DebugMod.settings.EnemiesPanelVisible = active;
             DebugMod.settings.ConsoleVisible = active;
             DebugMod.settings.HelpPanelVisible = active;
@@ -340,10 +339,11 @@ namespace DebugMod
 
         // A variant of info panel. View handled in the two InfoPanel classes
         // Probably some race-condition potential here :)
-        [BindableMethod(name = "Full/Min Info Switch", category = "Mod UI")]
+        [BindableMethod(name = "Alt. Info Switch", category = "Mod UI")]
         public static void ToggleFullInfo()
         {
             DebugMod.settings.MinInfoPanelVisible = !DebugMod.settings.MinInfoPanelVisible;
+            Console.AddLine("MinInfoPanelVisible (bool): " + DebugMod.settings.MinInfoPanelVisible.ToString());
         }
 
         #endregion

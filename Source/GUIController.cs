@@ -112,14 +112,14 @@ namespace DebugMod
 
         public void Update()
         {
-            MinimalInfoPanel.Update();
-            InfoPanel.Update();
             SaveStatesPanel.Update();
             TopMenu.Update();
             EnemiesPanel.Update();
             Console.Update();
             KeyBindPanel.Update();
-            
+            MinimalInfoPanel.Update();
+            InfoPanel.Update();
+
             if (DebugMod.GetSceneName() != "Menu_Title")
             {
                 //Handle keybinds

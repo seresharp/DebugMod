@@ -42,7 +42,7 @@ namespace DebugMod
                 DebugMod.settings.SaveStatePanelVisible = false;
                 autoSlot = false;
                 memoryState = new SaveState();
-                if (Directory.Exists(SaveStateManager.path))
+                if (!Directory.Exists(SaveStateManager.path))
                 {
                     Directory.CreateDirectory(path);
                 }

@@ -42,7 +42,7 @@ namespace DebugMod
         internal static Vector3 noclipPos;
         internal static bool cameraFollow;
 
-        internal static SaveStateManager saveStateManagers;
+        internal static SaveStateManager saveStateManager;
 
         internal static Dictionary<string, Pair> bindMethods = new Dictionary<string, Pair>();
         internal static Dictionary<KeyCode, int> alphaKeyDict = new Dictionary<KeyCode, int>();
@@ -91,13 +91,13 @@ namespace DebugMod
                     settings.binds.Add("Toggle Info", (int)KeyCode.F2);
                     settings.binds.Add("Toggle Top Menu", (int)KeyCode.F3);
                     settings.binds.Add("Toggle Console", (int)KeyCode.F4);
-                    settings.binds.Add("Force Pause", (int)KeyCode.F5);
-                    settings.binds.Add("Hazard Respawn", (int)KeyCode.F6);
-                    settings.binds.Add("Set Respawn", (int)KeyCode.F7);
+                    settings.binds.Add("Toggle Binds", (int)KeyCode.F5);
+                    settings.binds.Add("Full/Min Info Switch", (int)KeyCode.F6);
+                    //settings.binds.Add("Hazard Respawn", (int)KeyCode.F6);
+                    //settings.binds.Add("Set Respawn", (int)KeyCode.F7);
                     settings.binds.Add("Force Camera Follow", (int)KeyCode.F8);
                     settings.binds.Add("Toggle Enemy Panel", (int)KeyCode.F9);
                     settings.binds.Add("Self Damage", (int)KeyCode.F10);
-                    settings.binds.Add("Toggle Binds", (int)KeyCode.BackQuote);
                     settings.binds.Add("Nail Damage +4", (int)KeyCode.Equals);
                     settings.binds.Add("Nail Damage -4", (int)KeyCode.Minus);
                     settings.binds.Add("Increase Timescale", (int)KeyCode.KeypadPlus);
@@ -135,7 +135,7 @@ namespace DebugMod
                 UIObj.AddComponent<GUIController>();
                 GameObject.DontDestroyOnLoad(UIObj);
 
-                saveStateManagers = new SaveStateManager();
+                saveStateManager = new SaveStateManager();
 
                 ModHooks.Instance.SavegameLoadHook += LoadCharacter;
                 ModHooks.Instance.NewGameHook += NewCharacter;
@@ -161,7 +161,7 @@ namespace DebugMod
         
         public override string GetVersion()
         {
-            return "1.4.0";
+            return "1.3.9b";
         }
 
         public override bool IsCurrent()

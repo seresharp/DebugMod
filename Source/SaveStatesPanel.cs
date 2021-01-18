@@ -36,16 +36,16 @@ namespace DebugMod
             panel.AddText("Slot9", "9", new Vector2(10f, 200f), Vector2.zero, GUIController.Instance.arial, 15);
             
             //Values
-            panel.AddText("0", "", new Vector2(40f, 20f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("1", "", new Vector2(40f, 40f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("2", "", new Vector2(40f, 60f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("3", "", new Vector2(40f, 80f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("4", "", new Vector2(40f, 100f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("5", "", new Vector2(40f, 120f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("6", "", new Vector2(40f, 140f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("7", "", new Vector2(40f, 160f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("8", "", new Vector2(40f, 180f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("9", "", new Vector2(40f, 200f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("0", "", new Vector2(50f, 20f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("1", "", new Vector2(50f, 40f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("2", "", new Vector2(50f, 60f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("3", "", new Vector2(50f, 80f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("4", "", new Vector2(50f, 100f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("5", "", new Vector2(50f, 120f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("6", "", new Vector2(50f, 140f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("7", "", new Vector2(50f, 160f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("8", "", new Vector2(50f, 180f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("9", "", new Vector2(50f, 200f), Vector2.zero, GUIController.Instance.trajanNormal);
            
         }
 
