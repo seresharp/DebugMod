@@ -30,16 +30,17 @@ namespace DebugMod
 
         public static int currentStateSlot = -1;
         public static string path = Application.persistentDataPath + "/Savestates-1221";
-        public const int maxSaveStates = 10; 
-        public static bool saveStateHUD = false;
-        public static bool autoSlotSelect = true;
+        public const int maxSaveStates = 10;
+        private static bool autoSlot;
+        
         //public static bool preserveThroughStates = false;
 
         internal SaveStateManager()
         {
             try
             {
-                saveStateHUD = false;
+                DebugMod.settings.SaveStatePanelVisible = false;
+                autoSlot = false;
                 memoryState = new SaveState();
                 if (Directory.Exists(SaveStateManager.path))
                 {
@@ -64,7 +65,7 @@ namespace DebugMod
                 case SaveStateType.File:
                     if (memoryState.IsSet())
                     {
-                        if (autoSlotSelect)
+                        if (autoSlot)
                         {
                             int i = 0;
                             int initSlot = currentStateSlot;
@@ -91,11 +92,16 @@ namespace DebugMod
                         }
                         else
                         {
-                            // slot selection algo:
-                            //  ++current
-                            //  if (open slot[current]) states[current] = new Obj() return? 
-                            //  if oob current = 0
-                            //  loop
+                            
+                            DebugMod.settings.SaveStatePanelVisible = true;
+                            while (!saveStateFiles.ContainsKey(currentStateSlot))
+                            {
+                                SelectSlot();
+                            }
+
+                            DebugMod.settings.SaveStatePanelVisible = false;
+                            saveStateFiles[currentStateSlot].LoadStateFromFile();
+                            break;
                         }
 
                         if (!memoryState.IsSet()) memoryState.SaveTempState();
@@ -103,8 +109,16 @@ namespace DebugMod
                     }
                     break;
                 case SaveStateType.SkipOne:
-                    
-                    break;
+
+                    DebugMod.settings.SaveStatePanelVisible = true;
+                    while (!saveStateFiles.ContainsKey(currentStateSlot))
+                    {
+                        SelectSlot();
+                    }
+
+                    DebugMod.settings.SaveStatePanelVisible = false;
+                    saveStateFiles[currentStateSlot].LoadStateFromFile();
+                    break; 
                 default: break;
             }
         }
@@ -130,16 +144,23 @@ namespace DebugMod
                     break;
                 case SaveStateType.File:
                     if (!saveStateFiles.ContainsKey(currentStateSlot))
+                        DebugMod.settings.SaveStatePanelVisible = true;
+                    while (!saveStateFiles.ContainsKey(currentStateSlot))
                     {
-                        // change currentStateSlot
+                        SelectSlot();
                     }
+
+                    DebugMod.settings.SaveStatePanelVisible = false;
                     saveStateFiles[currentStateSlot].PrepareFileStateToMemory(currentStateSlot);
                     break;
                 case SaveStateType.SkipOne:
-                    if (!saveStateFiles.ContainsKey(currentStateSlot))
+                    DebugMod.settings.SaveStatePanelVisible = true;
+                    while (!saveStateFiles.ContainsKey(currentStateSlot))
                     {
-                        // change currentStateSlot
+                        SelectSlot();
                     }
+
+                    DebugMod.settings.SaveStatePanelVisible = false;
                     saveStateFiles[currentStateSlot].LoadStateFromFile();
                     break;
                 default:
@@ -150,11 +171,8 @@ namespace DebugMod
         #endregion
 
         #region helper functionality
-        private IEnumerator SelectSlot()
+        private void SelectSlot()
         {
-            saveStateHUD = false;
-            yield return null;
-
             foreach (KeyValuePair<KeyCode, int> entry in DebugMod.alphaKeyDict)
             {
                 if (Input.GetKeyDown(entry.Key))
@@ -165,17 +183,51 @@ namespace DebugMod
                         currentStateSlot = keyInt;
                     }
                 }
-
             }
-            // ui hud to select slot
-            saveStateHUD = false;
-            yield return null;
         }
 
         public void ToggleAutoSlot()
         {
-            autoSlotSelect = !autoSlotSelect;
+            autoSlot = !autoSlot;
         }
+
+        public static bool GetAutoSlot()
+        {
+            return autoSlot;
+        }
+
+        public static int GetCurrentSlot()
+        {
+            return currentStateSlot;
+        }
+
+        public string[] GetCurrentMemoryState()
+        {
+            if (memoryState.IsSet())
+            {
+                return memoryState.GetSaveStateInfo();
+            }
+            return null;
+        }
+
+        public static bool HasFiles()
+        {
+            return (saveStateFiles.Count != 0);
+        }
+
+        public static Dictionary<int, string[]> GetSaveStatesInfo()
+        {
+            Dictionary<int, string[]> returnData = new Dictionary<int, string[]>();
+            foreach (KeyValuePair<int, SaveState> stateData in saveStateFiles)
+            {
+                if (stateData.Value.IsSet())
+                {
+                    returnData.Add(stateData.Key, stateData.Value.GetSaveStateInfo());
+                }
+            }
+            return returnData;
+        }
+            
         #endregion
     }
 }

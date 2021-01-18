@@ -10,9 +10,6 @@ namespace DebugMod
     {
         private static readonly FieldInfo TimeSlowed = typeof(GameManager).GetField("timeSlowed", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly FieldInfo IgnoreUnpause = typeof(UIManager).GetField("ignoreUnpause", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
-        private static SaveState tmpSaveState;
-        //public static string[] saveStateFiles = new string[10];
-        internal static int CurrentSlot = -1;
 
         internal static readonly FieldInfo cameraGameplayScene = typeof(CameraController).GetField("isGameplayScene", BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -162,36 +159,43 @@ namespace DebugMod
         [BindableMethod(name = "Make Savestate", category = "Savestates")]
         public static void SaveState()
         {
-            tmpSaveState = new SaveState();
-            tmpSaveState.SaveState(SaveStateType.Memory);
+            DebugMod.saveStateManagers.SaveState(SaveStateType.Memory);
         }
 
         [BindableMethod(name = "Load SaveState", category = "Savestates")]
         public static void LoadState()
         {
-            if (tmpSaveState.IsSet())
-            {
-                tmpSaveState.LoadState(SaveStateType.Memory);
-            }
+            DebugMod.saveStateManagers.LoadState(SaveStateType.Memory);
         }
 
         [BindableMethod(name = "Save current to file", category = "Savestates")]
         public static void CurrentSaveStateToFile()
         {
-            if (tmpSaveState) { tmpSaveState.SaveState(SaveStateType.Memory); }
+            DebugMod.saveStateManagers.SaveState(SaveStateType.File);
+        }
+
+        [BindableMethod(name = "Load file to current", category = "Savestates")]
+        public static void CurrentSlotToSaveMemory()
+        {
+            DebugMod.saveStateManagers.LoadState(SaveStateType.File);
         }
 
         [BindableMethod(name = "Make Savestate (file)", category = "Savestates")]
         public static void NewSaveStateToFile()
         {
-            tmpSaveState = new SaveState();
-            tmpSaveState.SaveState(SaveStateType.Memory);
+            DebugMod.saveStateManagers.SaveState(SaveStateType.SkipOne);
 
         }
         [BindableMethod(name = "Load Savestate (file)", category = "Savestates")]
         public static void LoadFromFile()
         {
+            DebugMod.saveStateManagers.LoadState(SaveStateType.SkipOne);
+        }
 
+        [BindableMethod(name = "Toggle auto slot", category = "Savestates")]
+        public static void ToggleAutoSlot()
+        {
+            DebugMod.saveStateManagers.ToggleAutoSlot();
         }
         #endregion
 

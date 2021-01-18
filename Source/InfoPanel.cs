@@ -149,9 +149,6 @@ namespace DebugMod
             if (DebugMod.settings.InfoPanelVisible && !panel.active)
             {
                 panel.SetActive(true, false);
-                if (DebugMod.settings.MinInfoPanelVisible) {
-                    DebugMod.settings.MinInfoPanelVisible = false;
-                }
             }
             else if (!DebugMod.settings.InfoPanelVisible && panel.active)
             {

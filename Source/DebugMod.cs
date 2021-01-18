@@ -42,6 +42,8 @@ namespace DebugMod
         internal static Vector3 noclipPos;
         internal static bool cameraFollow;
 
+        internal static SaveStateManager saveStateManagers;
+
         internal static Dictionary<string, Pair> bindMethods = new Dictionary<string, Pair>();
         internal static Dictionary<KeyCode, int> alphaKeyDict = new Dictionary<KeyCode, int>();
 
@@ -132,6 +134,8 @@ namespace DebugMod
                 GameObject UIObj = new GameObject();
                 UIObj.AddComponent<GUIController>();
                 GameObject.DontDestroyOnLoad(UIObj);
+
+                saveStateManagers = new SaveStateManager();
 
                 ModHooks.Instance.SavegameLoadHook += LoadCharacter;
                 ModHooks.Instance.NewGameHook += NewCharacter;

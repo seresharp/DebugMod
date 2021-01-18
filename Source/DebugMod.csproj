@@ -73,6 +73,7 @@
     <Compile Include="BindableMethod.cs" />
     <Compile Include="EnemiesPanel.cs" />
     <Compile Include="EnemyData.cs" />
+    <Compile Include="SaveState.cs" />
     <Compile Include="SaveStateManager.cs" />
     <Compile Include="SaveStatesPanel.cs" />
     <Compile Include="MinimalInfoPanel.cs" />
@@ -84,7 +85,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SaveStateHandler.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TopMenu.cs" />
     <Reference Include="UnityEngine">

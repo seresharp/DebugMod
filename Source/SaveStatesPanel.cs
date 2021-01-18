@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using InControl;
+using System.Collections.Generic;
 
 namespace DebugMod
 {
@@ -23,90 +24,29 @@ namespace DebugMod
             );
 
             //Labels
-            panel.AddText("Hero State Label", "Hero State", new Vector2(10f, 20f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Velocity Label", "Velocity", new Vector2(10f, 40f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Nail Damage Label", "Naildmg", new Vector2(10f, 60f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("HP Label", "HP", new Vector2(10f, 80f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("MP Label", "MP", new Vector2(10f, 100f), Vector2.zero, GUIController.Instance.arial, 15);
-
+            panel.AddText("Slot0", "0", new Vector2(10f, 20f), Vector2.zero, GUIController.Instance.arial, 15);
+            panel.AddText("Slot1", "1", new Vector2(10f, 40f), Vector2.zero, GUIController.Instance.arial, 15);
+            panel.AddText("Slot2", "2", new Vector2(10f, 60f), Vector2.zero, GUIController.Instance.arial, 15);
+            panel.AddText("Slot3", "3", new Vector2(10f, 80f), Vector2.zero, GUIController.Instance.arial, 15);
+            panel.AddText("Slot4", "4", new Vector2(10f, 100f), Vector2.zero, GUIController.Instance.arial, 15);
+            panel.AddText("Slot5", "5", new Vector2(10f, 120f), Vector2.zero, GUIController.Instance.arial, 15);
+            panel.AddText("Slot6", "6", new Vector2(10f, 140f), Vector2.zero, GUIController.Instance.arial, 15);
+            panel.AddText("Slot7", "7", new Vector2(10f, 160f), Vector2.zero, GUIController.Instance.arial, 15);
+            panel.AddText("Slot8", "8", new Vector2(10f, 180f), Vector2.zero, GUIController.Instance.arial, 15);
+            panel.AddText("Slot9", "9", new Vector2(10f, 200f), Vector2.zero, GUIController.Instance.arial, 15);
             
-            panel.AddText("Grubs Label", "Grubs", new Vector2(10f, 198f), Vector2.zero, GUIController.Instance.arial, 15);
-            
-            
-            panel.AddText("Scene Name Label", "Scene Name", new Vector2(10f, 454), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Transition Label", "Transition", new Vector2(10f, 474f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Trans State Label", "Trans State", new Vector2(10f, 494f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("is Gameplay Label", "Is Gameplay", new Vector2(10f, 514f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Game State Label", "Game State", new Vector2(10f, 534f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("UI State Label", "UI State", new Vector2(10f, 554f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Hero Paused Label", "Hero Paused", new Vector2(10f, 574f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Camera Mode Label", "Camera Mode", new Vector2(10f, 594f), Vector2.zero, GUIController.Instance.arial, 15);
-
-            panel.AddText("Accept Input Label", "Accept Input", new Vector2(300f, 30f), Vector2.zero, GUIController.Instance.arial, 15);
-            
-            panel.AddText("Falling Label", "Falling", new Vector2(300f, 180f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Hardland Label", "Hardland", new Vector2(300f, 200f), Vector2.zero, GUIController.Instance.arial, 15);
-
-            panel.AddText("Wall lock Label", "Wall lock", new Vector2(300f, 290f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Wall jumping Label", "Wall jumping", new Vector2(300f, 310f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Wall touching Label", "Wall touching", new Vector2(300f, 330f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Wall sliding Label", "Wall sliding", new Vector2(300f, 350f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Wall left Label", "Wall left", new Vector2(300f, 370f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("Wall right Label", "Wall right", new Vector2(300f, 390f), Vector2.zero, GUIController.Instance.arial, 15);
-
-            panel.AddText("Attacking Label", "Attacking", new Vector2(300f, 440f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("canCast Label", "canCast", new Vector2(300f, 460f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("canSuperdash Label", "canSuperdash", new Vector2(300f, 480f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("canQuickmap Label", "canQuickmap", new Vector2(300f, 500f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("canInventory Label", "canInventory", new Vector2(300f, 520f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("canWarp Label", "canWarp", new Vector2(300f, 540f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("canDGate Label", "canDGate", new Vector2(300f, 560f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddText("gateAllow Label", "gateAllow", new Vector2(300f, 580f), Vector2.zero, GUIController.Instance.arial, 15);
-
             //Values
-            panel.AddText("Hero State", "", new Vector2(150f, 20f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Velocity", "", new Vector2(150f, 40f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Nail Damage", "", new Vector2(150f, 60f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("HP", "", new Vector2(150f, 80f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("MP", "", new Vector2(150f, 100f), Vector2.zero, GUIController.Instance.trajanNormal);
-
-            panel.AddText("Completion", "", new Vector2(150f, 178f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Grubs", "", new Vector2(150f, 198f), Vector2.zero, GUIController.Instance.trajanNormal);
-
-            panel.AddText("Scene Name", "", new Vector2(150f, 454), Vector2.zero, GUIController.Instance.trajanNormal);
-
-            panel.AddText("Dashing", "", new Vector2(440f, 120f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Jumping", "", new Vector2(440f, 140f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Superdashing", "", new Vector2(440f, 160f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Falling", "", new Vector2(440f, 180f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Hardland", "", new Vector2(440f, 200f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Swimming", "", new Vector2(440f, 220f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Recoiling", "", new Vector2(440f, 240f), Vector2.zero, GUIController.Instance.trajanNormal);
-
-            panel.AddText("Wall lock", "", new Vector2(440f, 290f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Wall jumping", "", new Vector2(440f, 310f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Wall touching", "", new Vector2(440f, 330f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Wall sliding", "", new Vector2(440f, 350f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Wall left", "", new Vector2(440f, 370f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("Wall right", "", new Vector2(440f, 390f), Vector2.zero, GUIController.Instance.trajanNormal);
-
-            panel.AddText("Attacking", "", new Vector2(440f, 440f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("canCast", "", new Vector2(440f, 460f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("canSuperdash", "", new Vector2(440f, 480f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("canQuickmap", "", new Vector2(440f, 500f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("canInventory", "", new Vector2(440f, 520f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("canWarp", "", new Vector2(440f, 540f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("canDGate", "", new Vector2(440f, 560f), Vector2.zero, GUIController.Instance.trajanNormal);
-            panel.AddText("gateAllow", "", new Vector2(440f, 580f), Vector2.zero, GUIController.Instance.trajanNormal);
-
-            //Bottom right info
-            panel.AddText("Right1 Label", "Session Time\nLoad\nHero Pos\nMove Raw", new Vector2(1285, 747), Vector2.zero, GUIController.Instance.arial);
-            panel.AddText("Right1", "", new Vector2(1385, 747), Vector2.zero, GUIController.Instance.trajanNormal);
-
-            panel.AddText("Right2 Label", "Move Vector\nKey Pressed\nMove Pressed\nInput X", new Vector2(1500, 747), Vector2.zero, GUIController.Instance.arial);
-            panel.AddText("Right2", "", new Vector2(1600, 747), Vector2.zero, GUIController.Instance.trajanNormal);
-
-            panel.FixRenderOrder();
+            panel.AddText("0", "", new Vector2(40f, 20f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("1", "", new Vector2(40f, 40f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("2", "", new Vector2(40f, 60f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("3", "", new Vector2(40f, 80f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("4", "", new Vector2(40f, 100f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("5", "", new Vector2(40f, 120f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("6", "", new Vector2(40f, 140f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("7", "", new Vector2(40f, 160f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("8", "", new Vector2(40f, 180f), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("9", "", new Vector2(40f, 200f), Vector2.zero, GUIController.Instance.trajanNormal);
+           
         }
 
         public static void Update()
@@ -126,82 +66,31 @@ namespace DebugMod
                 return;
             }
 
-            if (DebugMod.settings.InfoPanelVisible && !panel.active)
+            if (DebugMod.settings.SaveStatePanelVisible && !panel.active)
             {
                 panel.SetActive(true, false);
             }
-            else if (!DebugMod.settings.InfoPanelVisible && panel.active)
+            else if (!DebugMod.settings.SaveStatePanelVisible && panel.active)
             {
                 panel.SetActive(false, true);
             }
 
             if (panel.active)
             {
-                PlayerData.instance.CountGameCompletion();
+                panel.GetText("0").UpdateText("Open");
+                panel.GetText("1").UpdateText("Open");
+                panel.GetText("2").UpdateText("Open");
+                panel.GetText("4").UpdateText("Open");
+                panel.GetText("5").UpdateText("Open");
+                panel.GetText("6").UpdateText("Open");
+                panel.GetText("7").UpdateText("Open");
+                panel.GetText("8").UpdateText("Open");
+                panel.GetText("9").UpdateText("Open");
 
-                panel.GetText("Hero State").UpdateText(HeroController.instance.hero_state.ToString());
-                panel.GetText("Velocity").UpdateText(HeroController.instance.current_velocity.ToString());
-                panel.GetText("Nail Damage").UpdateText(DebugMod.RefKnightSlash.FsmVariables.GetFsmInt("damageDealt").Value + " (Flat " + PlayerData.instance.nailDamage + ", x" + DebugMod.RefKnightSlash.FsmVariables.GetFsmFloat("Multiplier").Value + ")");
-                panel.GetText("HP").UpdateText(PlayerData.instance.health + " / " + PlayerData.instance.maxHealth);
-                panel.GetText("MP").UpdateText((PlayerData.instance.MPCharge + PlayerData.instance.MPReserve).ToString());
-
-                panel.GetText("Completion").UpdateText(PlayerData.instance.completionPercentage.ToString());
-                panel.GetText("Grubs").UpdateText(PlayerData.instance.grubsCollected + " / 46");
-
-                panel.GetText("isInvuln").UpdateText(GetStringForBool(HeroController.instance.cState.invulnerable));
-                panel.GetText("Invincible").UpdateText(GetStringForBool(PlayerData.instance.isInvincible));
-                panel.GetText("Invincitest").UpdateText(GetStringForBool(PlayerData.instance.invinciTest));
-                panel.GetText("Damage State").UpdateText(HeroController.instance.damageMode.ToString());
-                panel.GetText("Dead State").UpdateText(GetStringForBool(HeroController.instance.cState.dead));
-                panel.GetText("Hazard Death").UpdateText(HeroController.instance.cState.hazardDeath.ToString());
-
-                panel.GetText("Scene Name").UpdateText(DebugMod.GetSceneName());
-                panel.GetText("Transition").UpdateText(GetStringForBool(HeroController.instance.cState.transitioning));
-
-                string transState = HeroController.instance.transitionState.ToString();
-                if (transState == "WAITING_TO_ENTER_LEVEL") transState = "LOADING";
-                if (transState == "WAITING_TO_TRANSITION") transState = "WAITING";
-
-                panel.GetText("Trans State").UpdateText(transState);
-                panel.GetText("is Gameplay").UpdateText(GetStringForBool(DebugMod.GM.IsGameplayScene()));
-                panel.GetText("Game State").UpdateText(GameManager.instance.gameState.ToString());
-                panel.GetText("UI State").UpdateText(UIManager.instance.uiState.ToString());
-                panel.GetText("Hero Paused").UpdateText(GetStringForBool(HeroController.instance.cState.isPaused));
-                panel.GetText("Camera Mode").UpdateText(DebugMod.RefCamera.mode.ToString());
-
-                panel.GetText("Accept Input").UpdateText(GetStringForBool(HeroController.instance.acceptingInput));
-                panel.GetText("Relinquished").UpdateText(GetStringForBool(HeroController.instance.controlReqlinquished));
-                panel.GetText("atBench").UpdateText(GetStringForBool(PlayerData.instance.atBench));
-
-                panel.GetText("Dashing").UpdateText(GetStringForBool(HeroController.instance.cState.dashing));
-                panel.GetText("Jumping").UpdateText(GetStringForBool((HeroController.instance.cState.jumping || HeroController.instance.cState.doubleJumping)));
-                panel.GetText("Superdashing").UpdateText(GetStringForBool(HeroController.instance.cState.superDashing));
-                panel.GetText("Falling").UpdateText(GetStringForBool(HeroController.instance.cState.falling));
-                panel.GetText("Hardland").UpdateText(GetStringForBool(HeroController.instance.cState.willHardLand));
-                panel.GetText("Swimming").UpdateText(GetStringForBool(HeroController.instance.cState.swimming));
-                panel.GetText("Recoiling").UpdateText(GetStringForBool(HeroController.instance.cState.recoiling));
-
-                panel.GetText("Wall lock").UpdateText(GetStringForBool(HeroController.instance.wallLocked));
-                panel.GetText("Wall jumping").UpdateText(GetStringForBool(HeroController.instance.cState.wallJumping));
-                panel.GetText("Wall touching").UpdateText(GetStringForBool(HeroController.instance.cState.touchingWall));
-                panel.GetText("Wall sliding").UpdateText(GetStringForBool(HeroController.instance.cState.wallSliding));
-                panel.GetText("Wall left").UpdateText(GetStringForBool(HeroController.instance.touchingWallL));
-                panel.GetText("Wall right").UpdateText(GetStringForBool(HeroController.instance.touchingWallR));
-
-                panel.GetText("Attacking").UpdateText(GetStringForBool(HeroController.instance.cState.attacking));
-                panel.GetText("canCast").UpdateText(GetStringForBool(HeroController.instance.CanCast()));
-                panel.GetText("canSuperdash").UpdateText(GetStringForBool(HeroController.instance.CanSuperDash()));
-                panel.GetText("canQuickmap").UpdateText(GetStringForBool(HeroController.instance.CanQuickMap()));
-                panel.GetText("canInventory").UpdateText(GetStringForBool(HeroController.instance.CanOpenInventory()));
-                panel.GetText("canWarp").UpdateText(GetStringForBool(DebugMod.RefDreamNail.FsmVariables.GetFsmBool("Dream Warp Allowed").Value));
-                panel.GetText("canDGate").UpdateText(GetStringForBool(DebugMod.RefDreamNail.FsmVariables.GetFsmBool("Can Dream Gate").Value));
-                panel.GetText("gateAllow").UpdateText(GetStringForBool(DebugMod.RefDreamNail.FsmVariables.GetFsmBool("Dream Gate Allowed").Value));
-
-                int time1 = Mathf.FloorToInt(Time.realtimeSinceStartup / 60f);
-                int time2 = Mathf.FloorToInt(Time.realtimeSinceStartup - (float)(time1 * 60));
-
-                panel.GetText("Right1").UpdateText(string.Format("{0:00}:{1:00}", time1, time2) + "\n" + DebugMod.GetLoadTime() + "s\n" + (Vector2)DebugMod.RefKnight.transform.position + "\n" + string.Format("L: {0} R: {1}", DebugMod.IH.inputActions.left.RawValue, DebugMod.IH.inputActions.right.RawValue));
-                panel.GetText("Right2").UpdateText(DebugMod.IH.inputActions.moveVector.Vector.x + ", " + DebugMod.IH.inputActions.moveVector.Vector.y + "\n" + GetStringForBool(InputManager.AnyKeyIsPressed) + "\n" + GetStringForBool(DebugMod.IH.inputActions.left.IsPressed || DebugMod.IH.inputActions.right.IsPressed) + "\n" + DebugMod.IH.inputX);
+                foreach (KeyValuePair<int, string[]> entry in SaveStateManager.GetSaveStatesInfo())
+                {
+                    panel.GetText(entry.Key.ToString()).UpdateText(string.Format("{0}\n{1}", entry.Value[2], entry.Value[1]));
+                }
             }
         }
 

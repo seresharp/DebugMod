@@ -218,9 +218,7 @@ namespace DebugMod
             {
                 filePath,
                 saveScene,
-                saveStateIdentifier,
-                savedPd.ToString(),
-                savedSd.ToString()
+                saveStateIdentifier
             };
         }
         
