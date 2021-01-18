@@ -10,7 +10,7 @@ namespace DebugMod
     {
         private static readonly FieldInfo TimeSlowed = typeof(GameManager).GetField("timeSlowed", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly FieldInfo IgnoreUnpause = typeof(UIManager).GetField("ignoreUnpause", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
-        private static SaveStateHandler tmpSaveState;
+        private static SaveState tmpSaveState;
         //public static string[] saveStateFiles = new string[10];
         internal static int CurrentSlot = -1;
 
@@ -162,7 +162,7 @@ namespace DebugMod
         [BindableMethod(name = "Make Savestate", category = "Savestates")]
         public static void SaveState()
         {
-            tmpSaveState = new SaveStateHandler();
+            tmpSaveState = new SaveState();
             tmpSaveState.SaveState(SaveStateType.Memory);
         }
 
@@ -184,7 +184,7 @@ namespace DebugMod
         [BindableMethod(name = "Make Savestate (file)", category = "Savestates")]
         public static void NewSaveStateToFile()
         {
-            tmpSaveState = new SaveStateHandler();
+            tmpSaveState = new SaveState();
             tmpSaveState.SaveState(SaveStateType.Memory);
 
         }
@@ -312,7 +312,7 @@ namespace DebugMod
             DebugMod.settings.InfoPanelVisible = !DebugMod.settings.InfoPanelVisible;
         }
 
-        [BindableMethod(name = "Toggle Menu", category = "Mod UI")]
+        [BindableMethod(name = "Toggle Top Menu", category = "Mod UI")]
         public static void ToggleTopRightPanel()
         {
             DebugMod.settings.TopMenuVisible = !DebugMod.settings.TopMenuVisible;
@@ -332,6 +332,14 @@ namespace DebugMod
             {
                 EnemiesPanel.RefreshEnemyList();
             }
+        }
+
+        // A variant of info panel. View handled in the two InfoPanel classes
+        // Probably some race-condition potential here :)
+        [BindableMethod(name = "Full/Min Info Switch", category = "Mod UI")]
+        public static void ToggleFullInfo()
+        {
+            DebugMod.settings.MinInfoPanelVisible = !DebugMod.settings.MinInfoPanelVisible;
         }
 
         #endregion

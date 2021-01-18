@@ -34,6 +34,18 @@ namespace DebugMod
             set => SetBool(value);
         }
 
+        public bool MinInfoPanelVisible
+        {
+            get => GetBool(true);
+            set => SetBool(value);
+        }
+
+        public bool SaveStatePanelVisible
+        {
+            get => GetBool(true);
+            set => SetBool(value);
+        }
+
         public bool TopMenuVisible
         {
             get => GetBool(true);
@@ -41,6 +53,12 @@ namespace DebugMod
         }
 
         public bool FirstRun
+        {
+            get => GetBool(true);
+            set => SetBool(value);
+        }
+
+        public bool NumPadForSaveStates
         {
             get => GetBool(true);
             set => SetBool(value);

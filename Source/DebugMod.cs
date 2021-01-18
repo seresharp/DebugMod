@@ -43,93 +43,129 @@ namespace DebugMod
         internal static bool cameraFollow;
 
         internal static Dictionary<string, Pair> bindMethods = new Dictionary<string, Pair>();
+        internal static Dictionary<KeyCode, int> alphaKeyDict = new Dictionary<KeyCode, int>();
+
+        static int alphaStart;
+        static int alphaEnd;
 
         public override void Initialize()
         {
-            instance = this;
-
-            instance.Log("Initializing");
-
-            float startTime = Time.realtimeSinceStartup;
-            instance.Log("Building MethodInfo dict...");
-
-            bindMethods.Clear();
-            foreach (MethodInfo method in typeof(BindableFunctions).GetMethods(BindingFlags.Public | BindingFlags.Static))
+            try
             {
-                object[] attributes = method.GetCustomAttributes(typeof(BindableMethod), false);
+                instance = this;
 
-                if (attributes.Any())
+                instance.Log("Initializing");
+
+                float startTime = Time.realtimeSinceStartup;
+                instance.Log("Building MethodInfo dict...");
+
+                bindMethods.Clear();
+                foreach (MethodInfo method in typeof(BindableFunctions).GetMethods(BindingFlags.Public | BindingFlags.Static))
                 {
-                    BindableMethod attr = (BindableMethod)attributes[0];
-                    string name = attr.name;
-                    string cat = attr.category;
+                    object[] attributes = method.GetCustomAttributes(typeof(BindableMethod), false);
 
-                    bindMethods.Add(name, new Pair(cat, method));
+                    if (attributes.Any())
+                    {
+                        BindableMethod attr = (BindableMethod)attributes[0];
+                        string name = attr.name;
+                        string cat = attr.category;
+
+                        bindMethods.Add(name, new Pair(cat, method));
+                    }
                 }
+
+                instance.Log("Done! Time taken: " + (Time.realtimeSinceStartup - startTime) + "s. Found " + bindMethods.Count + " methods");
+
+                settings = GlobalSettings;
+
+                if (settings.FirstRun)
+                {
+                    instance.Log("First run detected, setting default binds");
+
+                    settings.FirstRun = false;
+                    settings.binds.Clear();
+
+                    settings.binds.Add("Toggle All UI", (int)KeyCode.F1);
+                    settings.binds.Add("Toggle Info", (int)KeyCode.F2);
+                    settings.binds.Add("Toggle Top Menu", (int)KeyCode.F3);
+                    settings.binds.Add("Toggle Console", (int)KeyCode.F4);
+                    settings.binds.Add("Force Pause", (int)KeyCode.F5);
+                    settings.binds.Add("Hazard Respawn", (int)KeyCode.F6);
+                    settings.binds.Add("Set Respawn", (int)KeyCode.F7);
+                    settings.binds.Add("Force Camera Follow", (int)KeyCode.F8);
+                    settings.binds.Add("Toggle Enemy Panel", (int)KeyCode.F9);
+                    settings.binds.Add("Self Damage", (int)KeyCode.F10);
+                    settings.binds.Add("Toggle Binds", (int)KeyCode.BackQuote);
+                    settings.binds.Add("Nail Damage +4", (int)KeyCode.Equals);
+                    settings.binds.Add("Nail Damage -4", (int)KeyCode.Minus);
+                    settings.binds.Add("Increase Timescale", (int)KeyCode.KeypadPlus);
+                    settings.binds.Add("Decrease Timescale", (int)KeyCode.KeypadMinus);
+                    settings.binds.Add("Toggle Hero Light", (int)KeyCode.Home);
+                    settings.binds.Add("Toggle Vignette", (int)KeyCode.Insert);
+                    settings.binds.Add("Zoom In", (int)KeyCode.PageUp);
+                    settings.binds.Add("Zoom Out", (int)KeyCode.PageDown);
+                    settings.binds.Add("Reset Camera Zoom", (int)KeyCode.End);
+                    settings.binds.Add("Toggle HUD", (int)KeyCode.Delete);
+                    settings.binds.Add("Hide Hero", (int)KeyCode.Backspace);
+                }
+
+                if (settings.NumPadForSaveStates)
+                {
+                    alphaStart = (int)KeyCode.Keypad0;
+                    alphaEnd = (int)KeyCode.Keypad9;
+                }
+                else
+                {
+                    alphaStart = (int)KeyCode.Alpha0;
+                    alphaEnd = (int)KeyCode.Alpha9;
+                }
+
+                int alphaInt = 0;
+                alphaKeyDict.Clear();
+                for (int i = alphaStart; i <= alphaEnd; i++)
+                {
+                    KeyCode tmpKeyCode = (KeyCode)i;
+                    alphaKeyDict.Add(tmpKeyCode, alphaInt++);
+                }
+
+                UnityEngine.SceneManagement.SceneManager.activeSceneChanged += LevelActivated;
+                GameObject UIObj = new GameObject();
+                UIObj.AddComponent<GUIController>();
+                GameObject.DontDestroyOnLoad(UIObj);
+
+                ModHooks.Instance.SavegameLoadHook += LoadCharacter;
+                ModHooks.Instance.NewGameHook += NewCharacter;
+                ModHooks.Instance.BeforeSceneLoadHook += OnLevelUnload;
+                ModHooks.Instance.TakeHealthHook += PlayerDamaged;
+                ModHooks.Instance.ApplicationQuitHook += SaveSettings;
+
+                BossHandler.PopulateBossLists();
+                GUIController.Instance.BuildMenus();
+
+                Console.AddLine("New session started " + DateTime.Now);
             }
-
-            instance.Log("Done! Time taken: " + (Time.realtimeSinceStartup - startTime) + "s. Found " + bindMethods.Count + " methods");
-
-            settings = GlobalSettings;
-
-            if (settings.FirstRun)
-            {
-                instance.Log("First run detected, setting default binds");
-
-                settings.FirstRun = false;
-                settings.binds.Clear();
-
-                settings.binds.Add("Toggle All UI", (int)KeyCode.F1);
-                settings.binds.Add("Toggle Info", (int)KeyCode.F2);
-                settings.binds.Add("Toggle Menu", (int)KeyCode.F3);
-                settings.binds.Add("Toggle Console", (int)KeyCode.F4);
-                settings.binds.Add("Force Pause", (int)KeyCode.F5);
-                settings.binds.Add("Hazard Respawn", (int)KeyCode.F6);
-                settings.binds.Add("Set Respawn", (int)KeyCode.F7);
-                settings.binds.Add("Force Camera Follow", (int)KeyCode.F8);
-                settings.binds.Add("Toggle Enemy Panel", (int)KeyCode.F9);
-                settings.binds.Add("Self Damage", (int)KeyCode.F10);
-                settings.binds.Add("Toggle Binds", (int)KeyCode.BackQuote);
-                settings.binds.Add("Nail Damage +4", (int)KeyCode.Equals);
-                settings.binds.Add("Nail Damage -4", (int)KeyCode.Minus);
-                settings.binds.Add("Increase Timescale", (int)KeyCode.KeypadPlus);
-                settings.binds.Add("Decrease Timescale", (int)KeyCode.KeypadMinus);
-                settings.binds.Add("Toggle Hero Light", (int)KeyCode.Home);
-                settings.binds.Add("Toggle Vignette", (int)KeyCode.Insert);
-                settings.binds.Add("Zoom In", (int)KeyCode.PageUp);
-                settings.binds.Add("Zoom Out", (int)KeyCode.PageDown);
-                settings.binds.Add("Reset Camera Zoom", (int)KeyCode.End);
-                settings.binds.Add("Toggle HUD", (int)KeyCode.Delete);
-                settings.binds.Add("Hide Hero", (int)KeyCode.Backspace);
+            catch (Exception e) {
+                DebugMod.instance.Log(String.Concat(
+                        "\n - Source: ", e.Source,
+                        "\n - Message: ", e.Message,
+                        "\n - InnerException: ", e.InnerException,
+                        "\n - RuntimeType:", e.GetType(),
+                        "\n - StackTrace:", e.StackTrace)
+                    );
             }
-
-            UnityEngine.SceneManagement.SceneManager.activeSceneChanged += LevelActivated;
-            GameObject UIObj = new GameObject();
-            UIObj.AddComponent<GUIController>();
-            GameObject.DontDestroyOnLoad(UIObj);
-
-            ModHooks.Instance.SavegameLoadHook += LoadCharacter;
-            ModHooks.Instance.NewGameHook += NewCharacter;
-            ModHooks.Instance.BeforeSceneLoadHook += OnLevelUnload;
-            ModHooks.Instance.TakeHealthHook += PlayerDamaged;
-            ModHooks.Instance.ApplicationQuitHook += SaveSettings;
-
-            BossHandler.PopulateBossLists();
-            GUIController.Instance.BuildMenus();
-
-            Console.AddLine("New session started " + DateTime.Now);
         }
         
         public override string GetVersion()
         {
-            return "1.3.3";
+            return "1.4.0";
         }
 
         public override bool IsCurrent()
         {
+            /*  
             try
             {
-                GithubVersionHelper helper = new GithubVersionHelper("seanpr96/DebugMod");
+                GithubVersionHelper helper = new GithubVersionHelper("seresharp/DebugMod");
                 Log("Github = " + helper.GetVersion());
                 return helper.GetVersion() == GetVersion();
             }
@@ -137,6 +173,8 @@ namespace DebugMod
             {
                 return true;
             }
+            */
+            return true;
         }
 
         private void SaveSettings()

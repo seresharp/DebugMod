@@ -12,33 +12,45 @@ namespace DebugMod
 
         private static Dictionary<string, List<string>> bindPages = new Dictionary<string, List<string>>();
         private static List<string> pageKeys;
-
+        
         public static KeyCode keyWarning = KeyCode.None;
 
+        // TODO: Refactor to allow rotating images
         public static void BuildMenu(GameObject canvas)
         {
-            panel = new CanvasPanel(canvas, GUIController.Instance.images["HelpBG"], new Vector2(1123, 456), Vector2.zero, new Rect(0, 0, GUIController.Instance.images["HelpBG"].width, GUIController.Instance.images["HelpBG"].height));
-            panel.AddText("Label", "Binds", new Vector2(130f, -25f), Vector2.zero, GUIController.Instance.trajanBold, 30);
+                panel = new CanvasPanel(canvas, GUIController.Instance.images["HelpBG"], new Vector2(1123, 456), Vector2.zero, new Rect(0, 0, GUIController.Instance.images["HelpBG"].width, GUIController.Instance.images["HelpBG"].height));
+                panel.AddText("Label", "Binds", new Vector2(130f, -25f), Vector2.zero, GUIController.Instance.trajanBold, 30);
 
-            panel.AddText("Category", "", new Vector2(25f, 25f), Vector2.zero, GUIController.Instance.trajanNormal, 20);
-            panel.AddText("Help", "", new Vector2(25f, 50f), Vector2.zero, GUIController.Instance.arial, 15);
-            panel.AddButton("Page", GUIController.Instance.images["ButtonRect"], new Vector2(125, 250), Vector2.zero, NextClicked, new Rect(0, 0, GUIController.Instance.images["ButtonRect"].width, GUIController.Instance.images["ButtonRect"].height), GUIController.Instance.trajanBold, "# / #");
-            panel.AddButton(
-                    "NextPage",
-                    GUIController.Instance.images["ScrollBarArrowRight"],
-                    new Vector2(223, 250),
-                    Vector2.zero,
-                    NextClicked,
-                    new Rect(0, 0, GUIController.Instance.images["ScrollBarArrowRight"].width, GUIController.Instance.images["ScrollBarArrowRight"].height)
-                );
-            panel.AddButton(
-                    "PrevPage", 
-                    GUIController.Instance.images["ScrollBarArrowLeft"], 
-                    new Vector2(95, 250), 
-                    Vector2.zero, 
-                    PrevClicked, 
-                    new Rect(0, 0, GUIController.Instance.images["ScrollBarArrowLeft"].width, GUIController.Instance.images["ScrollBarArrowLeft"].height)
-                );
+                panel.AddText("Category", "", new Vector2(25f, 25f), Vector2.zero, GUIController.Instance.trajanNormal, 20);
+                panel.AddText("Help", "", new Vector2(25f, 50f), Vector2.zero, GUIController.Instance.arial, 15);
+                panel.AddButton("Page", GUIController.Instance.images["ButtonRect"], new Vector2(125, 250), Vector2.zero, NextClicked, new Rect(0, 0, GUIController.Instance.images["ButtonRect"].width, GUIController.Instance.images["ButtonRect"].height), GUIController.Instance.trajanBold, "# / #");
+
+
+                panel.AddButton(
+                        "NextPage",
+                        GUIController.Instance.images["ScrollBarArrowRight"],
+                        new Vector2(223, 254),
+                        Vector2.zero,
+                        NextClicked,
+                        new Rect(
+                            0,
+                            0,
+                            GUIController.Instance.images["ScrollBarArrowRight"].width,
+                            GUIController.Instance.images["ScrollBarArrowRight"].height)
+                    );
+                panel.AddButton(
+                        "PrevPage",
+                        GUIController.Instance.images["ScrollBarArrowLeft"],
+                        new Vector2(95, 254),
+                        Vector2.zero,
+                        NextClicked,
+                        new Rect(
+                            0,
+                            0,
+                            GUIController.Instance.images["ScrollBarArrowLeft"].width,
+                            GUIController.Instance.images["ScrollBarArrowLeft"].height)
+                    );
+
             for (int i = 0; i < 11; i++)
             {
                 panel.AddButton(i.ToString(), GUIController.Instance.images["Scrollbar_point"], new Vector2(300f, 45f + 17.5f * i), Vector2.zero, ChangeBind, new Rect(0, 0, GUIController.Instance.images["Scrollbar_point"].width, GUIController.Instance.images["Scrollbar_point"].height));
@@ -57,7 +69,7 @@ namespace DebugMod
             pageKeys = bindPages.Keys.ToList();
 
             panel.GetText("Category").UpdateText(pageKeys[page]);
-            panel.GetButton("Next").UpdateText((page + 1) + " / " + pageKeys.Count);
+            panel.GetButton("Page").UpdateText((page + 1) + " / " + pageKeys.Count);
             UpdateHelpText();
         }
 
@@ -100,19 +112,17 @@ namespace DebugMod
 
         private static void NextClicked(string buttonName)
         {
-            page++;
-            if (page >= pageKeys.Count) page = 0;
+            if (buttonName.StartsWith("Prev"))
+            {
+                page--;
+                if (page < 0) page = pageKeys.Count - 1;
+            }
+            else
+            {
+                page++;
+                if (page >= pageKeys.Count) page = 0;
+            }
 
-            panel.GetText("Category").UpdateText(pageKeys[page]);
-            panel.GetButton("Page").UpdateText((page + 1) + " / " + pageKeys.Count);
-            UpdateHelpText();
-        }
-
-        private static void PrevClicked(string buttonName)
-        {
-            page--;
-            if (page < 0) page = pageKeys.Count - 1;
-        
             panel.GetText("Category").UpdateText(pageKeys[page]);
             panel.GetButton("Page").UpdateText((page + 1) + " / " + pageKeys.Count);
             UpdateHelpText();

@@ -37,6 +37,8 @@ namespace DebugMod
             scaler.referenceResolution = new Vector2(1920f, 1080f);
             canvas.AddComponent<GraphicRaycaster>();
 
+            MinimalInfoPanel.BuildMenu(canvas);
+            SaveStatesPanel.BuildMenu(canvas);
             InfoPanel.BuildMenu(canvas);
             TopMenu.BuildMenu(canvas);
             EnemiesPanel.BuildMenu(canvas);
@@ -82,6 +84,7 @@ namespace DebugMod
 
             foreach (string res in resourceNames)
             {
+                //DebugMod.instance.Log(res + "\n\n");
                 if (res.StartsWith("DebugMod.Images."))
                 {
                     try
@@ -109,7 +112,9 @@ namespace DebugMod
 
         public void Update()
         {
+            MinimalInfoPanel.Update();
             InfoPanel.Update();
+            SaveStatesPanel.Update();
             TopMenu.Update();
             EnemiesPanel.Update();
             Console.Update();

@@ -31,6 +31,7 @@
     <LangVersion>default</LangVersion>
     <NoWarn>1591</NoWarn>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -45,6 +46,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -69,6 +73,9 @@
     <Compile Include="BindableMethod.cs" />
     <Compile Include="EnemiesPanel.cs" />
     <Compile Include="EnemyData.cs" />
+    <Compile Include="SaveStateManager.cs" />
+    <Compile Include="SaveStatesPanel.cs" />
+    <Compile Include="MinimalInfoPanel.cs" />
     <Compile Include="KeyBindPanel.cs" />
     <Compile Include="BindableFunctions.cs" />
     <Compile Include="Pair.cs" />
@@ -77,7 +84,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SaveState.cs" />
+    <Compile Include="SaveStateHandler.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TopMenu.cs" />
     <Reference Include="UnityEngine">
@@ -149,10 +156,25 @@
     <EmbeddedResource Include="Images\StatusPanelBG.png" />
     <EmbeddedResource Include="Images\TramPass.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\ScrollBarArrowLeft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\ScrollBarArrowRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\BlankBox.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\BlankVertical.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <_PostBuildHookTimestamp>@(IntermediateAssembly->'%(FullPath).timestamp')</_PostBuildHookTimestamp>
     <_PostBuildHookHostPlatform>$(Platform)</_PostBuildHookHostPlatform>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(TargetDir)DebugMod.dll" "D:\GOG Galaxy\Games\Hollow Knight\hollow_knight_Data\Managed\Mods\" /y</PostBuildEvent>
   </PropertyGroup>
   <Target Name="PostBuildHooks" Inputs="@(IntermediateAssembly);@(ReferencePath)" Outputs="@(IntermediateAssembly);$(_PostBuildHookTimestamp)" AfterTargets="CoreCompile" BeforeTargets="AfterCompile">
     <Touch Files="$(_PostBuildHookTimestamp)" AlwaysCreate="True" />
