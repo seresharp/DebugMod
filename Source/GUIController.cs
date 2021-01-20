@@ -16,6 +16,7 @@ namespace DebugMod
         public Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
         public Vector3 hazardLocation;
         public string respawnSceneWatch;
+        public static bool didInput;
 
         private GameObject canvas;
         private static GUIController _instance;
@@ -173,10 +174,27 @@ namespace DebugMod
                         DebugMod.settings.binds.Remove(bind.Key);
                     }
                 }
+                
+                if (SaveStateManager.selectSlot && DebugMod.settings.SaveStatePanelVisible)
+                {
+                    foreach (KeyValuePair<KeyCode, int> entry in DebugMod.alphaKeyDict)
+                    {
+                        if (Input.GetKeyDown(entry.Key))
+                        {
+                            if (DebugMod.alphaKeyDict.TryGetValue(entry.Key, out int keyInt))
+                            {
+                                // keyInt should be between 0-9
+                                SaveStateManager.currentStateSlot = keyInt;
+                                didInput = true;
+                            }
+                        }
+                    }
+                }
 
                 if (DebugMod.infiniteSoul && PlayerData.instance.MPCharge < PlayerData.instance.maxMP && PlayerData.instance.health > 0 && !HeroController.instance.cState.dead && GameManager.instance.IsGameplayScene())
                 {
                     PlayerData.instance.MPCharge = PlayerData.instance.maxMP;
+                    PlayerData.instance.MPReserve = PlayerData.instance.MPReserveMax;
                 }
 
                 if (DebugMod.playerInvincible && PlayerData.instance != null)

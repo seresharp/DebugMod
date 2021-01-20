@@ -26,12 +26,7 @@ namespace DebugMod
 
         internal SaveState()
         {
-            
-        }
 
-        internal SaveState(SaveState saveState)
-        {
-            
         }
 
         private SaveState(string _scene, string _identifier, PlayerData _pd, SceneData _sd, Vector3 _pos, FieldInfo _cameraLockArea, object _paramLockArea) {
@@ -57,7 +52,7 @@ namespace DebugMod
             lockArea = cameraLockArea.GetValue(GameManager.instance.cameraCtrl);
         }
 
-        public void SaveStateToFile(SaveState paramSave, int paramSlot)
+        public void SaveStateToFile(int paramSlot)
         {
             try
             {
@@ -70,12 +65,27 @@ namespace DebugMod
                     throw new Exception("No temp save state set");
                 }
 
-                filePath = SaveStateManager.path + paramSlot + ".json";
-                File.WriteAllText(string.Concat(new object[]{filePath}), JsonUtility.ToJson(paramSave, prettyPrint: true));
+                //filePath = SaveStateManager.path + paramSlot + ".json";
+
+                filePath = string.Concat(new object[]
+{
+                    Application.persistentDataPath,
+                    "/Savestates-1221/savestate",
+                    paramSlot,
+                    ".json"
+                });
+
+                File.WriteAllText(string.Concat(
+                    new object[]{ filePath }),
+                    JsonUtility.ToJson( 
+                        new SaveState ( saveStateIdentifier, saveScene, savedPd, savedSd, savePos, cameraLockArea, lockArea ), 
+                        prettyPrint: true 
+                    )
+                );
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.Log("SaveStateToFile(): " + ex.Message);
+                throw;
             }
         }
         #endregion
@@ -90,7 +100,7 @@ namespace DebugMod
         public void LoadStateFromFile()
         {
             PrepareFileStateToMemory(SaveStateManager.currentStateSlot);
-            HeroController.instance.StartCoroutine(LoadStateCoro());
+            LoadTempState();
         }
 
         public void PrepareFileStateToMemory(int paramSlot)
@@ -98,7 +108,7 @@ namespace DebugMod
             try
             {
                 SaveState tmpData = new SaveState();
-
+                
                 filePath = string.Concat(new object[]
                 {
                     Application.persistentDataPath,
@@ -127,9 +137,9 @@ namespace DebugMod
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.Log("SaveStateToFile() error: " + ex.Message);
+                throw;
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.IO;
 using UnityEngine;
 using GlobalEnums;
 
@@ -152,6 +153,30 @@ namespace DebugMod
             }
         }
 
+        [BindableMethod(name = "SceneData to file", category = "Misc")]
+        public static void SceneDataToFile()
+        {
+            File.WriteAllText(string.Concat(
+                new object[] { Application.persistentDataPath, "SceneData.json" }),
+                JsonUtility.ToJson(
+                    SceneData.instance,
+                    prettyPrint: true
+                )
+            );
+        }
+
+        [BindableMethod(name = "PlayerData to file", category = "Misc")]
+        public static void PlayerDataToFile()
+        {
+
+            File.WriteAllText(string.Concat(
+                new object[] { Application.persistentDataPath, "PlayerData.json" }),
+                JsonUtility.ToJson(
+                    PlayerData.instance,
+                    prettyPrint: true
+                )
+            );
+        }
         #endregion
 
         #region SaveStates 
@@ -290,12 +315,31 @@ namespace DebugMod
         [BindableMethod(name = "Toggle All UI", category = "Mod UI")]
         public static void ToggleAllPanels()
         {
-            bool active = !(DebugMod.settings.HelpPanelVisible || DebugMod.settings.InfoPanelVisible || DebugMod.settings.EnemiesPanelVisible || DebugMod.settings.TopMenuVisible || DebugMod.settings.ConsoleVisible);
+            bool active = !(
+                DebugMod.settings.HelpPanelVisible || 
+                DebugMod.settings.InfoPanelVisible || 
+                DebugMod.settings.EnemiesPanelVisible || 
+                DebugMod.settings.TopMenuVisible || 
+                DebugMod.settings.ConsoleVisible ||
+                DebugMod.settings.MinInfoPanelVisible ||
+                DebugMod.settings.SaveStatePanelVisible
+                );
 
+            if (MinimalInfoPanel.minInfo)
+            {
+                DebugMod.settings.InfoPanelVisible = false;
+                DebugMod.settings.MinInfoPanelVisible = active;
+            }
+            else
+            {
+                DebugMod.settings.InfoPanelVisible = active;
+                DebugMod.settings.MinInfoPanelVisible = false;
+            }
             DebugMod.settings.TopMenuVisible = active;
             DebugMod.settings.EnemiesPanelVisible = active;
             DebugMod.settings.ConsoleVisible = active;
             DebugMod.settings.HelpPanelVisible = active;
+            DebugMod.settings.SaveStatePanelVisible = active;
 
             if (DebugMod.settings.EnemiesPanelVisible)
             {
@@ -312,7 +356,16 @@ namespace DebugMod
         [BindableMethod(name = "Toggle Info", category = "Mod UI")]
         public static void ToggleInfoPanel()
         {
-            DebugMod.settings.InfoPanelVisible = !DebugMod.settings.InfoPanelVisible;
+            if (MinimalInfoPanel.minInfo)
+            {
+                DebugMod.settings.InfoPanelVisible = false;
+                DebugMod.settings.MinInfoPanelVisible = !DebugMod.settings.MinInfoPanelVisible;
+            }
+            else
+            {
+                DebugMod.settings.InfoPanelVisible = !DebugMod.settings.InfoPanelVisible;
+                DebugMod.settings.MinInfoPanelVisible = false;
+            }
         }
 
         [BindableMethod(name = "Toggle Top Menu", category = "Mod UI")]
@@ -342,8 +395,13 @@ namespace DebugMod
         [BindableMethod(name = "Alt. Info Switch", category = "Mod UI")]
         public static void ToggleFullInfo()
         {
-            DebugMod.settings.MinInfoPanelVisible = !DebugMod.settings.MinInfoPanelVisible;
-            Console.AddLine("MinInfoPanelVisible (bool): " + DebugMod.settings.MinInfoPanelVisible.ToString());
+            MinimalInfoPanel.minInfo = !MinimalInfoPanel.minInfo;
+        }
+
+        [BindableMethod(name = "Toggle SaveState Panel", category = "Mod UI")]
+        public static void ToggleSaveStatesPanel()
+        {
+            DebugMod.settings.SaveStatePanelVisible = !DebugMod.settings.SaveStatePanelVisible;
         }
 
         #endregion
@@ -525,11 +583,13 @@ namespace DebugMod
         public static void KillSelf()
         {
             if (DebugMod.GM.isPaused) UIManager.instance.TogglePauseGame();
-            HeroController.instance.TakeHealth(PlayerData.instance.health);
-            //HeroController.instance.heroDeathPrefab.SetActive(true);
-            //DebugMod.GM.ReadyForRespawn();
-            //GameCameras.instance.hudCanvas.gameObject.SetActive(false);
-            //GameCameras.instance.hudCanvas.gameObject.SetActive(true);
+            HeroController.instance.TakeHealth(PlayerData.instance.maxHealth);
+            
+            
+            HeroController.instance.heroDeathPrefab.SetActive(true);
+            DebugMod.GM.ReadyForRespawn();
+            GameCameras.instance.hudCanvas.gameObject.SetActive(false);
+            GameCameras.instance.hudCanvas.gameObject.SetActive(true);
         }
 
         #endregion

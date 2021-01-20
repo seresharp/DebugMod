@@ -27,7 +27,10 @@ namespace DebugMod
     {
         public static SaveState memoryState;
         private static Dictionary<int, SaveState> saveStateFiles = new Dictionary<int, SaveState>();
+        private DateTime timeoutHelper;
+        private double timeoutAmount = 8;
 
+        public static bool selectSlot = false;
         public static int currentStateSlot = -1;
         public static string path = Application.persistentDataPath + "/Savestates-1221";
         public const int maxSaveStates = 10;
@@ -39,12 +42,17 @@ namespace DebugMod
         {
             try
             {
+                selectSlot = false;
                 DebugMod.settings.SaveStatePanelVisible = false;
                 autoSlot = false;
                 memoryState = new SaveState();
                 if (!Directory.Exists(SaveStateManager.path))
                 {
                     Directory.CreateDirectory(path);
+                }
+                else
+                {
+                    RefreshStateMenu();
                 }
             }
             catch (Exception)
@@ -71,12 +79,17 @@ namespace DebugMod
                             int initSlot = currentStateSlot;
 
                             // Refactor using dict.keys()?
-                            while (++currentStateSlot != initSlot && ++i < maxSaveStates)
+                            while (currentStateSlot + 1 != initSlot && ++i < maxSaveStates)
                             {
-                                if (currentStateSlot == maxSaveStates)
+                                if (currentStateSlot + 1 >= maxSaveStates)
                                 {
                                     currentStateSlot = 0;
                                 }
+                                else
+                                {
+                                    currentStateSlot++;
+                                }
+
                                 if (!saveStateFiles.ContainsKey(currentStateSlot))
                                 {
                                     saveStateFiles.Add(currentStateSlot, new SaveState());
@@ -85,45 +98,26 @@ namespace DebugMod
                             if (currentStateSlot == initSlot)
                             {
                                 // TODO: Inquire if want to overwrite
-                                if (--currentStateSlot < 0) currentStateSlot = maxSaveStates - 1;
+                                currentStateSlot--;
+                                if (currentStateSlot < 0) currentStateSlot = maxSaveStates - 1;
                                 saveStateFiles.Remove(currentStateSlot);
                                 saveStateFiles.Add(currentStateSlot, new SaveState());
                             }
+                            if (!memoryState.IsSet()) memoryState.SaveTempState();
+                            saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
                         }
                         else
                         {
-                            
-                            DebugMod.settings.SaveStatePanelVisible = true;
-                            while (!saveStateFiles.ContainsKey(currentStateSlot))
-                            {
-                                SelectSlot();
-                            }
-
-                            DebugMod.settings.SaveStatePanelVisible = false;
-                            saveStateFiles[currentStateSlot].LoadStateFromFile();
-                            break;
+                            StartCoroutine(SelectSlot(true, stateType));
                         }
-
-                        if (!memoryState.IsSet()) memoryState.SaveTempState();
-                        saveStateFiles[currentStateSlot].SaveStateToFile(memoryState, currentStateSlot);
                     }
                     break;
                 case SaveStateType.SkipOne:
-
-                    DebugMod.settings.SaveStatePanelVisible = true;
-                    while (!saveStateFiles.ContainsKey(currentStateSlot))
-                    {
-                        SelectSlot();
-                    }
-
-                    DebugMod.settings.SaveStatePanelVisible = false;
-                    saveStateFiles[currentStateSlot].LoadStateFromFile();
+                    StartCoroutine(SelectSlot(true, stateType));
                     break; 
                 default: break;
             }
         }
-
-
 
         #endregion
 
@@ -143,24 +137,11 @@ namespace DebugMod
                     }
                     break;
                 case SaveStateType.File:
-                    if (!saveStateFiles.ContainsKey(currentStateSlot))
-                        DebugMod.settings.SaveStatePanelVisible = true;
-                    while (!saveStateFiles.ContainsKey(currentStateSlot))
-                    {
-                        SelectSlot();
-                    }
-
-                    DebugMod.settings.SaveStatePanelVisible = false;
+                    StartCoroutine(SelectSlot(false, stateType));
                     saveStateFiles[currentStateSlot].PrepareFileStateToMemory(currentStateSlot);
                     break;
                 case SaveStateType.SkipOne:
-                    DebugMod.settings.SaveStatePanelVisible = true;
-                    while (!saveStateFiles.ContainsKey(currentStateSlot))
-                    {
-                        SelectSlot();
-                    }
-
-                    DebugMod.settings.SaveStatePanelVisible = false;
+                    StartCoroutine(SelectSlot(false, stateType));
                     saveStateFiles[currentStateSlot].LoadStateFromFile();
                     break;
                 default:
@@ -171,19 +152,84 @@ namespace DebugMod
         #endregion
 
         #region helper functionality
-        private void SelectSlot()
+        private IEnumerator SelectSlot(bool save, SaveStateType stateType)
         {
-            foreach (KeyValuePair<KeyCode, int> entry in DebugMod.alphaKeyDict)
+            timeoutHelper = DateTime.Now.AddSeconds(timeoutAmount);
+            DebugMod.settings.SaveStatePanelVisible = selectSlot = true;
+           
+            //Console.AddLine("coro test (pre if): " + tmp++);
+            yield return new WaitUntil(DidInput);
+            
+            if (GUIController.didInput)
             {
-                if (Input.GetKeyDown(entry.Key))
+                if (currentStateSlot >= 0 || currentStateSlot < maxSaveStates)
                 {
-                    if (DebugMod.alphaKeyDict.TryGetValue(entry.Key, out int keyInt))
+                    if (save)
                     {
-                        // keyInt should be between 0-9
-                        currentStateSlot = keyInt;
+                        SaveCoroHelper(stateType);
                     }
+                    else
+                    {
+                        LoadCoroHelper(stateType);
+                    }
+                    GUIController.didInput = false;
                 }
             }
+            else
+            {
+                Console.AddLine("Timeout (" + timeoutAmount + "s) reached");
+            }
+
+            yield return new WaitForSeconds(3);
+            DebugMod.settings.SaveStatePanelVisible = selectSlot = false;
+        }
+
+        private void LoadCoroHelper(SaveStateType stateType)
+        {
+            switch (stateType)
+            {
+                case SaveStateType.File:
+                    //if (!memoryState.IsSet()) memoryState.SaveTempState();
+                    saveStateFiles[currentStateSlot].PrepareFileStateToMemory(currentStateSlot);
+                    break;
+                case SaveStateType.SkipOne:
+                    saveStateFiles[currentStateSlot].LoadStateFromFile();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SaveCoroHelper(SaveStateType stateType)
+        {
+            switch (stateType)
+            {
+                case SaveStateType.File:
+                    if (!memoryState.IsSet()) memoryState.SaveTempState();
+                    saveStateFiles[currentStateSlot] = memoryState;
+                    saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
+                    break;
+                case SaveStateType.SkipOne:
+                    saveStateFiles[currentStateSlot] = new SaveState();
+                    saveStateFiles[currentStateSlot].SaveTempState();
+                    saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private bool DidInput()
+        {
+            if (GUIController.didInput)
+            {
+                return true;
+            }
+            else if (timeoutHelper < DateTime.Now)
+            {
+                return true;
+            }
+            return false;
         }
 
         public void ToggleAutoSlot()
@@ -227,7 +273,32 @@ namespace DebugMod
             }
             return returnData;
         }
-            
+
+        public void RefreshStateMenu()
+        {
+            try
+            {
+                string[] files = Directory.GetFiles(path);
+
+                foreach (string file in files)
+                {
+                    var digits = file.SkipWhile(c => !Char.IsDigit(c)).TakeWhile(Char.IsDigit).ToArray();
+                    var str = new string(digits);
+                    int slot = int.Parse(str);
+                    // TODO: read savestate files enough to get summary
+                    if (File.Exists(file) && (slot < maxSaveStates || slot >= 0))
+                    {
+                        SaveState tmpData = JsonUtility.FromJson<SaveState>(File.ReadAllText(file));
+                        saveStateFiles.Remove(slot);
+                        saveStateFiles.Add(slot, tmpData);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         #endregion
     }
 }
