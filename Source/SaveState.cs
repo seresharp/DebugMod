@@ -12,7 +12,7 @@ namespace DebugMod
     /// <summary>
     /// Saves and loads states from runtime data in Hollow Knight
     /// </summary>
-    internal class SaveState : MonoBehaviour
+    internal class SaveState
     {
         private string saveStateIdentifier = "";
         private string saveScene;

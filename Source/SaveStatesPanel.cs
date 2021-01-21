@@ -30,7 +30,7 @@ namespace DebugMod
             statePanel.AddText("Slot3", "3", new Vector2(10f, 80f), Vector2.zero, GUIController.Instance.arial, 15);
             statePanel.AddText("Slot4", "4", new Vector2(10f, 100f), Vector2.zero, GUIController.Instance.arial, 15);
             statePanel.AddText("Slot5", "5", new Vector2(10f, 120f), Vector2.zero, GUIController.Instance.arial, 15);
-            statePanel.AddText("Slot6", "6", new Vector2(10f, 140f), Vector2.xzero, GUIController.Instance.arial, 15);
+            statePanel.AddText("Slot6", "6", new Vector2(10f, 140f), Vector2.zero, GUIController.Instance.arial, 15);
             statePanel.AddText("Slot7", "7", new Vector2(10f, 160f), Vector2.zero, GUIController.Instance.arial, 15);
             statePanel.AddText("Slot8", "8", new Vector2(10f, 180f), Vector2.zero, GUIController.Instance.arial, 15);
             statePanel.AddText("Slot9", "9", new Vector2(10f, 200f), Vector2.zero, GUIController.Instance.arial, 15);
@@ -77,7 +77,6 @@ namespace DebugMod
 
             if (statePanel.active)
             {
-
                 for (int i = 0; i < 10; i++)
                 {
                     statePanel.GetText(i.ToString()).UpdateText("open");

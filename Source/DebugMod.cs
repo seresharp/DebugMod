@@ -85,6 +85,7 @@ namespace DebugMod
                     instance.Log("First run detected, setting default binds");
 
                     settings.FirstRun = false;
+                    settings.NumPadForSaveStates = false;
                     settings.binds.Clear();
 
                     settings.binds.Add("Toggle All UI", (int)KeyCode.F1);
@@ -161,7 +162,7 @@ namespace DebugMod
         
         public override string GetVersion()
         {
-            return "1.3.9d";
+            return "1.3.9e";
         }
 
         public override bool IsCurrent()

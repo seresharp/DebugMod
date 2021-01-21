@@ -390,18 +390,18 @@ namespace DebugMod
             }
         }
 
+        [BindableMethod(name = "Toggle SaveState Panel", category = "Mod UI")]
+        public static void ToggleSaveStatesPanel()
+        {
+            DebugMod.settings.SaveStatePanelVisible = !DebugMod.settings.SaveStatePanelVisible;
+        }
+
         // A variant of info panel. View handled in the two InfoPanel classes
         // Probably some race-condition potential here :)
         [BindableMethod(name = "Alt. Info Switch", category = "Mod UI")]
         public static void ToggleFullInfo()
         {
             MinimalInfoPanel.minInfo = !MinimalInfoPanel.minInfo;
-        }
-
-        [BindableMethod(name = "Toggle SaveState Panel", category = "Mod UI")]
-        public static void ToggleSaveStatesPanel()
-        {
-            DebugMod.settings.SaveStatePanelVisible = !DebugMod.settings.SaveStatePanelVisible;
         }
 
         #endregion
@@ -583,8 +583,7 @@ namespace DebugMod
         public static void KillSelf()
         {
             if (DebugMod.GM.isPaused) UIManager.instance.TogglePauseGame();
-            HeroController.instance.TakeHealth(PlayerData.instance.maxHealth);
-            
+            HeroController.instance.TakeHealth(9999);
             
             HeroController.instance.heroDeathPrefab.SetActive(true);
             DebugMod.GM.ReadyForRespawn();

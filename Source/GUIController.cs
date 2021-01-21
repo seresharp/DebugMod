@@ -195,6 +195,13 @@ namespace DebugMod
                 {
                     PlayerData.instance.MPCharge = PlayerData.instance.maxMP;
                     PlayerData.instance.MPReserve = PlayerData.instance.MPReserveMax;
+                    if (PlayerData.instance.MPReserve > 0)
+                    {
+                        HeroController.instance.TakeReserveMP(1);
+                        HeroController.instance.AddMPChargeSpa(1);
+                    }
+                    HeroController.instance.TakeReserveMP(1);
+                    HeroController.instance.AddMPChargeSpa(1);
                 }
 
                 if (DebugMod.playerInvincible && PlayerData.instance != null)
