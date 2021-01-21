@@ -186,6 +186,7 @@ namespace DebugMod
                                 // keyInt should be between 0-9
                                 SaveStateManager.currentStateSlot = keyInt;
                                 didInput = true;
+                                Console.AddLine("Number selected, didInput bool: " + didInput.ToString());
                             }
                         }
                     }

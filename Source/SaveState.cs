@@ -10,78 +10,96 @@ using UnityEngine;
 namespace DebugMod
 {
     /// <summary>
-    /// Saves and loads states from runtime data in Hollow Knight
+    /// Handles struct SaveStateData and individual SaveState operations
     /// </summary>
     internal class SaveState
     {
-        private string saveStateIdentifier = "";
-        private string saveScene;
-        private PlayerData savedPd;
-        private object lockArea;
-        private SceneData savedSd;
-        private Vector3 savePos;
-        private FieldInfo cameraLockArea;
-        private string filePath = "";
-        
+        [Serializable]
+        public class SaveStateData
+        {
+            public string saveStateIdentifier;
+            public string saveScene;
+            public PlayerData savedPd;
+            public object lockArea;
+            public SceneData savedSd;
+            public Vector3 savePos;
+            public FieldInfo cameraLockArea;
+            public string filePath;
+        }
+
+        [SerializeField]
+        public SaveStateData data;
 
         internal SaveState()
         {
-
+            this.data = new SaveStateData();
         }
 
         private SaveState(string _scene, string _identifier, PlayerData _pd, SceneData _sd, Vector3 _pos, FieldInfo _cameraLockArea, object _paramLockArea) {
-            saveScene = _scene;
-            saveStateIdentifier = _identifier;
-            savedPd = _pd;
-            savedSd = _sd;
-            savePos = _pos;
-            cameraLockArea = _cameraLockArea;
-            lockArea = _paramLockArea;
+            data.saveScene = _scene;
+            data.saveStateIdentifier = _identifier;
+            data.savedPd = _pd;
+            data.savedSd = _sd;
+            data.savePos = _pos;
+            data.cameraLockArea = _cameraLockArea;
+            data.lockArea = _paramLockArea;
         }
 
         #region saving
 
         public void SaveTempState()
         {
-            saveScene = GameManager.instance.GetSceneNameString();
-            saveStateIdentifier = "(tmp)_" + saveScene + "-" + DateTime.Now.ToString("H:mm_d-MMM");
-            savedPd = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(PlayerData.instance));
-            savedSd = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(SceneData.instance));
-            savePos = HeroController.instance.gameObject.transform.position;
-            cameraLockArea = (cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
-            lockArea = cameraLockArea.GetValue(GameManager.instance.cameraCtrl);
+            data.saveScene = GameManager.instance.GetSceneNameString();
+            data.saveStateIdentifier = "(tmp)_" + data.saveScene + "-" + DateTime.Now.ToString("H:mm_d-MMM");
+            data.savedPd = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(PlayerData.instance));
+            data.savedSd = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(SceneData.instance));
+            data.savePos = HeroController.instance.gameObject.transform.position;
+            data.cameraLockArea = (data.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
+            data.lockArea = data.cameraLockArea.GetValue(GameManager.instance.cameraCtrl);
         }
 
         public void SaveStateToFile(int paramSlot)
         {
             try
             {
-                if (saveStateIdentifier.StartsWith("(tmp)_"))
+                if (data.saveStateIdentifier.StartsWith("(tmp)_"))
                 {
-                    saveStateIdentifier = saveStateIdentifier.Substring(6);
+                    data.saveStateIdentifier = data.saveStateIdentifier.Substring(6);
                 }
-                else if (String.IsNullOrEmpty(saveStateIdentifier))
+                else if (String.IsNullOrEmpty(data.saveStateIdentifier))
                 {
                     throw new Exception("No temp save state set");
                 }
 
                 //filePath = SaveStateManager.path + paramSlot + ".json";
 
-                filePath = string.Concat(new object[]
-{
+                data.filePath = string.Concat(new object[] {
                     Application.persistentDataPath,
                     "/Savestates-1221/savestate",
                     paramSlot,
                     ".json"
                 });
-
-                File.WriteAllText(string.Concat(
-                    new object[]{ filePath }),
-                    JsonUtility.ToJson( 
-                        new SaveState ( saveStateIdentifier, saveScene, savedPd, savedSd, savePos, cameraLockArea, lockArea ), 
+                
+                File.WriteAllText(
+                    data.filePath,
+                    JsonUtility.ToJson( data, 
                         prettyPrint: true 
                     )
                 );
+
+                
+                /*
+                DebugMod.instance.Log(string.Concat(new object[] {
+                    "SaveStateToFile (this): \n - ", data.saveStateIdentifier,
+                    "\n - ", data.saveScene,
+                    "\n - ", (JsonUtility.ToJson(data.savedPd)),
+                    "\n - ", (JsonUtility.ToJson(data.savedSd)),
+                    "\n - ", data.savePos.ToString(),
+                    "\n - ", data.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic),
+                    "\n - ", data.lockArea.ToString(), " ========= ", data.cameraLockArea.GetValue(GameManager.instance.cameraCtrl)
+                }));
+                DebugMod.instance.Log("SaveStateToFile (data): " + data);
+                */
             }
             catch (Exception)
             {
@@ -107,9 +125,9 @@ namespace DebugMod
         {
             try
             {
-                SaveState tmpData = new SaveState();
+                SaveStateData tmpData = new SaveStateData();
                 
-                filePath = string.Concat(new object[]
+                data.filePath = string.Concat(new object[]
                 {
                     Application.persistentDataPath,
                     "/Savestates-1221/savestate",
@@ -117,19 +135,19 @@ namespace DebugMod
                     ".json"
                 });
 
-                if (File.Exists(filePath))
+                if (File.Exists(data.filePath))
                 {
-                    tmpData = JsonUtility.FromJson<SaveState>(File.ReadAllText(filePath));
+                    tmpData = JsonUtility.FromJson<SaveStateData>(File.ReadAllText(data.filePath));
                     try
                     {
-                        saveStateIdentifier = tmpData.saveStateIdentifier;
-                        cameraLockArea = tmpData.cameraLockArea;
-                        savedPd = tmpData.savedPd;
-                        savedSd = tmpData.savedSd;
-                        savePos = tmpData.savePos;
-                        saveScene = tmpData.saveScene;
-                        lockArea = tmpData.lockArea;
-                        Console.AddLine("Load SaveState ready:" + saveStateIdentifier);
+                        data.saveStateIdentifier = tmpData.saveStateIdentifier;
+                        data.cameraLockArea = tmpData.cameraLockArea;
+                        data.savedPd = tmpData.savedPd;
+                        data.savedSd = tmpData.savedSd;
+                        data.savePos = tmpData.savePos;
+                        data.saveScene = tmpData.saveScene;
+                        data.lockArea = tmpData.lockArea;
+                        Console.AddLine("Load SaveState ready:" + data.saveStateIdentifier);
                     }
                     catch (Exception)
                     {
@@ -145,34 +163,34 @@ namespace DebugMod
 
         private IEnumerator LoadStateCoro()
         {
-            Console.AddLine("LoadStateCoro line1: " + savedPd.hazardRespawnLocation.ToString());
-            cameraLockArea = (cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
+            Console.AddLine("LoadStateCoro line1: " + data.savedPd.hazardRespawnLocation.ToString());
+            data.cameraLockArea = (data.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
             GameManager.instance.ChangeToScene("Room_Sly_Storeroom", "", 0f);
             while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Room_Sly_Storeroom")
             {
                 yield return null;
             }
-            GameManager.instance.sceneData = (SceneData.instance = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(savedSd)));
+            GameManager.instance.sceneData = (SceneData.instance = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(data.savedSd)));
             //if (!BindableFunctions.preserveThroughStates)
             //{
-            Console.AddLine("Before ResetSemiPersistentItems(): " + savedPd.hazardRespawnLocation.ToString());
+            Console.AddLine("Before ResetSemiPersistentItems(): " + data.savedPd.hazardRespawnLocation.ToString());
             GameManager.instance.ResetSemiPersistentItems();
             //}
             yield return null;
-            HeroController.instance.gameObject.transform.position = savePos;
-            PlayerData.instance = (GameManager.instance.playerData = (HeroController.instance.playerData = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(savedPd))));
-            GameManager.instance.ChangeToScene(saveScene, "", 0.4f);
+            HeroController.instance.gameObject.transform.position = data.savePos;
+            PlayerData.instance = (GameManager.instance.playerData = (HeroController.instance.playerData = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(data.savedPd))));
+            GameManager.instance.ChangeToScene(data.saveScene, "", 0.4f);
             try
             {
-                cameraLockArea.SetValue(GameManager.instance.cameraCtrl, lockArea);
-                GameManager.instance.cameraCtrl.LockToArea(lockArea as CameraLockArea);
+                data.cameraLockArea.SetValue(GameManager.instance.cameraCtrl, data.lockArea);
+                GameManager.instance.cameraCtrl.LockToArea(data.lockArea as CameraLockArea);
                 BindableFunctions.cameraGameplayScene.SetValue(GameManager.instance.cameraCtrl, true);
             }
             catch (Exception message)
             {
                 Debug.LogError(message);
             }
-            yield return new WaitUntil(() => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == saveScene);
+            yield return new WaitUntil(() => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == data.saveScene);
             HeroController.instance.playerData = PlayerData.instance;
             if (PlayerData.instance.MPCharge >= 99)
             {
@@ -189,7 +207,7 @@ namespace DebugMod
                 HeroController.instance.TakeMP(1);
                 HeroController.instance.AddMPChargeSpa(1);
             }
-            Console.AddLine("LoadStateCoro end of func: " + savedPd.hazardRespawnLocation.ToString());
+            Console.AddLine("LoadStateCoro end of func: " + data.savedPd.hazardRespawnLocation.ToString());
             //HeroController.instance.SetHazardRespawn(savedPd.hazardRespawnLocation, savedPd.hazardRespawnFacingRight);
             HeroController.instance.proxyFSM.SendEvent("HeroCtrl-HeroDamaged");
             HeroController.instance.geoCounter.playerData = PlayerData.instance;
@@ -210,7 +228,7 @@ namespace DebugMod
         public bool IsSet()
         {
             bool isSet = false;
-            if (!String.IsNullOrEmpty(saveStateIdentifier))
+            if (!String.IsNullOrEmpty(data.saveStateIdentifier))
             {
                 isSet = true;
             }
@@ -219,16 +237,16 @@ namespace DebugMod
 
         public string GetSaveStateID()
         {
-            return saveStateIdentifier;
+            return data.saveStateIdentifier;
         }
 
         public string[] GetSaveStateInfo()
         {
             return new string[]
             {
-                filePath,
-                saveScene,
-                saveStateIdentifier
+                data.filePath,
+                data.saveScene,
+                data.saveStateIdentifier
             };
         }
         

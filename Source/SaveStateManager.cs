@@ -74,47 +74,11 @@ namespace DebugMod
                 case SaveStateType.File:
                     if (memoryState.IsSet())
                     {
-                        if (autoSlot)
-                        {
-                            int i = 0;
-                            int initSlot = currentStateSlot;
-
-                            // Refactor using dict.keys()?
-                            while (currentStateSlot + 1 != initSlot && ++i < maxSaveStates)
-                            {
-                                if (currentStateSlot + 1 >= maxSaveStates)
-                                {
-                                    currentStateSlot = 0;
-                                }
-                                else
-                                {
-                                    currentStateSlot++;
-                                }
-                            }
-                            if (currentStateSlot == initSlot)
-                            {
-                                // TODO: Inquire if want to overwrite
-                                currentStateSlot--;
-                                if (currentStateSlot < 0)
-                                {
-                                    currentStateSlot = maxSaveStates - 1;
-                                }
-                            }
-                            if (saveStateFiles.ContainsKey(currentStateSlot))
-                            {
-                                saveStateFiles.Remove(currentStateSlot);
-                            }
-                            saveStateFiles.Add(currentStateSlot, new SaveState());
-                            saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
-                        }
-                        else
-                        {
-                            GameManager.instance.StartCoroutine(SelectSlot(true, stateType));
-                        }
+                        AutoSlotSelect(stateType);
                     }
                     break;
                 case SaveStateType.SkipOne:
-                    GameManager.instance.StartCoroutine(SelectSlot(true, stateType));
+                    AutoSlotSelect(stateType);
                     break; 
                 default: break;
             }
@@ -155,13 +119,18 @@ namespace DebugMod
         {
             timeoutHelper = DateTime.Now.AddSeconds(timeoutAmount);
             DebugMod.settings.SaveStatePanelVisible = selectSlot = true;
-           
+
+            //Console.AddLine("didInput bool, pre-WaitUntil(DidInput): " + GUIController.didInput.ToString());
+
             //Console.AddLine("coro test (pre if): " + tmp++);
             yield return new WaitUntil(DidInput);
-            
+
+            //Console.AddLine("didInput bool, post-WaitUntil(DidInput): " + GUIController.didInput.ToString());
+
+
             if (GUIController.didInput)
             {
-                if (currentStateSlot >= 0 || currentStateSlot < maxSaveStates)
+                if (currentStateSlot >= 0 && currentStateSlot < maxSaveStates)
                 {
                     if (save)
                     {
@@ -183,30 +152,6 @@ namespace DebugMod
             DebugMod.settings.SaveStatePanelVisible = selectSlot = false;
         }
 
-        private void LoadCoroHelper(SaveStateType stateType)
-        {
-            switch (stateType)
-            {
-                case SaveStateType.File:
-                    if (saveStateFiles[currentStateSlot] == null)
-                    {
-                        saveStateFiles.Add(currentStateSlot, new SaveState());
-                    }
-                    saveStateFiles[currentStateSlot].PrepareFileStateToMemory(currentStateSlot);
-                    memoryState = saveStateFiles[currentStateSlot];
-                    break;
-                case SaveStateType.SkipOne:
-                    if (saveStateFiles[currentStateSlot] == null)
-                    {
-                        saveStateFiles.Add(currentStateSlot, new SaveState());
-                    }
-                    saveStateFiles[currentStateSlot].LoadStateFromFile();
-                    break;
-                default:
-                    break;
-            }
-        }
-
         private void SaveCoroHelper(SaveStateType stateType)
         {
             switch (stateType)
@@ -216,20 +161,48 @@ namespace DebugMod
                     {
                         memoryState.SaveTempState();
                     }
-                    if (saveStateFiles[currentStateSlot] == null)
+                    if (saveStateFiles.ContainsKey(currentStateSlot))
                     {
-                        saveStateFiles.Add(currentStateSlot, new SaveState());
+                        saveStateFiles.Remove(currentStateSlot);
                     }
-                    saveStateFiles[currentStateSlot] = memoryState;
+                    saveStateFiles.Add(currentStateSlot, new SaveState());
+                    saveStateFiles[currentStateSlot].data = memoryState.data;
                     saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
                     break;
                 case SaveStateType.SkipOne:
-                    if (saveStateFiles[currentStateSlot] == null)
+                    if (saveStateFiles.ContainsKey(currentStateSlot))
                     {
-                        saveStateFiles.Add(currentStateSlot, new SaveState());
+                        saveStateFiles.Remove(currentStateSlot);
                     }
+                    saveStateFiles.Add(currentStateSlot, new SaveState());
                     saveStateFiles[currentStateSlot].SaveTempState();
                     saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void LoadCoroHelper(SaveStateType stateType)
+        {
+            switch (stateType)
+            {
+                case SaveStateType.File:
+                    if (saveStateFiles.ContainsKey(currentStateSlot))
+                    {
+                        saveStateFiles.Remove(currentStateSlot);
+                    }
+                    saveStateFiles.Add(currentStateSlot, new SaveState());
+                    saveStateFiles[currentStateSlot].PrepareFileStateToMemory(currentStateSlot);
+                    memoryState = saveStateFiles[currentStateSlot];
+                    break;
+                case SaveStateType.SkipOne:
+                    if (saveStateFiles.ContainsKey(currentStateSlot))
+                    {
+                        saveStateFiles.Remove(currentStateSlot);
+                    }
+                    saveStateFiles.Add(currentStateSlot, new SaveState());
+                    saveStateFiles[currentStateSlot].LoadStateFromFile();
                     break;
                 default:
                     break;
@@ -314,6 +287,47 @@ namespace DebugMod
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        private void AutoSlotSelect(SaveStateType stateType)
+        {
+            if (autoSlot)
+            {
+                int i = 0;
+                int initSlot = currentStateSlot;
+
+                // Refactor using dict.keys()?
+                while (currentStateSlot + 1 != initSlot && ++i < maxSaveStates)
+                {
+                    if (currentStateSlot + 1 >= maxSaveStates)
+                    {
+                        currentStateSlot = 0;
+                    }
+                    else
+                    {
+                        currentStateSlot++;
+                    }
+                }
+                if (currentStateSlot == initSlot)
+                {
+                    // TODO: Inquire if want to overwrite
+                    currentStateSlot--;
+                    if (currentStateSlot < 0)
+                    {
+                        currentStateSlot = maxSaveStates - 1;
+                    }
+                }
+                if (saveStateFiles.ContainsKey(currentStateSlot))
+                {
+                    saveStateFiles.Remove(currentStateSlot);
+                }
+                saveStateFiles.Add(currentStateSlot, new SaveState());
+                saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
+            }
+            else
+            {
+                GameManager.instance.StartCoroutine(SelectSlot(true, stateType));
             }
         }
         #endregion
