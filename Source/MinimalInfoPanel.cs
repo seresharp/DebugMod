@@ -125,21 +125,6 @@ namespace DebugMod
                 altPanel.GetText("Autoslot").UpdateText(string.Format("{0}",
                             GetStringForBool(SaveStateManager.GetAutoSlot())));
                 altPanel.GetText("Current slot").UpdateText(string.Format("{0}", slotSet));
-                /*
-                if (SaveStateManager.HasFiles())
-                {
-                    string slotSet = SaveStateManager.GetCurrentSlot().ToString();
-                    if (slotSet == "-1") slotSet = "unset";
-
-                    panel.GetText("Current").UpdateText(
-                        string.Format(
-                            "Auto-select: {0}/n Current slot: {1}",
-                            GetStringForBool(SaveStateManager.GetAutoSlot()),
-                            slotSet
-                        )
-                    );
-                }
-                */
             }
         }
 

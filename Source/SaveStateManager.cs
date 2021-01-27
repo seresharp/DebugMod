@@ -25,29 +25,30 @@ namespace DebugMod
     /// </summary>
     internal class SaveStateManager
     {
+        public const int maxSaveStates = 5;
+
         public static SaveState memoryState;
+        public static bool inSelectSlotState = false;
+        public static int currentStateSlot = -1;
+        public static string path = Application.persistentDataPath + "/Savestates-1221/";
+
         private static Dictionary<int, SaveState> saveStateFiles = new Dictionary<int, SaveState>();
+        private static bool autoSlot;
         private DateTime timeoutHelper;
         private double timeoutAmount = 8;
 
-        public static bool selectSlot = false;
-        public static int currentStateSlot = -1;
-        public static string path = Application.persistentDataPath + "/Savestates-1221";
-        public const int maxSaveStates = 10;
-        private static bool autoSlot;
-        
         //public static bool preserveThroughStates = false;
 
         internal SaveStateManager()
         {
             try
             {
-                
-                selectSlot = false;
-                DebugMod.settings.SaveStatePanelVisible = false;
+                inSelectSlotState = false;
                 autoSlot = false;
+                DebugMod.settings.SaveStatePanelVisible = false;
                 memoryState = new SaveState();
-                if (!Directory.Exists(SaveStateManager.path))
+
+                if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
@@ -118,7 +119,7 @@ namespace DebugMod
         private IEnumerator SelectSlot(bool save, SaveStateType stateType)
         {
             timeoutHelper = DateTime.Now.AddSeconds(timeoutAmount);
-            DebugMod.settings.SaveStatePanelVisible = selectSlot = true;
+            DebugMod.settings.SaveStatePanelVisible = inSelectSlotState = true;
 
             //Console.AddLine("didInput bool, pre-WaitUntil(DidInput): " + GUIController.didInput.ToString());
 
@@ -149,7 +150,7 @@ namespace DebugMod
             }
 
             //yield return new WaitForSeconds(2);
-            DebugMod.settings.SaveStatePanelVisible = selectSlot = false;
+            DebugMod.settings.SaveStatePanelVisible = inSelectSlotState = false;
         }
 
         private void SaveCoroHelper(SaveStateType stateType)
@@ -254,11 +255,14 @@ namespace DebugMod
         public static Dictionary<int, string[]> GetSaveStatesInfo()
         {
             Dictionary<int, string[]> returnData = new Dictionary<int, string[]>();
-            foreach (KeyValuePair<int, SaveState> stateData in saveStateFiles)
+            if (HasFiles())
             {
-                if (stateData.Value.IsSet())
+                foreach (KeyValuePair<int, SaveState> stateData in saveStateFiles)
                 {
-                    returnData.Add(stateData.Key, stateData.Value.GetSaveStateInfo());
+                    if (stateData.Value.IsSet())
+                    {
+                        returnData.Add(stateData.Key, stateData.Value.GetSaveStateInfo());
+                    }
                 }
             }
             return returnData;
@@ -268,25 +272,37 @@ namespace DebugMod
         {
             try
             {
+                //SaveState tempSave = new SaveState();
+                string shortFileName;
                 string[] files = Directory.GetFiles(path);
+                DebugMod.instance.Log( 
+                    "path var: " + path +
+                    "\nSavestates: " + files.ToString());
 
                 foreach (string file in files)
                 {
-                    var digits = file.SkipWhile(c => !Char.IsDigit(c)).TakeWhile(Char.IsDigit).ToArray();
-                    var str = new string(digits);
-                    int slot = int.Parse(str);
-                    // TODO: read savestate files enough to get summary
-                    if (File.Exists(file) && (slot < maxSaveStates || slot >= 0))
+                    shortFileName = Path.GetFileName(file);
+                    DebugMod.instance.Log("file: " + shortFileName);
+                    var digits = shortFileName.SkipWhile(c => !Char.IsDigit(c)).TakeWhile(Char.IsDigit).ToArray();
+                    int slot = int.Parse(new string(digits));
+                    
+                    if (File.Exists(file) && (slot >= 0 || slot < maxSaveStates))
                     {
-                        SaveState tmpData = JsonUtility.FromJson<SaveState>(File.ReadAllText(file));
-                        saveStateFiles.Remove(slot);
-                        saveStateFiles.Add(slot, tmpData);
+                        if (saveStateFiles.ContainsKey(slot))
+                        {
+                            saveStateFiles.Remove(slot);
+                        }
+                        saveStateFiles.Add(slot, new SaveState());
+                        saveStateFiles[slot].PrepareFileStateToMemory(slot);
+                        
+                        DebugMod.instance.Log(saveStateFiles[slot].GetSaveStateID());
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                DebugMod.instance.Log(string.Format(ex.Source, ex.Message));
+                throw ex;
             }
         }
 
@@ -297,18 +313,16 @@ namespace DebugMod
                 int i = 0;
                 int initSlot = currentStateSlot;
 
+                // saveStateFiles.Keys;
                 // Refactor using dict.keys()?
-                while (currentStateSlot + 1 != initSlot && ++i < maxSaveStates)
+                while (++currentStateSlot != initSlot && ++i < maxSaveStates && saveStateFiles.ContainsKey(currentStateSlot))
                 {
-                    if (currentStateSlot + 1 >= maxSaveStates)
+                    if (currentStateSlot + 1 > maxSaveStates)
                     {
                         currentStateSlot = 0;
                     }
-                    else
-                    {
-                        currentStateSlot++;
-                    }
                 }
+
                 if (currentStateSlot == initSlot)
                 {
                     // TODO: Inquire if want to overwrite
@@ -317,11 +331,9 @@ namespace DebugMod
                     {
                         currentStateSlot = maxSaveStates - 1;
                     }
-                }
-                if (saveStateFiles.ContainsKey(currentStateSlot))
-                {
                     saveStateFiles.Remove(currentStateSlot);
                 }
+            
                 saveStateFiles.Add(currentStateSlot, new SaveState());
                 saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
             }

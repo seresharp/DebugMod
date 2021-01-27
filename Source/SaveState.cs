@@ -32,17 +32,7 @@ namespace DebugMod
 
         internal SaveState()
         {
-            this.data = new SaveStateData();
-        }
-
-        private SaveState(string _scene, string _identifier, PlayerData _pd, SceneData _sd, Vector3 _pos, FieldInfo _cameraLockArea, object _paramLockArea) {
-            data.saveScene = _scene;
-            data.saveStateIdentifier = _identifier;
-            data.savedPd = _pd;
-            data.savedSd = _sd;
-            data.savePos = _pos;
-            data.cameraLockArea = _cameraLockArea;
-            data.lockArea = _paramLockArea;
+            data = new SaveStateData();
         }
 
         #region saving
@@ -70,18 +60,14 @@ namespace DebugMod
                 {
                     throw new Exception("No temp save state set");
                 }
-
-                //filePath = SaveStateManager.path + paramSlot + ".json";
-
-                data.filePath = string.Concat(new object[] {
-                    Application.persistentDataPath,
-                    "/Savestates-1221/savestate",
-                    paramSlot,
-                    ".json"
-                });
                 
-                File.WriteAllText(
-                    data.filePath,
+                File.WriteAllText (
+                    string.Concat(new object[] {
+                        SaveStateManager.path,
+                        "/savestate",
+                        paramSlot,
+                        ".json"
+                    }),
                     JsonUtility.ToJson( data, 
                         prettyPrint: true 
                     )
@@ -101,9 +87,10 @@ namespace DebugMod
                 DebugMod.instance.Log("SaveStateToFile (data): " + data);
                 */
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                DebugMod.instance.LogDebug(ex.Message);
+                throw ex;
             }
         }
         #endregion
@@ -125,19 +112,20 @@ namespace DebugMod
         {
             try
             {
-                SaveStateData tmpData = new SaveStateData();
-                
-                data.filePath = string.Concat(new object[]
+                data.filePath = string.Concat(
+                new object[]
                 {
-                    Application.persistentDataPath,
-                    "/Savestates-1221/savestate",
+                    SaveStateManager.path,
+                    "savestate",
                     paramSlot,
                     ".json"
                 });
+                DebugMod.instance.Log("prep filepath: " + data.filePath);
 
                 if (File.Exists(data.filePath))
                 {
-                    tmpData = JsonUtility.FromJson<SaveStateData>(File.ReadAllText(data.filePath));
+                    DebugMod.instance.Log("checked filepath: " + data.filePath);
+                    SaveStateData tmpData = JsonUtility.FromJson<SaveStateData>(File.ReadAllText(data.filePath));
                     try
                     {
                         data.saveStateIdentifier = tmpData.saveStateIdentifier;
@@ -147,17 +135,18 @@ namespace DebugMod
                         data.savePos = tmpData.savePos;
                         data.saveScene = tmpData.saveScene;
                         data.lockArea = tmpData.lockArea;
-                        Console.AddLine("Load SaveState ready:" + data.saveStateIdentifier);
+                        DebugMod.instance.Log("Load SaveState ready: " + data.saveStateIdentifier);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        Console.AddLine("Save prep failed");
+                        DebugMod.instance.Log(string.Format(ex.Source, ex.Message));
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                DebugMod.instance.LogDebug(ex.Message);
+                throw ex;
             }
         }
 
@@ -192,6 +181,8 @@ namespace DebugMod
             }
             yield return new WaitUntil(() => UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == data.saveScene);
             HeroController.instance.playerData = PlayerData.instance;
+            HeroController.instance.geoCounter.playerData = PlayerData.instance;
+            HeroController.instance.geoCounter.TakeGeo(0);
             if (PlayerData.instance.MPCharge >= 99)
             {
                 if (PlayerData.instance.MPReserve > 0)
@@ -207,11 +198,9 @@ namespace DebugMod
                 HeroController.instance.TakeMP(1);
                 HeroController.instance.AddMPChargeSpa(1);
             }
-            Console.AddLine("LoadStateCoro end of func: " + data.savedPd.hazardRespawnLocation.ToString());
+            //Console.AddLine("LoadStateCoro end of func: " + data.savedPd.hazardRespawnLocation.ToString());
             //HeroController.instance.SetHazardRespawn(savedPd.hazardRespawnLocation, savedPd.hazardRespawnFacingRight);
             HeroController.instance.proxyFSM.SendEvent("HeroCtrl-HeroDamaged");
-            HeroController.instance.geoCounter.playerData = PlayerData.instance;
-            HeroController.instance.geoCounter.TakeGeo(0);
             HeroAnimationController component = HeroController.instance.GetComponent<HeroAnimationController>();
             typeof(HeroAnimationController).GetField("pd", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(component, PlayerData.instance);
             HeroController.instance.TakeHealth(1);
@@ -244,9 +233,8 @@ namespace DebugMod
         {
             return new string[]
             {
-                data.filePath,
-                data.saveScene,
-                data.saveStateIdentifier
+                data.saveStateIdentifier,
+                data.saveScene
             };
         }
         

@@ -175,7 +175,7 @@ namespace DebugMod
                     }
                 }
                 
-                if (SaveStateManager.selectSlot && DebugMod.settings.SaveStatePanelVisible)
+                if (SaveStateManager.inSelectSlotState && DebugMod.settings.SaveStatePanelVisible)
                 {
                     foreach (KeyValuePair<KeyCode, int> entry in DebugMod.alphaKeyDict)
                     {
@@ -186,7 +186,7 @@ namespace DebugMod
                                 // keyInt should be between 0-9
                                 SaveStateManager.currentStateSlot = keyInt;
                                 didInput = true;
-                                Console.AddLine("Number selected, didInput bool: " + didInput.ToString());
+                                //Console.AddLine("Number selected, didInput bool: " + didInput.ToString());
                             }
                         }
                     }
@@ -194,14 +194,14 @@ namespace DebugMod
 
                 if (DebugMod.infiniteSoul && PlayerData.instance.MPCharge < PlayerData.instance.maxMP && PlayerData.instance.health > 0 && !HeroController.instance.cState.dead && GameManager.instance.IsGameplayScene())
                 {
-                    PlayerData.instance.MPCharge = PlayerData.instance.maxMP;
-                    PlayerData.instance.MPReserve = PlayerData.instance.MPReserveMax;
-                    if (PlayerData.instance.MPReserve > 0)
+                    PlayerData.instance.MPCharge = PlayerData.instance.maxMP - 1;
+                    if (PlayerData.instance.MPReserveMax > 0)
                     {
+                        PlayerData.instance.MPReserve = PlayerData.instance.MPReserveMax - 1;
                         HeroController.instance.TakeReserveMP(1);
-                        HeroController.instance.AddMPChargeSpa(1);
+                        HeroController.instance.AddMPChargeSpa(2);
                     }
-                    HeroController.instance.TakeReserveMP(1);
+                    //HeroController.instance.TakeReserveMP(1);
                     HeroController.instance.AddMPChargeSpa(1);
                 }
 

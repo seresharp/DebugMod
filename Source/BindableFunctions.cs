@@ -222,6 +222,12 @@ namespace DebugMod
         {
             DebugMod.saveStateManager.ToggleAutoSlot();
         }
+
+        [BindableMethod(name = "Refresh state menu", category = "Savestates")]
+        public static void RefreshSaveStates()
+        {
+            DebugMod.saveStateManager.RefreshStateMenu();
+        }
         #endregion
 
         #region Visual
