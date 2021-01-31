@@ -576,11 +576,15 @@ namespace DebugMod
 
             if (DebugMod.noclip)
             {
+                if (!DebugMod.playerInvincible)
+                    ToggleInvincibility();
                 Console.AddLine("Enabled noclip");
                 DebugMod.noclipPos = DebugMod.RefKnight.transform.position;
             }
             else
             {
+                if (DebugMod.playerInvincible)
+                    ToggleInvincibility();
                 Console.AddLine("Disabled noclip");
             }
         }

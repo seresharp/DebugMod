@@ -69,18 +69,11 @@ namespace DebugMod
             switch (stateType)
             {
                 case SaveStateType.Memory:
-                    if (!memoryState.IsSet()) memoryState.SaveTempState();
                     memoryState.SaveTempState();
                     break;
-                case SaveStateType.File:
-                    if (memoryState.IsSet())
-                    {
-                        AutoSlotSelect(stateType);
-                    }
-                    break;
-                case SaveStateType.SkipOne:
+                case SaveStateType.File or SaveStateType.SkipOne:
                     AutoSlotSelect(stateType);
-                    break; 
+                    break;
                 default: break;
             }
         }
@@ -102,10 +95,7 @@ namespace DebugMod
                         Console.AddLine("No save state active");
                     }
                     break;
-                case SaveStateType.File:
-                    GameManager.instance.StartCoroutine(SelectSlot(false, stateType));
-                    break;
-                case SaveStateType.SkipOne:
+                case SaveStateType.File or SaveStateType.SkipOne:
                     GameManager.instance.StartCoroutine(SelectSlot(false, stateType));
                     break;
                 default:
@@ -176,8 +166,7 @@ namespace DebugMod
                         saveStateFiles.Remove(currentStateSlot);
                     }
                     saveStateFiles.Add(currentStateSlot, new SaveState());
-                    saveStateFiles[currentStateSlot].SaveTempState();
-                    saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
+                    saveStateFiles[currentStateSlot].NewSaveStateToFile(currentStateSlot);
                     break;
                 default:
                     break;
@@ -194,7 +183,7 @@ namespace DebugMod
                         saveStateFiles.Remove(currentStateSlot);
                     }
                     saveStateFiles.Add(currentStateSlot, new SaveState());
-                    saveStateFiles[currentStateSlot].PrepareFileStateToMemory(currentStateSlot);
+                    saveStateFiles[currentStateSlot].LoadStateFromFile(currentStateSlot);
                     memoryState = saveStateFiles[currentStateSlot];
                     break;
                 case SaveStateType.SkipOne:
@@ -203,7 +192,7 @@ namespace DebugMod
                         saveStateFiles.Remove(currentStateSlot);
                     }
                     saveStateFiles.Add(currentStateSlot, new SaveState());
-                    saveStateFiles[currentStateSlot].LoadStateFromFile();
+                    saveStateFiles[currentStateSlot].NewLoadStateFromFile();
                     break;
                 default:
                     break;
@@ -293,7 +282,7 @@ namespace DebugMod
                             saveStateFiles.Remove(slot);
                         }
                         saveStateFiles.Add(slot, new SaveState());
-                        saveStateFiles[slot].PrepareFileStateToMemory(slot);
+                        saveStateFiles[slot].LoadStateFromFile(slot);
                         
                         DebugMod.instance.Log(saveStateFiles[slot].GetSaveStateID());
                     }
@@ -333,9 +322,21 @@ namespace DebugMod
                     }
                     saveStateFiles.Remove(currentStateSlot);
                 }
-            
+
                 saveStateFiles.Add(currentStateSlot, new SaveState());
-                saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
+                if (stateType == SaveStateType.Memory)
+                {
+                    if (memoryState == null || !memoryState.IsSet())
+                    {
+                        memoryState.SaveTempState();
+                    }
+                    saveStateFiles[currentStateSlot].data = memoryState.data;
+                    saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
+                } 
+                else if (stateType == SaveStateType.SkipOne)
+                {
+                    saveStateFiles[currentStateSlot].NewSaveStateToFile(currentStateSlot);
+                }
             }
             else
             {

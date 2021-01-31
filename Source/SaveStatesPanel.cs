@@ -13,7 +13,7 @@ namespace DebugMod
             statePanel = new CanvasPanel(
                 canvas,
                 GUIController.Instance.images["BlankVertical"],
-                new Vector2(900f, 40f),
+                new Vector2(800f, 40f),
                 Vector2.zero,
                 new Rect(
                     0f,

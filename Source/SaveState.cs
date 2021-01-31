@@ -48,6 +48,12 @@ namespace DebugMod
             data.lockArea = data.cameraLockArea.GetValue(GameManager.instance.cameraCtrl);
         }
 
+        public void NewSaveStateToFile(int paramSlot)
+        {
+            SaveTempState();
+            SaveStateToFile(paramSlot);
+        }
+
         public void SaveStateToFile(int paramSlot)
         {
             try
@@ -102,13 +108,13 @@ namespace DebugMod
             HeroController.instance.StartCoroutine(LoadStateCoro());
         }
 
-        public void LoadStateFromFile()
+        public void NewLoadStateFromFile()
         {
-            PrepareFileStateToMemory(SaveStateManager.currentStateSlot);
+            LoadStateFromFile(SaveStateManager.currentStateSlot);
             LoadTempState();
         }
 
-        public void PrepareFileStateToMemory(int paramSlot)
+        public void LoadStateFromFile(int paramSlot)
         {
             try
             {
@@ -124,7 +130,7 @@ namespace DebugMod
 
                 if (File.Exists(data.filePath))
                 {
-                    DebugMod.instance.Log("checked filepath: " + data.filePath);
+                    //DebugMod.instance.Log("checked filepath: " + data.filePath);
                     SaveStateData tmpData = JsonUtility.FromJson<SaveStateData>(File.ReadAllText(data.filePath));
                     try
                     {

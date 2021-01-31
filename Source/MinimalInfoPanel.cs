@@ -107,9 +107,9 @@ namespace DebugMod
 
                 if (SaveStateManager.memoryState.IsSet())
                 {
-                    string[] temp = SaveStateManager.memoryState.GetSaveStateInfo();
+                    //string[] temp = ;
                     //altPanel.GetText("Current SaveState").UpdateText(string.Format("{0}\n{1}", temp[2], temp[1]));
-                    altPanel.GetText("Current SaveState").UpdateText(temp[2]);
+                    altPanel.GetText("Current SaveState").UpdateText(SaveStateManager.memoryState.GetSaveStateID());
                 }
                 else
                 {
