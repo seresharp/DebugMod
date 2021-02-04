@@ -10,7 +10,7 @@ using GlobalEnums;
 
 namespace DebugMod
 {
-    public class DebugMod : Mod<SaveSettings, GlobalSettings>
+    public class DebugMod : Mod<SaveSettings, GlobalSettings>, IMod
     {
         private static GameManager _gm;
         private static InputHandler _ih;
@@ -19,7 +19,7 @@ namespace DebugMod
         private static PlayMakerFSM _refKnightSlash;
         private static CameraController _refCamera;
         private static PlayMakerFSM _refDreamNail;
-
+        
         internal static GameManager GM => _gm != null ? _gm : (_gm = GameManager.instance);
         internal static InputHandler IH => _ih != null ? _ih : (_ih = GM.inputHandler);
         internal static HeroController HC => _hc != null ? _hc : (_hc = GM.hero_ctrl);

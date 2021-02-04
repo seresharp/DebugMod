@@ -17,6 +17,7 @@ namespace DebugMod
         public Vector3 hazardLocation;
         public string respawnSceneWatch;
         public static bool didInput;
+        public static ShowHitboxes hitboxes = new ShowHitboxes();
 
         private GameObject canvas;
         private static GUIController _instance;
@@ -280,6 +281,14 @@ namespace DebugMod
                         ", Respawn Marker: ",
                         PlayerData.instance.respawnMarkerName.ToString()
                     }));
+                }
+                if (ShowHitboxes.HitboxState != 1 && DebugMod.settings.ShowHitBoxes)
+                {
+                    hitboxes.Load();
+                }
+                else if (ShowHitboxes.HitboxState != 0 && !DebugMod.settings.ShowHitBoxes) 
+                {
+                    hitboxes.Unload();
                 }
             }
         }

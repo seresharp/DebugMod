@@ -63,5 +63,11 @@ namespace DebugMod
             get => GetBool(true);
             set => SetBool(value);
         }
+
+        public bool ShowHitBoxes
+        {
+            get => GetBool(true);
+            set => SetBool(value);
+        }
     }
 }
