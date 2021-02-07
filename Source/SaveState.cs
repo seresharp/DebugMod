@@ -25,6 +25,19 @@ namespace DebugMod
             public Vector3 savePos;
             public FieldInfo cameraLockArea;
             public string filePath;
+
+            internal SaveStateData() { }
+            
+            internal SaveStateData(SaveStateData _data)
+            {
+                saveStateIdentifier = _data.saveStateIdentifier;
+                saveScene = _data.saveScene;
+                cameraLockArea = _data.cameraLockArea;
+                savedPd = _data.savedPd;
+                savedSd = _data.savedSd;
+                savePos = _data.savePos;
+                lockArea = _data.lockArea;
+            }
         }
 
         [SerializeField]
@@ -242,6 +255,10 @@ namespace DebugMod
                 data.saveStateIdentifier,
                 data.saveScene
             };
+        }
+        public SaveStateData DeepCopy()
+        {
+            return new SaveStateData(this.data);
         }
         
         #endregion

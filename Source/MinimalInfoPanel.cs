@@ -105,11 +105,11 @@ namespace DebugMod
 
                 altPanel.GetText("Scene Name").UpdateText(DebugMod.GetSceneName());
 
-                if (SaveStateManager.memoryState.IsSet())
+                if (SaveStateManager.quickState.IsSet())
                 {
                     //string[] temp = ;
                     //altPanel.GetText("Current SaveState").UpdateText(string.Format("{0}\n{1}", temp[2], temp[1]));
-                    altPanel.GetText("Current SaveState").UpdateText(SaveStateManager.memoryState.GetSaveStateID());
+                    altPanel.GetText("Current SaveState").UpdateText(SaveStateManager.quickState.GetSaveStateID());
                 }
                 else
                 {

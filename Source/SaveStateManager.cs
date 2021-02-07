@@ -17,7 +17,7 @@ namespace DebugMod
 
     /// <summary>
     /// Handles organisation of SaveState-s
-    /// memoryState replicating legacy behaviour of only stored in RAM.
+    /// quickState replicating legacy behaviour of only stored in RAM.
     /// Dictionary(int slot : file). Might change to HashMap(?) 
     ///  if: memory requirement too high: array for limiting savestates? hashmap as all states should logically be unique?
     /// HUD for viewing necessary info for UX.
@@ -27,7 +27,7 @@ namespace DebugMod
     {
         public const int maxSaveStates = 5;
 
-        public static SaveState memoryState;
+        public static SaveState quickState;
         public static bool inSelectSlotState = false;
         public static int currentStateSlot = -1;
         public static string path = Application.persistentDataPath + "/Savestates-1221/";
@@ -46,7 +46,7 @@ namespace DebugMod
                 inSelectSlotState = false;
                 autoSlot = false;
                 DebugMod.settings.SaveStatePanelVisible = false;
-                memoryState = new SaveState();
+                quickState = new SaveState();
 
                 if (!Directory.Exists(path))
                 {
@@ -69,7 +69,7 @@ namespace DebugMod
             switch (stateType)
             {
                 case SaveStateType.Memory:
-                    memoryState.SaveTempState();
+                    quickState.SaveTempState();
                     break;
                 case SaveStateType.File or SaveStateType.SkipOne:
                     AutoSlotSelect(stateType);
@@ -81,14 +81,15 @@ namespace DebugMod
         #endregion
 
         #region loading
+        
         public void LoadState(SaveStateType stateType)
         {
             switch (stateType)
             {
                 case SaveStateType.Memory:
-                    if (memoryState.IsSet())
+                    if (quickState.IsSet())
                     {
-                        memoryState.LoadTempState();
+                        quickState.LoadTempState();
                     }
                     else
                     {
@@ -109,16 +110,9 @@ namespace DebugMod
         private IEnumerator SelectSlot(bool save, SaveStateType stateType)
         {
             timeoutHelper = DateTime.Now.AddSeconds(timeoutAmount);
+
             DebugMod.settings.SaveStatePanelVisible = inSelectSlotState = true;
-
-            //Console.AddLine("didInput bool, pre-WaitUntil(DidInput): " + GUIController.didInput.ToString());
-
-            //Console.AddLine("coro test (pre if): " + tmp++);
             yield return new WaitUntil(DidInput);
-
-            //Console.AddLine("didInput bool, post-WaitUntil(DidInput): " + GUIController.didInput.ToString());
-
-
             if (GUIController.didInput)
             {
                 if (currentStateSlot >= 0 && currentStateSlot < maxSaveStates)
@@ -139,25 +133,25 @@ namespace DebugMod
                 Console.AddLine("Timeout (" + timeoutAmount + "s) reached");
             }
 
-            //yield return new WaitForSeconds(2);
             DebugMod.settings.SaveStatePanelVisible = inSelectSlotState = false;
         }
 
+        // Todo: cleanup Adds and Removes, because used to C++ :)
         private void SaveCoroHelper(SaveStateType stateType)
         {
             switch (stateType)
             {
                 case SaveStateType.File:
-                    if (memoryState == null || !memoryState.IsSet())
+                    if (quickState == null || !quickState.IsSet())
                     {
-                        memoryState.SaveTempState();
+                        quickState.SaveTempState();
                     }
                     if (saveStateFiles.ContainsKey(currentStateSlot))
                     {
                         saveStateFiles.Remove(currentStateSlot);
                     }
                     saveStateFiles.Add(currentStateSlot, new SaveState());
-                    saveStateFiles[currentStateSlot].data = memoryState.data;
+                    saveStateFiles[currentStateSlot].data = quickState.DeepCopy();
                     saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
                     break;
                 case SaveStateType.SkipOne:
@@ -184,7 +178,7 @@ namespace DebugMod
                     }
                     saveStateFiles.Add(currentStateSlot, new SaveState());
                     saveStateFiles[currentStateSlot].LoadStateFromFile(currentStateSlot);
-                    memoryState = saveStateFiles[currentStateSlot];
+                    quickState.data = saveStateFiles[currentStateSlot].DeepCopy();
                     break;
                 case SaveStateType.SkipOne:
                     if (saveStateFiles.ContainsKey(currentStateSlot))
@@ -229,9 +223,9 @@ namespace DebugMod
 
         public string[] GetCurrentMemoryState()
         {
-            if (memoryState.IsSet())
+            if (quickState.IsSet())
             {
-                return memoryState.GetSaveStateInfo();
+                return quickState.GetSaveStateInfo();
             }
             return null;
         }
@@ -326,11 +320,12 @@ namespace DebugMod
                 saveStateFiles.Add(currentStateSlot, new SaveState());
                 if (stateType == SaveStateType.Memory)
                 {
-                    if (memoryState == null || !memoryState.IsSet())
+                    if (quickState == null || !quickState.IsSet())
                     {
-                        memoryState.SaveTempState();
+                        quickState.SaveTempState();
                     }
-                    saveStateFiles[currentStateSlot].data = memoryState.data;
+                    // May not need DeepCopy()
+                    saveStateFiles[currentStateSlot].data = quickState.DeepCopy();
                     saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
                 } 
                 else if (stateType == SaveStateType.SkipOne)

@@ -4,6 +4,7 @@ using System.Reflection;
 using System.IO;
 using UnityEngine;
 using GlobalEnums;
+using HutongGames.PlayMaker;
 
 namespace DebugMod
 {
@@ -153,30 +154,6 @@ namespace DebugMod
             }
         }
 
-        [BindableMethod(name = "SceneData to file", category = "Misc")]
-        public static void SceneDataToFile()
-        {
-            File.WriteAllText(string.Concat(
-                new object[] { Application.persistentDataPath, "SceneData.json" }),
-                JsonUtility.ToJson(
-                    SceneData.instance,
-                    prettyPrint: true
-                )
-            );
-        }
-
-        [BindableMethod(name = "PlayerData to file", category = "Misc")]
-        public static void PlayerDataToFile()
-        {
-
-            File.WriteAllText(string.Concat(
-                new object[] { Application.persistentDataPath, "PlayerData.json" }),
-                JsonUtility.ToJson(
-                    PlayerData.instance,
-                    prettyPrint: true
-                )
-            );
-        }
         #endregion
 
         #region SaveStates 
@@ -1293,6 +1270,48 @@ namespace DebugMod
             DreamGate.AddEntry(entryName);
         }
 
+        #endregion
+
+
+        #region ExportData
+        
+        [BindableMethod(name = "SceneData to file", category = "ExportData")]
+        public static void SceneDataToFile()
+        {
+            File.WriteAllText(string.Concat(
+                new object[] { Application.persistentDataPath, "/SceneData.json" }),
+                JsonUtility.ToJson(
+                    SceneData.instance,
+                    prettyPrint: true
+                )
+            );
+        }
+
+
+        
+        [BindableMethod(name = "PlayerData to file", category = "ExportData")]
+        public static void PlayerDataToFile()
+        {
+            File.WriteAllText(string.Concat(
+                new object[] { Application.persistentDataPath, "/PlayerData.json" }),
+                JsonUtility.ToJson(
+                    PlayerData.instance,
+                    prettyPrint: true
+                )
+            );
+        }
+
+        /*
+        [BindableMethod(name = "Scene FSMs to file", category = "ExportData")]
+        public static void FSMsToFile()
+        {
+            foreach (var fsm in GameManager.instance.GetComponents<VariableType>())
+            {
+                DebugMod.instance.Log(fsm);
+            }
+
+        }
+        */
         #endregion
     }
 }
