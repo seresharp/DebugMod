@@ -212,8 +212,8 @@ namespace DebugMod
         [BindableMethod(name = "Show Hitboxes", category = "Visual")]
         public static void ShowHitboxes()
         {
-            DebugMod.settings.ShowHitBoxes = !DebugMod.settings.ShowHitBoxes;
-            Console.AddLine("Toggled show hitboxes: " + (DebugMod.settings.ShowHitBoxes ? "true" : "false"));
+            if (++DebugMod.settings.ShowHitBoxes > 2) DebugMod.settings.ShowHitBoxes = 0;
+            Console.AddLine("Toggled show hitboxes: " + DebugMod.settings.ShowHitBoxes);
         }
 
         [BindableMethod(name = "Toggle Vignette", category = "Visual")]

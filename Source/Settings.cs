@@ -64,10 +64,10 @@ namespace DebugMod
             set => SetBool(value);
         }
 
-        public bool ShowHitBoxes
+        public int ShowHitBoxes
         {
-            get => GetBool(true);
-            set => SetBool(value);
+            get => GetInt();
+            set => SetInt(value);
         }
     }
 }

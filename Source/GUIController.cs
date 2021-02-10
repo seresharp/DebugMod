@@ -282,13 +282,16 @@ namespace DebugMod
                         PlayerData.instance.respawnMarkerName.ToString()
                     }));
                 }
-                if (ShowHitboxes.HitboxState != 1 && DebugMod.settings.ShowHitBoxes)
+                if (ShowHitboxes.State != DebugMod.settings.ShowHitBoxes)
                 {
-                    hitboxes.Load();
-                }
-                else if (ShowHitboxes.HitboxState != 0 && !DebugMod.settings.ShowHitBoxes) 
-                {
-                    hitboxes.Unload();
+                    if (DebugMod.settings.ShowHitBoxes != 0)
+                    {
+                        hitboxes.Load();
+                    }
+                    else if (ShowHitboxes.State != 0 && DebugMod.settings.ShowHitBoxes == 0) 
+                    {
+                        hitboxes.Unload();
+                    }
                 }
             }
         }

@@ -13,7 +13,7 @@ namespace DebugMod
     //public class ShowHitboxes : Mod, ITogglableMod
     public class ShowHitboxes
     {
-        public static int HitboxState;
+        public static int State;
 
         private static Material greenMat;
         private static Material redMat;
@@ -25,7 +25,7 @@ namespace DebugMod
 
         public ShowHitboxes()
         {
-            HitboxState = 0;
+            State = 0;
 
             greenMat = new Material(Shader.Find("Diffuse"));
             greenMat.renderQueue = 4000;
@@ -49,7 +49,7 @@ namespace DebugMod
             Unload();
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SpawnHitboxes;
             ModHooks.Instance.HeroUpdateHook += UpdateHitboxes;
-            HitboxState = 1;
+            State = DebugMod.settings.ShowHitBoxes;
             
             SpawnHitboxes();
         }
@@ -59,7 +59,7 @@ namespace DebugMod
         {
             UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SpawnHitboxes;
             ModHooks.Instance.HeroUpdateHook -= UpdateHitboxes;
-            HitboxState = 0;
+            State = DebugMod.settings.ShowHitBoxes;
 
             foreach (GameObject obj in Object.FindObjectsOfType<GameObject>())
             {
@@ -105,33 +105,115 @@ namespace DebugMod
                     continue;
                 }
 
-                if (col.gameObject.layer == (int)PhysLayers.TERRAIN)
-                {
-                    lines.Add(col, SetupLineRenderer(col, null, greenMat));
-                }
-                else if (col.GetComponent<TransitionPoint>())
-                {
-                    lines.Add(col, SetupLineRenderer(col, null, blueMat));
-                }
-                else if (col.GetComponent<DamageHero>() || col.gameObject.LocateMyFSM("damages_hero") != null)
-                {
-                    colliders.Add(col);
-                    lines.Add(col, SetupLineRenderer(col, null, redMat));
-                }
-                else if (col.gameObject == HeroController.instance.gameObject && !col.isTrigger)
-                {
-                    colliders.Add(col);
-                    lines.Add(col, SetupLineRenderer(col, null, yellowMat));
-                }
-                else if (col.GetComponent<Breakable>())
-                {
-                    NonBouncer bounce = col.GetComponent<NonBouncer>();
-                    if (bounce == null || !bounce.active)
+                    if (col.gameObject.layer == (int)PhysLayers.TERRAIN)
                     {
-                        colliders.Add(col);
+                        lines.Add(col, SetupLineRenderer(col, null, greenMat));
+                    }
+                    else if (col.GetComponent<TransitionPoint>())
+                    {
                         lines.Add(col, SetupLineRenderer(col, null, blueMat));
                     }
+                    else if (col.GetComponent<DamageHero>() || col.gameObject.LocateMyFSM("damages_hero") != null)
+                    {
+                        colliders.Add(col);
+                        lines.Add(col, SetupLineRenderer(col, null, redMat));
+                    }
+                    else if (col.gameObject == HeroController.instance.gameObject && !col.isTrigger)
+                    {
+                        colliders.Add(col);
+                        lines.Add(col, SetupLineRenderer(col, null, yellowMat));
+                    }
+                    else if (col.GetComponent<Breakable>())
+                    {
+                        NonBouncer bounce = col.GetComponent<NonBouncer>();
+                        if (bounce == null || !bounce.active)
+                        {
+                            colliders.Add(col);
+                            lines.Add(col, SetupLineRenderer(col, null, blueMat));
+                        }
+                    }
+                    
+                    /* State 2 */
+                    else if (State == 2 && col.isTrigger && col.gameObject.GetComponent<HazardRespawnTrigger>() != null)
+                    {
+                        colliders.Add(col);
+                        lines.Add(col, this.SetupLineRenderer(col, null, blueMat));
+                    }
+                    else if (State == 2 && col.isTrigger && col.gameObject.GetComponent<CircleCollider2D>() == null)
+                    {
+                        this.colliders.Add(col);
+                        this.lines.Add(col, this.SetupLineRenderer(col, null, yellowMat));
+                    }
+                
+            }
+        }
+
+        private void Spawn1028Hitboxes()
+        {
+            if (!GameManager.instance.IsGameplayScene())
+            {
+                return;
+            }
+
+            DestroyBorder(Object.FindObjectsOfType<GameObject>().Where(x => x.name.Contains("sceneborder")));
+
+            foreach (Collider2D col in lines.Keys.ToArray())
+            {
+                if (col != null && lines[col] != null)
+                {
+                    Object.Destroy(lines[col].gameObject);
                 }
+            }
+
+            colliders = new List<Collider2D>();
+            lines = new Dictionary<Collider2D, LineRenderer>();
+
+            foreach (Collider2D col in Object.FindObjectsOfType<Collider2D>())
+            {
+                if (colliders.Contains(col))
+                {
+                    continue;
+                }
+
+                    if (col.gameObject.layer == (int)PhysLayers.TERRAIN)
+                    {
+                        lines.Add(col, SetupLineRenderer(col, null, greenMat));
+                    }
+                    else if (col.GetComponent<TransitionPoint>())
+                    {
+                        lines.Add(col, SetupLineRenderer(col, null, blueMat));
+                    }
+                    else if (col.GetComponent<DamageHero>() || col.gameObject.LocateMyFSM("damages_hero") != null)
+                    {
+                        colliders.Add(col);
+                        lines.Add(col, SetupLineRenderer(col, null, redMat));
+                    }
+                    else if (col.gameObject == HeroController.instance.gameObject && !col.isTrigger)
+                    {
+                        colliders.Add(col);
+                        lines.Add(col, SetupLineRenderer(col, null, yellowMat));
+                    }
+                    else if (col.GetComponent<Breakable>())
+                    {
+                        NonBouncer bounce = col.GetComponent<NonBouncer>();
+                        if (bounce == null || !bounce.active)
+                        {
+                            colliders.Add(col);
+                            lines.Add(col, SetupLineRenderer(col, null, blueMat));
+                        }
+                    }
+
+                    /* State 2 */
+                    else if (State == 2 && col.isTrigger && col.gameObject.GetComponent<HazardRespawnTrigger>() != null)
+                    {
+                        colliders.Add(col);
+                        lines.Add(col, this.SetupLineRenderer(col, null, blueMat));
+                    }
+                    else if (State == 2 && col.isTrigger && col.gameObject.GetComponent<CircleCollider2D>() == null)
+                    {
+                        this.colliders.Add(col);
+                        this.lines.Add(col, this.SetupLineRenderer(col, null, yellowMat));
+                    }
             }
         }
 
