@@ -85,6 +85,8 @@ namespace DebugMod
                     instance.Log("First run detected, setting default binds");
 
                     settings.FirstRun = false;
+                    settings.MinInfoPanelVisible = false;
+                    settings.SaveStatePanelVisible = false;
                     settings.NumPadForSaveStates = false;
                     settings.binds.Clear();
 
@@ -93,14 +95,14 @@ namespace DebugMod
                     settings.binds.Add("Toggle Top Menu", (int)KeyCode.F3);
                     settings.binds.Add("Toggle Console", (int)KeyCode.F4);
                     settings.binds.Add("Toggle Binds", (int)KeyCode.F5);
-                    settings.binds.Add("Full/Min Info Switch", (int)KeyCode.F6);
+                    settings.binds.Add("Alt. Info Switch", (int)KeyCode.F6);
                     //settings.binds.Add("Hazard Respawn", (int)KeyCode.F6);
                     //settings.binds.Add("Set Respawn", (int)KeyCode.F7);
                     settings.binds.Add("Force Camera Follow", (int)KeyCode.F8);
                     settings.binds.Add("Toggle Enemy Panel", (int)KeyCode.F9);
-                    settings.binds.Add("Self Damage", (int)KeyCode.F10);
-                    settings.binds.Add("Nail Damage +4", (int)KeyCode.Equals);
-                    settings.binds.Add("Nail Damage -4", (int)KeyCode.Minus);
+                    //settings.binds.Add("Self Damage", (int)KeyCode.F10);
+                    //settings.binds.Add("Nail Damage +4", (int)KeyCode.Equals);
+                    //settings.binds.Add("Nail Damage -4", (int)KeyCode.Minus);
                     settings.binds.Add("Increase Timescale", (int)KeyCode.KeypadPlus);
                     settings.binds.Add("Decrease Timescale", (int)KeyCode.KeypadMinus);
                     settings.binds.Add("Toggle Hero Light", (int)KeyCode.Home);
@@ -162,7 +164,7 @@ namespace DebugMod
         
         public override string GetVersion()
         {
-            return "1.4.0";
+            return "1.4.0-wip";
         }
 
         public override bool IsCurrent()

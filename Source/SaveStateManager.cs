@@ -15,6 +15,8 @@ namespace DebugMod
         SkipOne
     }
 
+    // TODO: Fix vessel count between savestates
+
     /// <summary>
     /// Handles organisation of SaveState-s
     /// quickState replicating legacy behaviour of only stored in RAM.
@@ -25,7 +27,7 @@ namespace DebugMod
     /// </summary>
     internal class SaveStateManager
     {
-        public const int maxSaveStates = 5;
+        public static int maxSaveStates = DebugMod.settings.MaxSaveStates;
 
         public static SaveState quickState;
         public static bool inSelectSlotState = false;

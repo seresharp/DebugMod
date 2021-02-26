@@ -124,5 +124,29 @@ namespace DebugMod
                 Console.AddLine("No ghost in this scene to respawn");
             }
         }
+
+        public static void UumuuExtra()
+        {
+            if (DebugMod.GetSceneName() == "Fungus3_archive_02") 
+            {
+                PlayMakerFSM[] components = GameObject.Find("Mega Jellyfish").GetComponents<PlayMakerFSM>();
+
+                if (components != null)
+                {
+                    foreach (PlayMakerFSM playMakerFSM in components)
+                    {
+                        //if (playMakerFSM.)
+                        {
+                            playMakerFSM.FsmVariables.GetFsmBool("Activated").Value = false;
+                            Console.AddLine("Boss control for this scene was reset, re-enter scene or warp");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.AddLine("GO does not exist or no FSM on it");
+                }
+            }
+        }
     }
 }

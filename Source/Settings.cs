@@ -69,5 +69,11 @@ namespace DebugMod
             get => GetInt();
             set => SetInt(value);
         }
+
+        public int MaxSaveStates
+        {
+            get => GetInt(6);
+            set => SetInt(value);
+        }
     }
 }

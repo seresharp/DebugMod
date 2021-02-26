@@ -158,37 +158,37 @@ namespace DebugMod
 
         #region SaveStates 
 
-        [BindableMethod(name = "Make Savestate", category = "Savestates")]
+        [BindableMethod(name = "Quickslot (save)", category = "Savestates")]
         public static void SaveState()
         {
             DebugMod.saveStateManager.SaveState(SaveStateType.Memory);
         }
 
-        [BindableMethod(name = "Load SaveState", category = "Savestates")]
+        [BindableMethod(name = "Quickslot (load)", category = "Savestates")]
         public static void LoadState()
         {
             DebugMod.saveStateManager.LoadState(SaveStateType.Memory);
         }
 
-        [BindableMethod(name = "Save current to file", category = "Savestates")]
+        [BindableMethod(name = "Quickslot save to file", category = "Savestates")]
         public static void CurrentSaveStateToFile()
         {
             DebugMod.saveStateManager.SaveState(SaveStateType.File);
         }
 
-        [BindableMethod(name = "Load file to current", category = "Savestates")]
+        [BindableMethod(name = "Load file to quickslot", category = "Savestates")]
         public static void CurrentSlotToSaveMemory()
         {
             DebugMod.saveStateManager.LoadState(SaveStateType.File);
         }
 
-        [BindableMethod(name = "Make Savestate (file)", category = "Savestates")]
+        [BindableMethod(name = "Save new state to file", category = "Savestates")]
         public static void NewSaveStateToFile()
         {
             DebugMod.saveStateManager.SaveState(SaveStateType.SkipOne);
 
         }
-        [BindableMethod(name = "Load Savestate (file)", category = "Savestates")]
+        [BindableMethod(name = "Load new state from file", category = "Savestates")]
         public static void LoadFromFile()
         {
             DebugMod.saveStateManager.LoadState(SaveStateType.SkipOne);
@@ -306,10 +306,10 @@ namespace DebugMod
         public static void ToggleAllPanels()
         {
             bool active = !(
-                DebugMod.settings.HelpPanelVisible || 
-                DebugMod.settings.InfoPanelVisible || 
-                DebugMod.settings.EnemiesPanelVisible || 
-                DebugMod.settings.TopMenuVisible || 
+                DebugMod.settings.HelpPanelVisible ||
+                DebugMod.settings.InfoPanelVisible ||
+                DebugMod.settings.EnemiesPanelVisible ||
+                DebugMod.settings.TopMenuVisible ||
                 DebugMod.settings.ConsoleVisible ||
                 DebugMod.settings.MinInfoPanelVisible ||
                 DebugMod.settings.SaveStatePanelVisible
@@ -387,7 +387,6 @@ namespace DebugMod
         }
 
         // A variant of info panel. View handled in the two InfoPanel classes
-        // Probably some race-condition potential here :)
         [BindableMethod(name = "Alt. Info Switch", category = "Mod UI")]
         public static void ToggleFullInfo()
         {
@@ -398,7 +397,7 @@ namespace DebugMod
 
         #region Enemies
 
-        [BindableMethod(name = "Toggle Hitboxes", category = "Enemy Panel")]
+        [BindableMethod(name = "Toggle Hitboxes (enemy panel)", category = "Enemy Panel")]
         public static void ToggleEnemyCollision()
         {
             EnemiesPanel.hitboxes = !EnemiesPanel.hitboxes;
@@ -974,6 +973,12 @@ namespace DebugMod
         #endregion
 
         #region Bosses
+        /*
+        [BindableMethod(name = "Force Uumuu extra attack", category = "Bosses")]
+        public static void ForceUumuuExtra() {
+            BossHandler.UumuuExtra();
+        }
+        */
 
         [BindableMethod(name = "Respawn Ghost", category = "Bosses")]
         public static void RespawnGhost()
@@ -1271,7 +1276,6 @@ namespace DebugMod
         }
 
         #endregion
-
 
         #region ExportData
         
