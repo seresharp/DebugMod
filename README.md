@@ -58,6 +58,8 @@ To use numpad for slot select; after installing debugmod, start and stop the gam
 then go to the Hollow Knight saves-directory and open the `DebugMod.GlobalSettings` json-file.
 In that file find `"NumPadForSaveStates"`, and change the corresponding value from 0 to 1.
 
+To change the amount of available Savestate-slots (default: 6), find `MaxSaveStates` and set the corresponding value between 0 and 10 respective of how many slots you want.
+
 Savestates files are located in `%APPDATA%\..\LocalLow\Team Cherry\Hollow Knight\Savestates-1221\`. They use the name format `savestate<slot>.json`.
 After saving a savestate to file, you can edit the name of that savestate. To do this, open the file in any text-editor, and the first variable/line should be something like `"saveStateIdentifier": "<timestamp+area/scene name>",`. Change `<timestamp+area/scene name>` in the second pair of `"`-s to whatever you want that savestate named in the select savestate in-game menu.
 

@@ -88,6 +88,7 @@ namespace DebugMod
                     settings.MinInfoPanelVisible = false;
                     settings.SaveStatePanelVisible = false;
                     settings.NumPadForSaveStates = false;
+                    settings.MaxSaveStates = 6;
                     settings.binds.Clear();
 
                     settings.binds.Add("Toggle All UI", (int)KeyCode.F1);
