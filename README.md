@@ -45,7 +45,7 @@
 2) add `Assembly-CSharp.dll` (with modding-api), and `PlayMaker.dll`, `UnityEngine.dll` and `UnityEngine.UI.dll` from your `Hollow Knight/hollow_knight_Data/Managed/`-folder
 
 ----------------------------------------------------------------------------------------
-                                    # SAVESTATE BASICS
+                                      SAVESTATE BASICS
 ---------------------------------------------------------------------------------------- 
 *If you have performance issues, please report it.*
 
