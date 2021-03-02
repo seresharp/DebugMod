@@ -1,9 +1,7 @@
-Original mod by KeinZantezuken. Remaking using canvas instead of imgui and the modding framework created by myself and MyEyes/Firzen.
-
 ----------------------------------------------------------------------------------------
                                        FEATURES
 ----------------------------------------------------------------------------------------
-* A completely new toggleable UI in game that provides the following functions:
+* A toggleable UI in-game that provides the following functions:
 * Cheats such as invincibility and noclip
 * The ability to unlock all charms or repair broken ones
 * Change which skills the player has
@@ -29,9 +27,13 @@ Original mod by KeinZantezuken. Remaking using canvas instead of imgui and the m
 ----------------------------------------------------------------------------------------
                                   INSTALLATION
 ----------------------------------------------------------------------------------------
-##(STEAM, WINDOWS)
-1) Download the modding API from here: https://cdn.discordapp.com/attachments/298798821402607618/797126249457385482/Assembly-CSharp.dll
+
+## (STEAM/GOG, WINDOWS)
+1) Download the modding API for Hollow Knight 1.2.2.1
+	At the time of writing, 1.2.2.1-40 is the most up-to-date release: https://cdn.discordapp.com/attachments/298798821402607618/815053620307034182/ModdingAPI.zip
 2) Right click Hollow Knight in Steam -> Properties -> Local Files -> Browse Local Files
+	OR
+	In GOG galaxy 2 -> Click button to the right of Update -> Manage Installation -> Show Folder
 3) Create a backup of the game files located here
 4) Copy the contents of the modding API zip into this folder (Overwrite files when asked)
 5) Copy the contents of this zip into the folder (Overwrite files when asked)
@@ -41,18 +43,11 @@ Original mod by KeinZantezuken. Remaking using canvas instead of imgui and the m
 ## How to build (for devs):
 1) Make a folder `Source/References/`, then 
 2) add `Assembly-CSharp.dll` (with modding-api), and `PlayMaker.dll`, `UnityEngine.dll` and `UnityEngine.UI.dll` from your `Hollow Knight/hollow_knight_Data/Managed/`-folder
-----------------------------------------------------------------------------------------
-                                          CREDITS
-----------------------------------------------------------------------------------------
-Coding - Seresharp
-SaveStates/Current Patch - 56, Yurihaia, Krythom
-UI design and graphics - The Embraced One
-Assistance with canvas - Katie
 
 ----------------------------------------------------------------------------------------
                                       SAVESTATE BASICS
 ---------------------------------------------------------------------------------------- 
-*All savestates are loaded in RAM. If this causes performance issues for you, please report it.*
+*If you have performance issues, please report it.*
 
 To use numpad for slot select; after installing debugmod, start and stop the game, 
 then go to the Hollow Knight saves-directory and open the `DebugMod.GlobalSettings` json-file.
@@ -64,7 +59,7 @@ Savestates files are located in `%APPDATA%\..\LocalLow\Team Cherry\Hollow Knight
 After saving a savestate to file, you can edit the name of that savestate. To do this, open the file in any text-editor, and the first variable/line should be something like `"saveStateIdentifier": "<timestamp+area/scene name>",`. Change `<timestamp+area/scene name>` in the second pair of `"`-s to whatever you want that savestate named in the select savestate in-game menu.
 
 ## Quickslot: 
-The main savestate used. Not saved permanently.
+The main savestate used. Not saved permanently, cleared when the game restarts.
 
 ## Quickslot save to file
 Specifies slot number, then saves the current Quickslot from temporary memory to a numbered json-file in the game save directory, overwriting any files with identical number as the selected one.
@@ -82,7 +77,22 @@ Specifies slot number, then loads savestate from that file directly.
                                       Known Issues
 ---------------------------------------------------------------------------------------- 
 ## Savestates:
-* Charm effect lingering after loading a different savestate
+* Charm effects not updating properly after loading savestates
 * UI not refreshing properly to remove obsolete vessel fragments
 * Soul meter stuck at full if in that state before loading
 * Softlocks if loading savestate during dream transitions
+* If loading savestate during transition visual glitch. Either press 'esc' twice to get control of the knight and walk through a transition if this happens, or quit to menu and load back in before loading the savestate
+* (All savestates are loaded in RAM, which means fast loading from savestates fetched from files BUT potentially general performance issues)
+
+----------------------------------------------------------------------------------------
+                                          CREDITS
+----------------------------------------------------------------------------------------
+Seresharp 
+56 
+Yurihaia
+Krythom 
+The Embraced One 
+Katie 
+KeinZantezuken 
+MyEyes/Firzen 
+Cerpintext 

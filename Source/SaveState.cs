@@ -171,7 +171,15 @@ namespace DebugMod
 
         private IEnumerator LoadStateCoro()
         {
-            Console.AddLine("LoadStateCoro line1: " + data.savedPd.hazardRespawnLocation.ToString());
+            /*
+            string scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+            if (data.saveScene == scene)
+            {
+                yield return UnityEngine.SceneManagement.SceneManager.UnloadScene(scene);
+            }
+            */
+            //Console.AddLine("LoadStateCoro line1: " + data.savedPd.hazardRespawnLocation.ToString());
             data.cameraLockArea = (data.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
             GameManager.instance.ChangeToScene("Room_Sly_Storeroom", "", 0f);
             while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Room_Sly_Storeroom")
@@ -181,7 +189,7 @@ namespace DebugMod
             GameManager.instance.sceneData = (SceneData.instance = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(data.savedSd)));
             //if (!BindableFunctions.preserveThroughStates)
             //{
-            Console.AddLine("Before ResetSemiPersistentItems(): " + data.savedPd.hazardRespawnLocation.ToString());
+            //Console.AddLine("Before ResetSemiPersistentItems(): " + data.savedPd.hazardRespawnLocation.ToString());
             GameManager.instance.ResetSemiPersistentItems();
             //}
             yield return null;
@@ -210,6 +218,7 @@ namespace DebugMod
                     HeroController.instance.AddMPChargeSpa(1);
                 }
                 HeroController.instance.TakeMP(1);
+                yield return null;
                 HeroController.instance.AddMPChargeSpa(1);
             }
             else 
