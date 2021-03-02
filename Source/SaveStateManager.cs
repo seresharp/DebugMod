@@ -242,11 +242,16 @@ namespace DebugMod
             Dictionary<int, string[]> returnData = new Dictionary<int, string[]>();
             if (HasFiles())
             {
+                int total = 0;
                 foreach (KeyValuePair<int, SaveState> stateData in saveStateFiles)
                 {
-                    if (stateData.Value.IsSet())
+                    if (stateData.Value.IsSet() 
+                        && stateData.Key < DebugMod.settings.MaxSaveStates 
+                        && stateData.Key >= 0 
+                        && total < DebugMod.settings.MaxSaveStates)
                     {
                         returnData.Add(stateData.Key, stateData.Value.GetSaveStateInfo());
+                        ++total;
                     }
                 }
             }
