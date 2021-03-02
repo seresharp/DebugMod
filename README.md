@@ -45,7 +45,7 @@
 2) add `Assembly-CSharp.dll` (with modding-api), and `PlayMaker.dll`, `UnityEngine.dll` and `UnityEngine.UI.dll` from your `Hollow Knight/hollow_knight_Data/Managed/`-folder
 
 ----------------------------------------------------------------------------------------
-                                      SAVESTATE BASICS
+                                    # SAVESTATE BASICS
 ---------------------------------------------------------------------------------------- 
 *If you have performance issues, please report it.*
 
@@ -56,7 +56,7 @@ In that file find `"NumPadForSaveStates"`, and change the corresponding value fr
 To change the amount of available Savestate-slots (default: 6), find `MaxSaveStates` and set the corresponding value between 0 and 10 respective of how many slots you want.
 
 Savestates files are located in `%APPDATA%\..\LocalLow\Team Cherry\Hollow Knight\Savestates-1221\`. They use the name format `savestate<slot>.json`.
-After saving a savestate to file, you can edit the name of that savestate. To do this, open the file in any text-editor, and the first variable/line should be something like `"saveStateIdentifier": "<timestamp+area/scene name>",`. Change `<timestamp+area/scene name>` in the second pair of `"`-s to whatever you want that savestate named in the select savestate in-game menu.
+After saving a savestate to file, you can edit the name of that savestate. To do this, open the file in any text-editor, and the first variable/line should be something like `"saveStateIdentifier": "<timestamp+area/scene name>",`. Change `<timestamp+area/scene name>` inside the pair of `"`-s to whatever you want that savestate named in the select savestate in-game menu.
 
 ## Quickslot: 
 The main savestate used. Not saved permanently, cleared when the game restarts.
