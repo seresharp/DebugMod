@@ -47,6 +47,9 @@
 ----------------------------------------------------------------------------------------
                                       SAVESTATE BASICS
 ---------------------------------------------------------------------------------------- 
+
+## Savestates
+
 *If you have performance issues, please report it.*
 
 To use numpad for slot select; after installing debugmod, start and stop the game, 
