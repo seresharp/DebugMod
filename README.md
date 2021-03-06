@@ -30,7 +30,7 @@
 
 ## (STEAM/GOG, WINDOWS)
 1) Download the modding API for Hollow Knight 1.2.2.1
-	At the time of writing, 1.2.2.1-40 is the most up-to-date release: https://cdn.discordapp.com/attachments/298798821402607618/815053620307034182/ModdingAPI.zip
+	At the time of writing, 1.2.2.1-41 is the most up-to-date release: https://cdn.discordapp.com/attachments/298798821402607618/817653175586783242/Assembly-CSharp.dll
 2) Right click Hollow Knight in Steam -> Properties -> Local Files -> Browse Local Files
 	OR
 	In GOG galaxy 2 -> Click button to the right of Update -> Manage Installation -> Show Folder
