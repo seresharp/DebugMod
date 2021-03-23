@@ -133,8 +133,9 @@ namespace DebugMod
                         {
                             foreach (KeyCode kc in Enum.GetValues(typeof(KeyCode)))
                             {
-                                if (Input.GetKeyDown(kc))
+                                if (Input.GetKeyDown(kc) && kc != KeyCode.Mouse0)
                                 {
+                                    // Fix UX
                                     if (KeyBindPanel.keyWarning != kc)
                                     {
                                         foreach (KeyValuePair<string, int> kvp in DebugMod.settings.binds)

@@ -194,12 +194,14 @@ namespace DebugMod
             DebugMod.saveStateManager.LoadState(SaveStateType.SkipOne);
         }
 
+        /*
         [BindableMethod(name = "Toggle auto slot", category = "Savestates")]
         public static void ToggleAutoSlot()
         {
             DebugMod.saveStateManager.ToggleAutoSlot();
         }
-
+        */
+        
         [BindableMethod(name = "Refresh state menu", category = "Savestates")]
         public static void RefreshSaveStates()
         {
@@ -973,12 +975,12 @@ namespace DebugMod
         #endregion
 
         #region Bosses
-        /*
+        
         [BindableMethod(name = "Force Uumuu extra attack", category = "Bosses")]
-        public static void ForceUumuuExtra() {
+        public static void ForceUumuuExtra() 
+        {
             BossHandler.UumuuExtra();
         }
-        */
 
         [BindableMethod(name = "Respawn Ghost", category = "Bosses")]
         public static void RespawnGhost()

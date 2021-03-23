@@ -15,7 +15,7 @@ namespace DebugMod
         public EnemyData(int hp, PlayMakerFSM fsm, Component spr, GameObject parent = null, GameObject go = null)
         {
             HP = hp;
-            maxHP = hp;
+            maxHP = hp; // max hp is just curr hp on panel init
             FSM = fsm;
             Spr = spr;
             gameObject = go;

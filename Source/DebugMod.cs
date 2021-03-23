@@ -165,7 +165,7 @@ namespace DebugMod
         
         public override string GetVersion()
         {
-            return "1.4.0";
+            return "1.4.1-a";
         }
 
         public override bool IsCurrent()

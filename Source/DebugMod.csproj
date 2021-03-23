@@ -69,6 +69,9 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>.\References\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="Vasi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>References\Vasi.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindableMethod.cs" />

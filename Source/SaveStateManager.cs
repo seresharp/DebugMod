@@ -68,6 +68,7 @@ namespace DebugMod
         #region saving
         public void SaveState(SaveStateType stateType)
         {
+            RefreshStateMenu();
             switch (stateType)
             {
                 case SaveStateType.Memory:
@@ -86,6 +87,7 @@ namespace DebugMod
         
         public void LoadState(SaveStateType stateType)
         {
+            RefreshStateMenu();
             switch (stateType)
             {
                 case SaveStateType.Memory:
@@ -267,7 +269,8 @@ namespace DebugMod
                 string[] files = Directory.GetFiles(path);
                 DebugMod.instance.Log( 
                     "path var: " + path +
-                    "\nSavestates: " + files.ToString());
+                    "\nSavestates: " + files.ToString()
+                    );
 
                 foreach (string file in files)
                 {
