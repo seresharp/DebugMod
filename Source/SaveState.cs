@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using HutongGames.PlayMaker.Actions;
 using UnityEngine;
 
 namespace DebugMod
@@ -210,22 +211,27 @@ namespace DebugMod
             HeroController.instance.playerData = PlayerData.instance;
             HeroController.instance.geoCounter.playerData = PlayerData.instance;
             HeroController.instance.geoCounter.TakeGeo(0);
-            if (PlayerData.instance.MPCharge >= 99)
+            if (PlayerData.instance.MPCharge >= PlayerData.instance.maxMP)
             {
-                if (PlayerData.instance.MPReserve > 0)
-                {
-                    HeroController.instance.TakeReserveMP(1);
-                    HeroController.instance.AddMPChargeSpa(1);
-                }
-                HeroController.instance.TakeMP(1);
+                int tmpMp = PlayerData.instance.MPCharge;
+                HeroController.instance.TakeMP(PlayerData.instance.MPCharge);
                 yield return null;
-                HeroController.instance.AddMPChargeSpa(1);
+                HeroController.instance.AddMPChargeSpa(tmpMp);
             }
-            else 
+            else
             {
-                HeroController.instance.TakeMP(1);
                 HeroController.instance.AddMPChargeSpa(1);
+                yield return null;
+                HeroController.instance.TakeMP(1);
             }
+            if (PlayerData.instance.MPReserveMax > 0)
+            {
+                int tmpReserve = PlayerData.instance.MPReserve;
+                HeroController.instance.TakeReserveMP(PlayerData.instance.MPReserve);
+                yield return null;
+                HeroController.instance.AddMPChargeSpa(tmpReserve);
+            }
+            
             //Console.AddLine("LoadStateCoro end of func: " + data.savedPd.hazardRespawnLocation.ToString());
             //HeroController.instance.SetHazardRespawn(savedPd.hazardRespawnLocation, savedPd.hazardRespawnFacingRight);
             HeroController.instance.proxyFSM.SendEvent("HeroCtrl-HeroDamaged");
@@ -236,7 +242,9 @@ namespace DebugMod
             GameCameras.instance.hudCanvas.gameObject.SetActive(true);
             HeroController.instance.TakeHealth(1);
             HeroController.instance.AddHealth(1);
+            GameManager.instance.inputHandler.RefreshPlayerData();
             yield break;
+            // need to redraw UI somehow
         }
         #endregion
 
@@ -244,11 +252,7 @@ namespace DebugMod
 
         public bool IsSet()
         {
-            bool isSet = false;
-            if (!String.IsNullOrEmpty(data.saveStateIdentifier))
-            {
-                isSet = true;
-            }
+            bool isSet = !String.IsNullOrEmpty(data.saveStateIdentifier);
             return isSet;
         }
 

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.IO;
 using UnityEngine;
 using GlobalEnums;
 using HutongGames.PlayMaker;
+using UnityEngine.SceneManagement;
 
 namespace DebugMod
 {
@@ -1318,6 +1320,30 @@ namespace DebugMod
 
         }
         */
+        
+        [BindableMethod(name = "AllScenesByIndex to file (SLOW)", category = "ExportData")]
+        public static void SceneIndexesToFile()
+        {
+            Console.AddLine("sceneCountInBuildSettings: " + UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings);
+            Console.AddLine("sceneCount: " + UnityEngine.SceneManagement.SceneManager.sceneCount);
+            
+            Dictionary<int, string> sceneIndexList = new Dictionary<int, string>();
+            Scene tmp;
+            int curr = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+            
+            for (int i = 0; i < UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings; i++)
+            {
+                if (curr != i) UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(i);
+                tmp = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i);
+                sceneIndexList.Add(tmp.buildIndex, tmp.name);
+                //Console.AddLine(tmp.name + " == " + tmp.buildIndex);
+                if (curr != i) UnityEngine.SceneManagement.SceneManager.UnloadScene(i);
+            }
+            
+            File.WriteAllLines(string.Concat(new object[] {Application.persistentDataPath, "/SceneIndexList.txt"}),
+                    sceneIndexList.Select(x => "[" + x.Key + " -- " + x.Value + "]").ToArray()
+                    );
+        }
         #endregion
     }
 }
