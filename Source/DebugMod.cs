@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
@@ -34,6 +34,8 @@ namespace DebugMod
         private static float _loadTime;
         private static float _unloadTime;
         private static bool _loadingChar;
+        public static bool KeyBindLock;
+        public static float AmountToMove;
 
         internal static bool infiniteHP;
         internal static bool infiniteSoul;
@@ -151,6 +153,8 @@ namespace DebugMod
                 GUIController.Instance.BuildMenus();
 
                 Console.AddLine("New session started " + DateTime.Now);
+                AmountToMove = settings.AmountToMove;
+                KeyBindLock = false;
             }
             catch (Exception e) {
                 DebugMod.instance.Log(String.Concat(
@@ -165,7 +169,7 @@ namespace DebugMod
         
         public override string GetVersion()
         {
-            return "1.4.1-a";
+            return "1.4.2";
         }
 
         public override bool IsCurrent()
