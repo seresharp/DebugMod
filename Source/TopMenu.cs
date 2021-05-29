@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace DebugMod
@@ -27,7 +27,7 @@ namespace DebugMod
             panel.AddButton("DreamGate", GUIController.Instance.images["ButtonRect"], new Vector2(546f, 68f), Vector2.zero, DreamGatePanelClicked, buttonRect, GUIController.Instance.trajanBold, "DreamGate");
 
             //Dropdown panels
-            panel.AddPanel("Cheats Panel", GUIController.Instance.images["DropdownBG"], new Vector2(45f, 75f), Vector2.zero, new Rect(0, 0, GUIController.Instance.images["DropdownBG"].width, 210f));
+            panel.AddPanel("Cheats Panel", GUIController.Instance.images["DropdownBG"], new Vector2(45f, 75f), Vector2.zero, new Rect(0, 0, GUIController.Instance.images["DropdownBG"].width, 240f));
             panel.AddPanel("Charms Panel", GUIController.Instance.images["DropdownBG"], new Vector2(145f, 75f), Vector2.zero, new Rect(0, 0, GUIController.Instance.images["DropdownBG"].width, 240f));
             panel.AddPanel("Skills Panel", GUIController.Instance.images["DropdownBG"], new Vector2(245f, 75f), Vector2.zero, new Rect(0, 0, GUIController.Instance.images["DropdownBG"].width, GUIController.Instance.images["DropdownBG"].height));
             panel.AddPanel("Items Panel", GUIController.Instance.images["DropdownBG"], new Vector2(345f, 75f), Vector2.zero, new Rect(0, 0, GUIController.Instance.images["DropdownBG"].width, GUIController.Instance.images["DropdownBG"].height));
@@ -41,6 +41,7 @@ namespace DebugMod
             panel.GetPanel("Cheats Panel").AddButton("Invincibility", GUIController.Instance.images["ButtonRectEmpty"], new Vector2(5f, 120f), Vector2.zero, InvincibilityClicked, new Rect(0f, 0f, 80f, 20f), GUIController.Instance.trajanNormal, "Invincibility", 10);
             panel.GetPanel("Cheats Panel").AddButton("Noclip", GUIController.Instance.images["ButtonRectEmpty"], new Vector2(5f, 150f), Vector2.zero, NoclipClicked, new Rect(0f, 0f, 80f, 20f), GUIController.Instance.trajanNormal, "Noclip", 10);
             panel.GetPanel("Cheats Panel").AddButton("Kill Self", GUIController.Instance.images["ButtonRectEmpty"], new Vector2(5f, 180f), Vector2.zero, KillSelfClicked, new Rect(0f, 0f, 80f, 20f), GUIController.Instance.trajanNormal, "Kill Self", 10);
+            panel.GetPanel("Cheats Panel").AddButton("Lock KeyBinds", GUIController.Instance.images["ButtonRectEmpty"], new Vector2(5f, 210f), Vector2.zero, KeyBindLockClicked, new Rect(0f, 0f, 80f, 20f), GUIController.Instance.trajanNormal, "Lock KeyBinds", 10);
 
 
             //Charms panel
@@ -185,6 +186,7 @@ namespace DebugMod
                 panel.GetButton("Infinite HP", "Cheats Panel").SetTextColor(DebugMod.infiniteHP ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
                 panel.GetButton("Invincibility", "Cheats Panel").SetTextColor(PlayerData.instance.isInvincible ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
                 panel.GetButton("Noclip", "Cheats Panel").SetTextColor(DebugMod.noclip ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
+                panel.GetButton("Lock KeyBinds", "Cheats Panel").SetTextColor(DebugMod.KeyBindLock ? new Color(244f / 255f, 127f / 255f, 32f / 255f) : Color.white);
             }
 
             if (panel.GetPanel("Bosses Panel").active)
@@ -622,6 +624,12 @@ namespace DebugMod
             {
                 DreamGate.scrollPosition++;
             }
+        }
+        
+        private static void KeyBindLockClicked(string buttonName)
+        {
+            DebugMod.KeyBindLock = !DebugMod.KeyBindLock;
+            Console.AddLine((DebugMod.KeyBindLock ? "Removing" : "Adding") + "the ability to use keybinds");
         }
     }
 }
