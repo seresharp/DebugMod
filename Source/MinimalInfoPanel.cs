@@ -41,6 +41,7 @@ namespace DebugMod
             altPanel.AddText("Alt Current Save State Lable", "Current SaveState", new Vector2(10f, 110f), Vector2.zero, GUIController.Instance.arial, 15);
             altPanel.AddText("Alt SaveState AutoSlot", "Autoslot", new Vector2(10f, 130f), Vector2.zero, GUIController.Instance.arial, 15);
             altPanel.AddText("Alt SaveState CurrentSlot", "Current slot", new Vector2(110f, 130f), Vector2.zero, GUIController.Instance.arial, 15);
+            altPanel.AddText("Alt WillHardfall", "Hardfall", new Vector2(10f, 150f), Vector2.zero, GUIController.Instance.arial, 15);
 
             //Values
             altPanel.AddText("Vel", "", new Vector2(40f, 14f), Vector2.zero, GUIController.Instance.trajanNormal);
@@ -59,6 +60,8 @@ namespace DebugMod
             altPanel.AddText("Autoslot", "", new Vector2(80f, 134f), Vector2.zero, GUIController.Instance.trajanNormal);
             altPanel.AddText("Current slot", "", new Vector2(200f, 134f), Vector2.zero, GUIController.Instance.trajanNormal);
 
+            altPanel.AddText("Hardfall", "", new Vector2(80f, 154f), Vector2.zero, GUIController.Instance.trajanNormal);
+            
             altPanel.FixRenderOrder();
         }
 
@@ -125,6 +128,8 @@ namespace DebugMod
                 altPanel.GetText("Autoslot").UpdateText(string.Format("{0}",
                             GetStringForBool(SaveStateManager.GetAutoSlot())));
                 altPanel.GetText("Current slot").UpdateText(string.Format("{0}", slotSet));
+
+                altPanel.GetText("Hardfall").UpdateText(GetStringForBool(HeroController.instance.cState.willHardLand));
             }
         }
 

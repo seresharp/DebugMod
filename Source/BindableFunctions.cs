@@ -202,13 +202,15 @@ namespace DebugMod
         {
             DebugMod.saveStateManager.ToggleAutoSlot();
         }
-        */
+        
         
         [BindableMethod(name = "Refresh state menu", category = "Savestates")]
         public static void RefreshSaveStates()
         {
             DebugMod.saveStateManager.RefreshStateMenu();
         }
+        */
+
         #endregion
 
         #region Visual
@@ -391,10 +393,29 @@ namespace DebugMod
         }
 
         // A variant of info panel. View handled in the two InfoPanel classes
+        //  TODO: stop not knowing how to use xor in c#
         [BindableMethod(name = "Alt. Info Switch", category = "Mod UI")]
         public static void ToggleFullInfo()
         {
             MinimalInfoPanel.minInfo = !MinimalInfoPanel.minInfo;
+            
+            if (MinimalInfoPanel.minInfo) 
+            {
+                if (DebugMod.settings.InfoPanelVisible)
+                {
+                    DebugMod.settings.InfoPanelVisible = false;
+                    DebugMod.settings.MinInfoPanelVisible = true;
+                }
+            }
+            else
+            {
+                if (DebugMod.settings.MinInfoPanelVisible)
+                {
+                    DebugMod.settings.MinInfoPanelVisible = false;
+                    DebugMod.settings.InfoPanelVisible = true;
+                }
+            }
+            
         }
 
         #endregion
@@ -978,12 +999,13 @@ namespace DebugMod
 
         #region Bosses
         
+        /*
         [BindableMethod(name = "Force Uumuu extra attack", category = "Bosses")]
         public static void ForceUumuuExtra() 
         {
             BossHandler.UumuuExtra();
         }
-
+        */
         [BindableMethod(name = "Respawn Ghost", category = "Bosses")]
         public static void RespawnGhost()
         {
@@ -1321,7 +1343,11 @@ namespace DebugMod
         }
         */
         
-        [BindableMethod(name = "AllScenesByIndex to file (SLOW)", category = "ExportData")]
+        // Use some threading or coroutine lol
+        // commented out for being painfully unoptimised.
+        // if you have use for this in its current state, you know how to uncomment and compile, or to ask me for the list :p
+        /*
+        [BindableMethod(name = "AllScenesByIndex (SLOW)", category = "ExportData")]
         public static void SceneIndexesToFile()
         {
             Console.AddLine("sceneCountInBuildSettings: " + UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings);
@@ -1344,6 +1370,7 @@ namespace DebugMod
                     sceneIndexList.Select(x => "[" + x.Key + " -- " + x.Value + "]").ToArray()
                     );
         }
+        */
         #endregion
     }
 }

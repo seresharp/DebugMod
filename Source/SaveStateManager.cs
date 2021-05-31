@@ -3,13 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
 
 namespace DebugMod
 {
-    public enum SaveStateType {
+    public enum SaveStateType
+    {
         Memory,
         File,
         SkipOne
@@ -75,7 +74,7 @@ namespace DebugMod
                     quickState.SaveTempState();
                     break;
                 case SaveStateType.File or SaveStateType.SkipOne:
-                    AutoSlotSelect(stateType);
+                    GameManager.instance.StartCoroutine(SelectSlot(true, stateType));
                     break;
                 default: break;
             }
@@ -84,7 +83,7 @@ namespace DebugMod
         #endregion
 
         #region loading
-        
+
         public void LoadState(SaveStateType stateType)
         {
             RefreshStateMenu();
@@ -247,9 +246,9 @@ namespace DebugMod
                 int total = 0;
                 foreach (KeyValuePair<int, SaveState> stateData in saveStateFiles)
                 {
-                    if (stateData.Value.IsSet() 
-                        && stateData.Key < DebugMod.settings.MaxSaveStates 
-                        && stateData.Key >= 0 
+                    if (stateData.Value.IsSet()
+                        && stateData.Key < DebugMod.settings.MaxSaveStates
+                        && stateData.Key >= 0
                         && total < DebugMod.settings.MaxSaveStates)
                     {
                         returnData.Add(stateData.Key, stateData.Value.GetSaveStateInfo());
@@ -267,18 +266,18 @@ namespace DebugMod
                 //SaveState tempSave = new SaveState();
                 string shortFileName;
                 string[] files = Directory.GetFiles(path);
-                DebugMod.instance.Log( 
-                    "path var: " + path +
-                    "\nSavestates: " + files.ToString()
-                    );
+                //DebugMod.instance.Log( 
+                //    "path var: " + path +
+                //    "\nSavestates: " + files.ToString()
+                //    );
 
                 foreach (string file in files)
                 {
                     shortFileName = Path.GetFileName(file);
-                    DebugMod.instance.Log("file: " + shortFileName);
+                    //DebugMod.instance.Log("file: " + shortFileName);
                     var digits = shortFileName.SkipWhile(c => !Char.IsDigit(c)).TakeWhile(Char.IsDigit).ToArray();
                     int slot = int.Parse(new string(digits));
-                    
+
                     if (File.Exists(file) && (slot >= 0 || slot < maxSaveStates))
                     {
                         if (saveStateFiles.ContainsKey(slot))
@@ -287,18 +286,19 @@ namespace DebugMod
                         }
                         saveStateFiles.Add(slot, new SaveState());
                         saveStateFiles[slot].LoadStateFromFile(slot);
-                        
-                        DebugMod.instance.Log(saveStateFiles[slot].GetSaveStateID());
+
+                        //DebugMod.instance.LogError(saveStateFiles[slot].GetSaveStateID());
                     }
                 }
             }
             catch (Exception ex)
             {
-                DebugMod.instance.Log(string.Format(ex.Source, ex.Message));
-                throw ex;
+                DebugMod.instance.LogError(string.Format(ex.Source, ex.Message));
+                //throw ex;
             }
         }
 
+        /*
         private void AutoSlotSelect(SaveStateType stateType)
         {
             if (autoSlot)
@@ -337,7 +337,7 @@ namespace DebugMod
                     // May not need DeepCopy()
                     saveStateFiles[currentStateSlot].data = quickState.DeepCopy();
                     saveStateFiles[currentStateSlot].SaveStateToFile(currentStateSlot);
-                } 
+                }
                 else if (stateType == SaveStateType.SkipOne)
                 {
                     saveStateFiles[currentStateSlot].NewSaveStateToFile(currentStateSlot);
@@ -348,6 +348,8 @@ namespace DebugMod
                 GameManager.instance.StartCoroutine(SelectSlot(true, stateType));
             }
         }
+        */
+
         #endregion
     }
 }

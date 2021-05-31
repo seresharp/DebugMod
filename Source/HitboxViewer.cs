@@ -95,6 +95,19 @@ namespace DebugMod
                 }
             }
 
+            switch (State)
+            {
+                case 1: 
+                    State1Boxes();
+                    break;
+                case 2: 
+                    State2Boxes();
+                    break;
+            }
+        }
+
+        private void State1Boxes()
+        {
             colliders = new List<Collider2D>();
             lines = new Dictionary<Collider2D, LineRenderer>();
 
@@ -104,22 +117,7 @@ namespace DebugMod
                 {
                     continue;
                 }
-
-                if (State == 2)
-                {
-                    /* State 2 */
-                    if (col.isTrigger && col.gameObject.GetComponent<HazardRespawnTrigger>() != null)
-                    {
-                        colliders.Add(col);
-                        lines.Add(col, this.SetupLineRenderer(col, null, blueMat));
-                    }
-                    else if (col.isTrigger && col.gameObject.GetComponent<CircleCollider2D>() == null)
-                    {
-                        this.colliders.Add(col);
-                        this.lines.Add(col, this.SetupLineRenderer(col, null, yellowMat));
-                    }
-                }
-
+                
                 if (col.gameObject.layer == (int)PhysLayers.TERRAIN)
                 {
                     lines.Add(col, SetupLineRenderer(col, null, greenMat));
@@ -147,27 +145,12 @@ namespace DebugMod
                         lines.Add(col, SetupLineRenderer(col, null, blueMat));
                     }
                 }
-
             }
-        }
-
-        private void Spawn1028Hitboxes()
+        }  
+        
+        
+        private void State2Boxes()
         {
-            if (!GameManager.instance.IsGameplayScene())
-            {
-                return;
-            }
-
-            DestroyBorder(Object.FindObjectsOfType<GameObject>().Where(x => x.name.Contains("sceneborder")));
-
-            foreach (Collider2D col in lines.Keys.ToArray())
-            {
-                if (col != null && lines[col] != null)
-                {
-                    Object.Destroy(lines[col].gameObject);
-                }
-            }
-
             colliders = new List<Collider2D>();
             lines = new Dictionary<Collider2D, LineRenderer>();
 
@@ -178,45 +161,39 @@ namespace DebugMod
                     continue;
                 }
 
-                    if (col.gameObject.layer == (int)PhysLayers.TERRAIN)
+                if (col.gameObject.layer == (int)PhysLayers.TERRAIN)
+                {
+                    lines.Add(col, SetupLineRenderer(col, null, greenMat));
+                }
+                else if (col.GetComponent<TransitionPoint>())
+                {
+                    lines.Add(col, SetupLineRenderer(col, null, blueMat));
+                }
+                else if (col.GetComponent<DamageHero>() || col.gameObject.LocateMyFSM("damages_hero") != null)
+                {
+                    colliders.Add(col);
+                    lines.Add(col, SetupLineRenderer(col, null, redMat));
+                }
+                else if (col.GetComponent<Breakable>())
+                {
+                    NonBouncer bounce = col.GetComponent<NonBouncer>();
+                    if (bounce == null || !bounce.active)
                     {
-                        lines.Add(col, SetupLineRenderer(col, null, greenMat));
-                    }
-                    else if (col.GetComponent<TransitionPoint>())
-                    {
+                        colliders.Add(col);
                         lines.Add(col, SetupLineRenderer(col, null, blueMat));
                     }
-                    else if (col.GetComponent<DamageHero>() || col.gameObject.LocateMyFSM("damages_hero") != null)
-                    {
-                        colliders.Add(col);
-                        lines.Add(col, SetupLineRenderer(col, null, redMat));
-                    }
-                    else if (col.gameObject == HeroController.instance.gameObject && !col.isTrigger)
-                    {
-                        colliders.Add(col);
-                        lines.Add(col, SetupLineRenderer(col, null, yellowMat));
-                    }
-                    else if (col.GetComponent<Breakable>())
-                    {
-                        NonBouncer bounce = col.GetComponent<NonBouncer>();
-                        if (bounce == null || !bounce.active)
-                        {
-                            colliders.Add(col);
-                            lines.Add(col, SetupLineRenderer(col, null, blueMat));
-                        }
-                    }
-
-                    /* State 2 */
-                    else if (State == 2 && col.isTrigger && col.gameObject.GetComponent<HazardRespawnTrigger>() != null)
-                    {
-                        colliders.Add(col);
-                        lines.Add(col, this.SetupLineRenderer(col, null, blueMat));
-                    }
-                    else if (State == 2 && col.isTrigger && col.gameObject.GetComponent<CircleCollider2D>() == null)
-                    {
-                        this.colliders.Add(col);
-                        this.lines.Add(col, this.SetupLineRenderer(col, null, yellowMat));
-                    }
+                }
+                else if (col.isTrigger && col.gameObject.GetComponent<HazardRespawnTrigger>() != null)
+                {
+                    colliders.Add(col);
+                    lines.Add(col, this.SetupLineRenderer(col, null, blueMat));
+                }
+                else if ((col.isTrigger && col.gameObject.GetComponent<CircleCollider2D>() == null) 
+                         || (col.gameObject == HeroController.instance.gameObject && !col.isTrigger))
+                {
+                    colliders.Add(col);
+                    lines.Add(col, this.SetupLineRenderer(col, null, yellowMat));
+                }
             }
         }
 
