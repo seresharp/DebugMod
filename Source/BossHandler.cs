@@ -141,11 +141,10 @@ namespace DebugMod
                 //GameManager.instance.
                 Object.DontDestroyOnLoad(_coro);
                 
-                Console.AddLine(_coro.ToString());
+                Console.AddLine("Uumuu forced extra attack ON");
                 
                 UnityEngine.SceneManagement.SceneManager.sceneLoaded += StartUumuuCoro;
                 fsmToggle = true;
-                
             }
             else
             {
@@ -181,27 +180,35 @@ namespace DebugMod
 
         private static void StartUumuuCoro(Scene scene, LoadSceneMode lsm)
         {
-            //Console.AddLine("Uumuu test: " + scene.name);
+            Console.AddLine("Start Uumuu Coro Uumuu test: " + scene.name);
             if (scene.name == "Fungus3_archive_02")
             {
-                Console.AddLine(_coro.ToString());
-                _coro.StartCoroutine(UumuuExtraCoro());
+                Console.AddLine("_coro ToString:  " + _coro.active.ToString());
+                //_coro.StartCoroutine(UumuuExtraCoro());
+                
+                GameObject uumuu = GameObject.Find("Mega Jellyfish");
+                Console.AddLine("Uumuu GameObject");
+                
+                if (uumuu != null) {
+                    Console.AddLine("Locating Uumuu FSM");
+                    PlayMakerFSM fsm = uumuu.LocateMyFSM("Mega Jellyfish");
+            
+                    fsm.GetState("Idle").GetAction<WaitRandom>().timeMax = 1.6f;
+                }
             }
         }
 
         private static IEnumerator UumuuExtraCoro()
         {
-            yield return null;
-            Console.AddLine("Uumuu coro check");
             // Find Uumuu and the FSM
             GameObject uumuu = GameObject.Find("Mega Jellyfish");
-            Console.AddLine("Uumuu coro mid pls work");
+            Console.AddLine("Uumuu GameObject");
             if (uumuu == null)
                 yield break;
-            Console.AddLine("aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            Console.AddLine("Locating Uumuu FSM");
             PlayMakerFSM fsm = uumuu.LocateMyFSM("Mega Jellyfish");
             
-            fsm.GetState("Idle").GetAction<WaitRandom>().timeMax = 1.2f;;
+            fsm.GetState("Idle").GetAction<WaitRandom>().timeMax = 1.6f;
             
 
             // Fix the waits and the number of attacks
