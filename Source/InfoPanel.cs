@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using System;
+using UnityEngine;
 using InControl;
 
 namespace DebugMod
@@ -123,8 +124,8 @@ namespace DebugMod
             panel.AddText("Right1 Label", "Session Time\nLoad\nHero Pos\nMove Raw", new Vector2(1285, 747), Vector2.zero, GUIController.Instance.arial);
             panel.AddText("Right1", "", new Vector2(1385, 747), Vector2.zero, GUIController.Instance.trajanNormal);
 
-            panel.AddText("Right2 Label", "Move Vector\nKey Pressed\nMove Pressed\nInput X", new Vector2(1500, 747), Vector2.zero, GUIController.Instance.arial);
-            panel.AddText("Right2", "", new Vector2(1600, 747), Vector2.zero, GUIController.Instance.trajanNormal);
+            panel.AddText("Right2 Label", "Move Vector\nKey Pressed\nMove Pressed\nInput X", new Vector2(1550, 747), Vector2.zero, GUIController.Instance.arial);
+            panel.AddText("Right2", "", new Vector2(1650, 747), Vector2.zero, GUIController.Instance.trajanNormal);
 
             panel.FixRenderOrder();
         }
@@ -220,11 +221,19 @@ namespace DebugMod
                 int time1 = Mathf.FloorToInt(Time.realtimeSinceStartup / 60f);
                 int time2 = Mathf.FloorToInt(Time.realtimeSinceStartup - (float)(time1 * 60));
 
-                panel.GetText("Right1").UpdateText(string.Format("{0:00}:{1:00}", time1, time2) + "\n" + DebugMod.GetLoadTime() + "s\n" + (Vector2)DebugMod.RefKnight.transform.position + "\n" + string.Format("L: {0} R: {1}", DebugMod.IH.inputActions.left.RawValue, DebugMod.IH.inputActions.right.RawValue));
+                panel.GetText("Right1").UpdateText(string.Format("{0:00}:{1:00}", time1, time2) + "\n" + DebugMod.GetLoadTime() + "s\n" + GetHeroPos() + "\n" + string.Format("L: {0} R: {1}", DebugMod.IH.inputActions.left.RawValue, DebugMod.IH.inputActions.right.RawValue));
                 panel.GetText("Right2").UpdateText(DebugMod.IH.inputActions.moveVector.Vector.x + ", " + DebugMod.IH.inputActions.moveVector.Vector.y + "\n" + GetStringForBool(InputManager.AnyKeyIsPressed) + "\n" + GetStringForBool(DebugMod.IH.inputActions.left.IsPressed || DebugMod.IH.inputActions.right.IsPressed) + "\n" + DebugMod.IH.inputX);
             }
         }
 
+        private static string GetHeroPos()
+        {
+            float HeroX = (float) DebugMod.RefKnight.transform.position.x;
+            float HeroY = (float) DebugMod.RefKnight.transform.position.y;
+            
+            return $"({HeroX}, {HeroY})";
+        }
+        
         private static string GetStringForBool(bool b)
         {
             return b ? "✓" : "X";

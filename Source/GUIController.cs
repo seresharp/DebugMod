@@ -152,7 +152,15 @@ namespace DebugMod
 
                                     KeyBindPanel.keyWarning = KeyCode.None;
 
-                                    DebugMod.settings.binds[bind.Key] = (int)kc;
+                                    //remove bind
+                                    if (kc == KeyCode.Escape)
+                                    {
+                                        DebugMod.settings.binds.Remove(bind.Key);
+                                    }
+                                    else if (kc != KeyCode.Escape)
+                                    {
+                                        DebugMod.settings.binds[bind.Key] = (int) kc;
+                                    }
                                     KeyBindPanel.UpdateHelpText();
                                     break;
                                 }
@@ -160,13 +168,29 @@ namespace DebugMod
                         }
                         else if (Input.GetKeyDown((KeyCode)bind.Value))
                         {
-                            try
+                            //This makes sure atleast you can close the UI when the KeyBindLock is active.
+                            //Im sure theres a better way to do this but idk. 
+                            if (bind.Value == DebugMod.settings.binds["Toggle All UI"])
                             {
-                                ((MethodInfo)DebugMod.bindMethods[bind.Key].Second).Invoke(null, null);
+                                try
+                                {
+                                    ((MethodInfo)DebugMod.bindMethods[bind.Key].Second).Invoke(null, null);
+                                }
+                                catch (Exception e)
+                                {
+                                    DebugMod.instance.LogError("Error running keybind method " + bind.Key + ":\n" + e.ToString());
+                                }
                             }
-                            catch (Exception e)
+                            else if  (!DebugMod.KeyBindLock)
                             {
-                                DebugMod.instance.LogError("Error running keybind method " + bind.Key + ":\n" + e.ToString());
+                                try
+                                {
+                                    ((MethodInfo)DebugMod.bindMethods[bind.Key].Second).Invoke(null, null);
+                                }
+                                catch (Exception e)
+                                {
+                                    DebugMod.instance.LogError("Error running keybind method " + bind.Key + ":\n" + e.ToString());
+                                }
                             }
                         }
                     }
