@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -155,7 +155,45 @@ namespace DebugMod
                 Console.AddLine("Cannot set TimeScale greater than 2.0");
             }
         }
+        [BindableMethod(name = "Reset", category = "Misc")]
+        public static void Reset()
+        {
+            var pd = PlayerData.instance;
+            var HC = HeroController.instance;
+            var GC = GameCameras.instance;
+            
+            //nail damage
+            pd.nailDamage = 5+ pd.nailSmithUpgrades * 4;
+            PlayMakerFSM.BroadcastEvent("UPDATE NAIL DAMAGE");
 
+            //Hero Light
+            GameObject gameObject = DebugMod.RefKnight.transform.Find("HeroLight").gameObject;
+            Color color = gameObject.GetComponent<SpriteRenderer>().color;
+            color.a = 0.7f;
+            gameObject.GetComponent<SpriteRenderer>().color = color;
+            
+            //HUD
+            if (!GC.hudCanvas.gameObject.activeInHierarchy) 
+                GC.hudCanvas.gameObject.SetActive(true);
+            
+            //Hide Hero
+            tk2dSprite component = DebugMod.RefKnight.GetComponent<tk2dSprite>();
+            color = component.color;  color.a = 1f;
+            component.color = color;
+
+            //rest all is self explanatory
+            Time.timeScale = 1f;
+            GC.tk2dCam.ZoomFactor = 1f;
+            HC.vignette.enabled = false;
+            EnemiesPanel.hitboxes = false;
+            EnemiesPanel.hpBars = false;
+            EnemiesPanel.autoUpdate = false;
+            pd.infiniteAirJump=false;
+            DebugMod.infiniteSoul = false;
+            DebugMod.infiniteHP = false; 
+            pd.isInvincible=false; 
+            DebugMod.noclip=false;
+        }
         #endregion
 
         #region SaveStates 
@@ -609,6 +647,7 @@ namespace DebugMod
             PlayerData.instance.hasCharm = true;
             PlayerData.instance.charmsOwned = 40;
             PlayerData.instance.royalCharmState = 4;
+            PlayerData.instance.gotShadeCharm = true;
             PlayerData.instance.gotKingFragment = true;
             PlayerData.instance.gotQueenFragment = true;
             PlayerData.instance.notchShroomOgres = true;
@@ -641,8 +680,10 @@ namespace DebugMod
             }
 
             PlayerData.instance.royalCharmState++;
+            
+            PlayerData.instance.gotShadeCharm = PlayerData.instance.royalCharmState == 4;
 
-            if (PlayerData.instance.royalCharmState >= 5)
+                if (PlayerData.instance.royalCharmState >= 5)
             {
                 PlayerData.instance.royalCharmState = 0;
             }
@@ -1344,6 +1385,53 @@ namespace DebugMod
                     sceneIndexList.Select(x => "[" + x.Key + " -- " + x.Value + "]").ToArray()
                     );
         }
+        #endregion
+
+        #region MovePlayer
+
+        [BindableMethod(name = "Move 0.1 units to the right", category = "PlayerMovement")]
+        public static void MoveRight()
+        {
+            var HeroPos = HeroController.instance.transform.position;
+            HeroController.instance.transform.position= new Vector3(HeroPos.x + DebugMod.AmountToMove, HeroPos.y);
+            Console.AddLine("Moved player 0.1 units to the right");
+        }
+        [BindableMethod(name = "Move 0.1 units to the left", category = "PlayerMovement")]
+        public static void MoveL()
+        {
+            var HeroPos = HeroController.instance.transform.position;
+            HeroController.instance.transform.position = new Vector3(HeroPos.x - DebugMod.AmountToMove, HeroPos.y);
+            Console.AddLine("Moved player 0.1 units to the left");
+        }
+        [BindableMethod(name = "Move 0.1 units up", category = "PlayerMovement")]
+        public static void MoveUp()
+        {
+            var HeroPos = HeroController.instance.transform.position;
+            HeroController.instance.transform.position = new Vector3(HeroPos.x, HeroPos.y +  DebugMod.AmountToMove);
+            Console.AddLine("Moved player 0.1 units to the up");
+        }
+        [BindableMethod(name = "Move 0.1 units down", category = "PlayerMovement")]
+        public static void MoveDown()
+        {
+            var HeroPos = HeroController.instance.transform.position;
+            HeroController.instance.transform.position = new Vector3(HeroPos.x, HeroPos.y - DebugMod.AmountToMove);
+            Console.AddLine("Moved player 0.1 units to the down");
+        }
+        
+        [BindableMethod(name = "FaceLeft", category = "PlayerMovement")]
+        public static void FaceLeft()
+        {
+            HeroController.instance.FaceLeft();
+            Console.AddLine("Made player face left");
+        }
+        
+        [BindableMethod(name = "FaceRight", category = "PlayerMovement")]
+        public static void FaceRight()
+        {
+            HeroController.instance.FaceRight();
+            Console.AddLine("Made player face right");
+        }
+        
         #endregion
     }
 }
