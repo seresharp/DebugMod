@@ -155,7 +155,7 @@ namespace DebugMod
                 Console.AddLine("Cannot set TimeScale greater than 2.0");
             }
         }
-        [BindableMethod(name = "Reset", category = "Misc")]
+        [BindableMethod(name = "Reset Debug States", category = "Misc")]
         public static void Reset()
         {
             var pd = PlayerData.instance;
@@ -355,8 +355,7 @@ namespace DebugMod
                 DebugMod.settings.EnemiesPanelVisible ||
                 DebugMod.settings.TopMenuVisible ||
                 DebugMod.settings.ConsoleVisible ||
-                DebugMod.settings.MinInfoPanelVisible ||
-                DebugMod.settings.SaveStatePanelVisible
+                DebugMod.settings.MinInfoPanelVisible
                 );
 
             if (MinimalInfoPanel.minInfo)
@@ -373,7 +372,6 @@ namespace DebugMod
             DebugMod.settings.EnemiesPanelVisible = active;
             DebugMod.settings.ConsoleVisible = active;
             DebugMod.settings.HelpPanelVisible = active;
-            DebugMod.settings.SaveStatePanelVisible = active;
 
             if (DebugMod.settings.EnemiesPanelVisible)
             {
@@ -686,6 +684,7 @@ namespace DebugMod
                 PlayerData.instance.SetBoolInternal("fragileHealth_unbreakable", true);
                 PlayerData.instance.SetBoolInternal("fragileStrength_unbreakable", true);
                 PlayerData.instance.SetIntInternal("grimmChildLevel", 5);
+                PlayerData.instance.gotGrimmNotch = true;
                 PlayerData.instance.charmSlots = 11;
             }
 
@@ -740,7 +739,7 @@ namespace DebugMod
             }
         }
 
-        [BindableMethod(name = "Overcharm", category = "Charms")]
+        [BindableMethod(name = "Can Overcharm", category = "Charms")]
         public static void ToggleOvercharm()
         {
             PlayerData.instance.canOvercharm = true;
@@ -1252,7 +1251,7 @@ namespace DebugMod
             }
             else
             {
-                PlayerData.instance.hasLantern = false;
+                PlayerData.instance.hasXunFlower = false;
                 Console.AddLine("Taking away delicate flower");
             }
         }
@@ -1358,8 +1357,6 @@ namespace DebugMod
             );
         }
 
-
-        
         [BindableMethod(name = "PlayerData to file", category = "ExportData")]
         public static void PlayerDataToFile()
         {

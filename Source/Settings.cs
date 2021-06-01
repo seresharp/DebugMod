@@ -75,5 +75,11 @@ namespace DebugMod
             get => GetInt();
             set => SetInt(value);
         }
+
+        public float AmountToMove
+        {
+            get => GetFloat(0.1f);
+            set => SetFloat(value);
+        }
     }
 }

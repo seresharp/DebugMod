@@ -237,11 +237,13 @@ namespace DebugMod
             HeroController.instance.proxyFSM.SendEvent("HeroCtrl-HeroDamaged");
             HeroAnimationController component = HeroController.instance.GetComponent<HeroAnimationController>();
             typeof(HeroAnimationController).GetField("pd", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(component, PlayerData.instance);
+           
             HeroController.instance.TakeHealth(1);
             HeroController.instance.AddHealth(1);
             GameCameras.instance.hudCanvas.gameObject.SetActive(true);
             HeroController.instance.TakeHealth(1);
             HeroController.instance.AddHealth(1);
+            
             GameManager.instance.inputHandler.RefreshPlayerData();
             yield break;
             // need to redraw UI somehow

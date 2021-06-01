@@ -41,7 +41,7 @@ namespace DebugMod
             panel.GetPanel("Cheats Panel").AddButton("Invincibility", GUIController.Instance.images["ButtonRectEmpty"], new Vector2(5f, 120f), Vector2.zero, InvincibilityClicked, new Rect(0f, 0f, 80f, 20f), GUIController.Instance.trajanNormal, "Invincibility", 10);
             panel.GetPanel("Cheats Panel").AddButton("Noclip", GUIController.Instance.images["ButtonRectEmpty"], new Vector2(5f, 150f), Vector2.zero, NoclipClicked, new Rect(0f, 0f, 80f, 20f), GUIController.Instance.trajanNormal, "Noclip", 10);
             panel.GetPanel("Cheats Panel").AddButton("Kill Self", GUIController.Instance.images["ButtonRectEmpty"], new Vector2(5f, 180f), Vector2.zero, KillSelfClicked, new Rect(0f, 0f, 80f, 20f), GUIController.Instance.trajanNormal, "Kill Self", 10);
-            panel.GetPanel("Cheats Panel").AddButton("Lock KeyBinds", GUIController.Instance.images["ButtonRectEmpty"], new Vector2(5f, 210f), Vector2.zero, KeyBindLockClicked, new Rect(0f, 0f, 80f, 20f), GUIController.Instance.trajanNormal, "Lock KeyBinds", 10);
+            panel.GetPanel("Cheats Panel").AddButton("Lock KeyBinds", GUIController.Instance.images["ButtonRectEmpty"], new Vector2(5f, 210f), Vector2.zero, KeyBindLockClicked, new Rect(0f, 0f, 80f, 20f), GUIController.Instance.trajanNormal, "Lock Binds", 10);
 
 
             //Charms panel
@@ -629,7 +629,7 @@ namespace DebugMod
         private static void KeyBindLockClicked(string buttonName)
         {
             DebugMod.KeyBindLock = !DebugMod.KeyBindLock;
-            Console.AddLine((DebugMod.KeyBindLock ? "Removing" : "Adding") + "the ability to use keybinds");
+            Console.AddLine((DebugMod.KeyBindLock ? "Removing" : "Adding") + " the ability to use keybinds");
         }
     }
 }

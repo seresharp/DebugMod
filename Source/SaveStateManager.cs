@@ -29,14 +29,25 @@ namespace DebugMod
         public static int maxSaveStates = DebugMod.settings.MaxSaveStates;
 
         public static SaveState quickState;
-        public static bool inSelectSlotState = false;
+        public static bool inSelectSlotState = false;   // a mutex, in practice?
         public static int currentStateSlot = -1;
         public static string path = Application.persistentDataPath + "/Savestates-1221/";
+        public static string currentStateOperation = null;
 
+        private static string[] stateStrings =
+        {
+            "Quickslot (save)",
+            "Quickslot (load)",
+            "Save quickslot to file",
+            "Load quickslot from file",
+            "Save new state to file",
+            "Load new state from file"
+        };
         private static Dictionary<int, SaveState> saveStateFiles = new Dictionary<int, SaveState>();
-        private static bool autoSlot;
+
+        //private static bool autoSlot;
         private DateTime timeoutHelper;
-        private double timeoutAmount = 8;
+        private double timeoutAmount = 30;
 
         //public static bool preserveThroughStates = false;
 
@@ -45,7 +56,7 @@ namespace DebugMod
             try
             {
                 inSelectSlotState = false;
-                autoSlot = false;
+                //autoSlot = false;
                 DebugMod.settings.SaveStatePanelVisible = false;
                 quickState = new SaveState();
 
@@ -67,14 +78,17 @@ namespace DebugMod
         #region saving
         public void SaveState(SaveStateType stateType)
         {
-            RefreshStateMenu();
             switch (stateType)
             {
                 case SaveStateType.Memory:
                     quickState.SaveTempState();
                     break;
                 case SaveStateType.File or SaveStateType.SkipOne:
-                    GameManager.instance.StartCoroutine(SelectSlot(true, stateType));
+                    if (!inSelectSlotState)
+                    {
+                        RefreshStateMenu();
+                        GameManager.instance.StartCoroutine(SelectSlot(true, stateType));
+                    }
                     break;
                 default: break;
             }
@@ -86,7 +100,6 @@ namespace DebugMod
 
         public void LoadState(SaveStateType stateType)
         {
-            RefreshStateMenu();
             switch (stateType)
             {
                 case SaveStateType.Memory:
@@ -100,7 +113,11 @@ namespace DebugMod
                     }
                     break;
                 case SaveStateType.File or SaveStateType.SkipOne:
-                    GameManager.instance.StartCoroutine(SelectSlot(false, stateType));
+                    if (!inSelectSlotState)
+                    {
+                        RefreshStateMenu();
+                        GameManager.instance.StartCoroutine(SelectSlot(false, stateType));
+                    }
                     break;
                 default:
                     break;
@@ -112,11 +129,37 @@ namespace DebugMod
         #region helper functionality
         private IEnumerator SelectSlot(bool save, SaveStateType stateType)
         {
-            timeoutHelper = DateTime.Now.AddSeconds(timeoutAmount);
+            switch (stateType)
+            {
+                case SaveStateType.Memory:
+                    currentStateOperation = save ? "Quickslot (save)" : "Quickslot (load)";
+                    break;
+                case SaveStateType.File:
+                    currentStateOperation = save ? "Quickslot save to file" : "Load file to quickslot";
+                    break;
+                case SaveStateType.SkipOne:
+                    currentStateOperation = save ? "Save new state to file" : "Load new state from file";
+                    break;
+                default:
+                    //DebugMod.instance.LogError("SelectSlot ended started");
+                    throw new ArgumentException("Helper func SelectSlot requires `bool` and `SaveStateType` to proceed the savestate process");
+            }
 
+            if (DebugMod.settings.binds.TryGetValue(currentStateOperation, out int keycode))
+            {
+                DebugMod.alphaKeyDict.Add((KeyCode)keycode, keycode);
+            }
+            else
+            {
+                throw new Exception("Helper func SelectSlot could not find a binding for the `" + currentStateOperation + "` savestate process");
+            }
+            
+            yield return null;
+            timeoutHelper = DateTime.Now.AddSeconds(timeoutAmount);
             DebugMod.settings.SaveStatePanelVisible = inSelectSlotState = true;
             yield return new WaitUntil(DidInput);
-            if (GUIController.didInput)
+            
+            if (GUIController.didInput && !GUIController.inputEsc)
             {
                 if (currentStateSlot >= 0 && currentStateSlot < maxSaveStates)
                 {
@@ -129,13 +172,16 @@ namespace DebugMod
                         LoadCoroHelper(stateType);
                     }
                 }
-                GUIController.didInput = false;
             }
             else
             {
-                Console.AddLine("Timeout (" + timeoutAmount + "s) reached");
+                if (GUIController.didInput) Console.AddLine("Savestate action cancelled");
+                else Console.AddLine("Timeout (" + timeoutAmount.ToString() + ")s was reached");
             }
-
+            
+            DebugMod.alphaKeyDict.Remove((KeyCode)keycode);
+            currentStateOperation = null;
+            GUIController.inputEsc = GUIController.didInput = false;
             DebugMod.settings.SaveStatePanelVisible = inSelectSlotState = false;
         }
 
@@ -209,6 +255,7 @@ namespace DebugMod
             return false;
         }
 
+        /*
         public void ToggleAutoSlot()
         {
             autoSlot = !autoSlot;
@@ -218,6 +265,7 @@ namespace DebugMod
         {
             return autoSlot;
         }
+        */
 
         public static int GetCurrentSlot()
         {

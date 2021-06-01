@@ -130,6 +130,7 @@ namespace DebugMod
 
                 int alphaInt = 0;
                 alphaKeyDict.Clear();
+                
                 for (int i = alphaStart; i <= alphaEnd; i++)
                 {
                     KeyCode tmpKeyCode = (KeyCode)i;

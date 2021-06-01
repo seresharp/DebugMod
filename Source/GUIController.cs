@@ -16,7 +16,7 @@ namespace DebugMod
         public Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
         public Vector3 hazardLocation;
         public string respawnSceneWatch;
-        public static bool didInput;
+        public static bool didInput, inputEsc;
         public static ShowHitboxes hitboxes = new ShowHitboxes();
 
         private GameObject canvas;
@@ -200,7 +200,7 @@ namespace DebugMod
                         DebugMod.settings.binds.Remove(bind.Key);
                     }
                 }
-                
+
                 if (SaveStateManager.inSelectSlotState && DebugMod.settings.SaveStatePanelVisible)
                 {
                     foreach (KeyValuePair<KeyCode, int> entry in DebugMod.alphaKeyDict)
@@ -212,7 +212,12 @@ namespace DebugMod
                                 // keyInt should be between 0-9
                                 SaveStateManager.currentStateSlot = keyInt;
                                 didInput = true;
-                                //Console.AddLine("Number selected, didInput bool: " + didInput.ToString());
+                                break;
+                            }
+                            else
+                            {
+                                didInput = inputEsc = true;
+                                break;
                             }
                         }
                     }

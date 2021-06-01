@@ -13,7 +13,7 @@ namespace DebugMod
             statePanel = new CanvasPanel(
                 canvas,
                 GUIController.Instance.images["BlankVertical"],
-                new Vector2(800f, 40f),
+                new Vector2(720f, 40f),
                 Vector2.zero,
                 new Rect(
                     0f,
@@ -23,13 +23,16 @@ namespace DebugMod
                 )
             );
 
+            statePanel.AddText("Mode", "mode: ", new Vector2(8, 20), Vector2.zero, GUIController.Instance.arial, 15);
+            statePanel.AddText("currentmode", "-", new Vector2(60, 20), Vector2.zero, GUIController.Instance.arial, 15);
+
             for (int i = 0; i < SaveStateManager.maxSaveStates; i++) { 
 
                 //Labels
-                statePanel.AddText("Slot " + i, i.ToString(), new Vector2(10, i * 20 + 20), Vector2.zero, GUIController.Instance.arial, 15);
+                statePanel.AddText("Slot " + i, i.ToString(), new Vector2(10, i * 20 + 40), Vector2.zero, GUIController.Instance.arial, 15);
                 
                 //Values
-                statePanel.AddText(i.ToString(), "", new Vector2(50, i * 20 + 20), Vector2.zero, GUIController.Instance.arial, 15);
+                statePanel.AddText(i.ToString(), "", new Vector2(50, i * 20 + 40), Vector2.zero, GUIController.Instance.arial, 15);
             }
             /*
             statePanel.AddText("Slot1", "1", new Vector2(10f, 40f), Vector2.zero, GUIController.Instance.arial, 15);
@@ -84,6 +87,8 @@ namespace DebugMod
 
             if (statePanel.active)
             {
+                statePanel.GetText("currentmode").UpdateText(SaveStateManager.currentStateOperation);
+
                 for (int i = 0; i < SaveStateManager.maxSaveStates; i++)
                 {
                     statePanel.GetText(i.ToString()).UpdateText("open");

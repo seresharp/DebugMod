@@ -57,10 +57,10 @@ namespace DebugMod
 
             altPanel.AddText("Scene Name", "", new Vector2(140f, 94f), Vector2.zero, GUIController.Instance.trajanNormal);
             altPanel.AddText("Current SaveState", "", new Vector2(140f, 114f), Vector2.zero, GUIController.Instance.trajanNormal);
-            altPanel.AddText("Autoslot", "", new Vector2(80f, 134f), Vector2.zero, GUIController.Instance.trajanNormal);
+            //altPanel.AddText("Autoslot", "", new Vector2(80f, 134f), Vector2.zero, GUIController.Instance.trajanNormal);
             altPanel.AddText("Current slot", "", new Vector2(200f, 134f), Vector2.zero, GUIController.Instance.trajanNormal);
 
-            altPanel.AddText("Hardfall", "", new Vector2(80f, 154f), Vector2.zero, GUIController.Instance.trajanNormal);
+            altPanel.AddText("Hardfall", "", new Vector2(80f, 134f), Vector2.zero, GUIController.Instance.trajanNormal);
             
             altPanel.FixRenderOrder();
         }
@@ -97,7 +97,7 @@ namespace DebugMod
                 PlayerData.instance.CountGameCompletion();
 
                 altPanel.GetText("Vel").UpdateText(HeroController.instance.current_velocity.ToString());
-                altPanel.GetText("Pos").UpdateText(DebugMod.RefKnight.transform.position.ToString());
+                altPanel.GetText("Pos").UpdateText(GetHeroPos());
 
                 altPanel.GetText("MP").UpdateText((PlayerData.instance.MPCharge + PlayerData.instance.MPReserve).ToString());
                 altPanel.GetText("NailDmg").UpdateText(DebugMod.RefKnightSlash.FsmVariables.GetFsmInt("damageDealt").Value + " (Flat " + PlayerData.instance.nailDamage + ", x" + DebugMod.RefKnightSlash.FsmVariables.GetFsmFloat("Multiplier").Value + ")");
@@ -125,12 +125,20 @@ namespace DebugMod
                     slotSet = "unset";
                 }
 
-                altPanel.GetText("Autoslot").UpdateText(string.Format("{0}",
-                            GetStringForBool(SaveStateManager.GetAutoSlot())));
+                //altPanel.GetText("Autoslot").UpdateText(string.Format("{0}",
+                //            GetStringForBool(SaveStateManager.GetAutoSlot())));
                 altPanel.GetText("Current slot").UpdateText(string.Format("{0}", slotSet));
 
                 altPanel.GetText("Hardfall").UpdateText(GetStringForBool(HeroController.instance.cState.willHardLand));
             }
+        }
+
+        private static string GetHeroPos()
+        {
+            float HeroX = (float)DebugMod.RefKnight.transform.position.x;
+            float HeroY = (float)DebugMod.RefKnight.transform.position.y;
+
+            return $"({HeroX}, {HeroY})";
         }
 
         private static string GetStringForBool(bool b)
