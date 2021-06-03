@@ -55,22 +55,27 @@
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\References\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\References\PlayMaker.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
     <Reference Include="UnityEngine">
       <HintPath>.\References\UnityEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>.\References\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Vasi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>References\Vasi.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -92,9 +97,6 @@
     </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="TopMenu.cs" />
-    <Reference Include="UnityEngine">
-      <HintPath>UnityEngine.dll</HintPath>
-    </Reference>
     <Compile Include="BossHandler.cs" />
     <Compile Include="CanvasButton.cs" />
     <Compile Include="CanvasImage.cs" />
