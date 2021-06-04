@@ -82,7 +82,9 @@
     <Compile Include="BindableMethod.cs" />
     <Compile Include="EnemiesPanel.cs" />
     <Compile Include="EnemyData.cs" />
-    <Compile Include="HitboxViewer.cs" />
+    <Compile Include="Hitbox\Drawing.cs" />
+    <Compile Include="Hitbox\HitboxRender.cs" />
+    <Compile Include="Hitbox\HitboxViewer.cs" />
     <Compile Include="SaveState.cs" />
     <Compile Include="SaveStateManager.cs" />
     <Compile Include="SaveStatesPanel.cs" />
