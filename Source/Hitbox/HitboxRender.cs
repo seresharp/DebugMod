@@ -179,9 +179,9 @@ namespace DebugMod.Hitbox
             {
                 Vector2 offset = circleCollider2D.offset;
                 Vector2 center = LocalToScreenPoint(camera, collider2D, offset);
-                Vector2 centerRight = LocalToScreenPoint(camera, collider2D, new Vector2(offset.x + circleCollider2D.radius, offset.y));
-                int radius = (int) Math.Round(Math.Abs(centerRight.x - center.x));
-                Drawing.DrawCircle(center, radius, hitboxType.Color, lineWidth, true, Math.Max(8, radius / 16));
+                Vector2 right = LocalToScreenPoint(camera, collider2D, new Vector2(offset.x + circleCollider2D.radius, offset.y));
+                int radius = (int) Math.Round(Vector2.Distance(center, right));
+                Drawing.DrawCircle(center, radius, hitboxType.Color, lineWidth, true, Mathf.Clamp(radius / 16, 4, 32));
             }
 
             GUI.depth = origDepth;
