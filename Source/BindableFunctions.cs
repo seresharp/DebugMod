@@ -300,6 +300,14 @@ namespace DebugMod
             }
         }
 
+        [BindableMethod(name = "Toggle Camera Shake", category = "Visual")]
+        public static void ToggleCameraShake()
+        {
+            bool newValue = !GameCameras.instance.cameraShakeFSM.enabled;
+            GameCameras.instance.cameraShakeFSM.enabled = newValue;
+            Console.AddLine($"{(newValue ? "Enabling" : "Disabling")} Camera Shake...");
+        }
+        
         [BindableMethod(name = "Reset Camera Zoom", category = "Visual")]
         public static void ResetZoom()
         {
