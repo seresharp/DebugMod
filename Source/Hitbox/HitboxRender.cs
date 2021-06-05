@@ -88,7 +88,7 @@ namespace DebugMod.Hitbox
                 } else if (go == HeroController.instance?.gameObject && !collider2D.isTrigger)
                 {
                     colliders[HitboxType.Knight].Add(collider2D);
-                } else if (go.LocateMyFSM("damages_enemy"))
+                } else if (go.LocateMyFSM("damages_enemy") || go.name == "Damager" && go.LocateMyFSM("Damage"))
                 {
                     colliders[HitboxType.Attack].Add(collider2D);
                 } else if (collider2D.isTrigger && (collider2D.GetComponent<TransitionPoint>() || collider2D.GetComponent<HazardRespawnTrigger>()))
