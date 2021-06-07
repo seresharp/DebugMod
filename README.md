@@ -80,22 +80,24 @@ Specifies slot number, then loads savestate from that file directly.
                                       Known Issues
 ---------------------------------------------------------------------------------------- 
 ## Savestates:
-* Charm effects not updating properly after loading savestates
+* Charm effects not updating properly after loading savestates. Workaround: quitout and load back in or bench to manually apply the new charms.
 * UI not refreshing properly to remove obsolete vessel fragments
-* Soul meter stuck at full if in that state before loading
+* ~~Soul meter stuck at full if in that state before loading~~
 * Softlocks if loading savestate during dream transitions
-* If loading savestate during transition visual glitch. Either press 'esc' twice to get control of the knight and walk through a transition if this happens, or quit to menu and load back in before loading the savestate
+* If loading savestate during transition visuals will not load. Either press 'esc' twice to get control of the knight and walk through a transition if this happens, or quit to menu and load back in before loading the savestate
 * (All savestates are loaded in RAM, which means fast loading from savestates fetched from files BUT potentially general performance issues)
 
 ----------------------------------------------------------------------------------------
                                           CREDITS
 ----------------------------------------------------------------------------------------
-Seresharp 
-56 
-Yurihaia
-Krythom 
-The Embraced One 
-Katie 
-KeinZantezuken 
-MyEyes/Firzen 
-Cerpintext 
+Seresharp  
+56  
+Yurihaia  
+Krythom  
+The Embraced One  
+Katie  
+KeinZantezuken  
+MyEyes/Firzen  
+Cerpintext  
+Mulhima  
+DemoJameson  
