@@ -39,9 +39,9 @@ namespace DebugMod
          
             altPanel.AddText("Alt Scene Name Label", "Scene Name", new Vector2(10f, 90f), Vector2.zero, GUIController.Instance.arial, 15);
             altPanel.AddText("Alt Current Save State Lable", "Current SaveState", new Vector2(10f, 110f), Vector2.zero, GUIController.Instance.arial, 15);
-            altPanel.AddText("Alt SaveState AutoSlot", "Autoslot", new Vector2(10f, 130f), Vector2.zero, GUIController.Instance.arial, 15);
+            //altPanel.AddText("Alt SaveState AutoSlot", "Autoslot", new Vector2(10f, 130f), Vector2.zero, GUIController.Instance.arial, 15);
             altPanel.AddText("Alt SaveState CurrentSlot", "Current slot", new Vector2(110f, 130f), Vector2.zero, GUIController.Instance.arial, 15);
-            altPanel.AddText("Alt WillHardfall", "Hardfall", new Vector2(10f, 150f), Vector2.zero, GUIController.Instance.arial, 15);
+            altPanel.AddText("Alt WillHardfall", "Hardfall", new Vector2(10f, 130f), Vector2.zero, GUIController.Instance.arial, 15);
 
             //Values
             altPanel.AddText("Vel", "", new Vector2(40f, 14f), Vector2.zero, GUIController.Instance.trajanNormal);
