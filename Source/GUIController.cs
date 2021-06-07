@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using DebugMod.Hitbox;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,7 @@ namespace DebugMod
         public Vector3 hazardLocation;
         public string respawnSceneWatch;
         public static bool didInput, inputEsc;
-        public static ShowHitboxes hitboxes = new ShowHitboxes();
+        private static readonly HitboxViewer hitboxes = new();
 
         private GameObject canvas;
         private static GUIController _instance;
@@ -312,13 +313,13 @@ namespace DebugMod
                         PlayerData.instance.respawnMarkerName.ToString()
                     }));
                 }
-                if (ShowHitboxes.State != DebugMod.settings.ShowHitBoxes)
+                if (HitboxViewer.State != DebugMod.settings.ShowHitBoxes)
                 {
                     if (DebugMod.settings.ShowHitBoxes != 0)
                     {
                         hitboxes.Load();
                     }
-                    else if (ShowHitboxes.State != 0 && DebugMod.settings.ShowHitBoxes == 0) 
+                    else if (HitboxViewer.State != 0 && DebugMod.settings.ShowHitBoxes == 0)
                     {
                         hitboxes.Unload();
                     }
