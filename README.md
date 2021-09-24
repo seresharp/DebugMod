@@ -1,5 +1,48 @@
+----------------------------------------------------------------------------------------
+                                       FEATURES
+----------------------------------------------------------------------------------------
+* A toggleable UI in-game that provides the following functions:
+* Cheats such as invincibility and noclip
+* The ability to unlock all charms or repair broken ones
+* Change which skills the player has
+* Change which items the player has
+* Give the player more of consumable resources such as geo and essence
+* Respawn bosses
+* Hold multiple dream gate positions
+* Change the player's respawn point to anywhere in the current scene
+* Recall to the set respawn point
+* Kill all enemies
+* Add HP bars to enemies
+* Draw collision boxes for enemies
+* Clone or delete any enemy
+* Set an enemy's health to 9999
+* Change the player's nail damage
+* Damage the player
+* Change the camera zoom level
+* Disable the in game HUD
+* Make the player invisible
+* Disable the lighting around the player
+* Disable the vignette drawn around the player
+* Change the time scale of the game
+----------------------------------------------------------------------------------------
+                                  INSTALLATION
+----------------------------------------------------------------------------------------
 
-# This is a modification of DebugMod. by default, it will not use your old savestates. Dont panic, they didn't get deleted.
+## (STEAM/GOG, WINDOWS)
+1) Download the modding API for Hollow Knight 1.2.2.1
+   At the time of writing, 1.2.2.1-41 is the most up-to-date release: https://cdn.discordapp.com/attachments/298798821402607618/817653175586783242/Assembly-CSharp.dll
+2) Right click Hollow Knight in Steam -> Properties -> Local Files -> Browse Local Files
+   OR
+   In GOG galaxy 2 -> Click button to the right of Update -> Manage Installation -> Show Folder
+3) Create a backup of the game files located here
+4) Copy the contents of the modding API zip into this folder (Overwrite files when asked)
+5) Copy the contents of this zip into the folder (Overwrite files when asked)
+6) This mod should not affect saves negatively, but it is a good idea to back them up anyway.
+   Saves are located at %AppData%\..\LocalLow\Team Cherry\Hollow Knight\
+      
+## How to build (for devs):
+1) Make a folder `Source/References/`, then 
+2) add `Assembly-CSharp.dll` (with modding-api), and `PlayMaker.dll`, `UnityEngine.dll` and `UnityEngine.UI.dll` from your `Hollow Knight/hollow_knight_Data/Managed/`-folder
 
 ----------------------------------------------------------------------------------------
                                       SAVESTATE BASICS
@@ -42,52 +85,6 @@ Specifies slot number, then makes a new savestate and saves to a json-file with 
 Specifies slot number, then loads savestate from that file directly.
 
 ----------------------------------------------------------------------------------------
-                                       FEATURES
-----------------------------------------------------------------------------------------
-* A toggleable UI in-game that provides the following functions:
-* Cheats such as invincibility and noclip
-* The ability to unlock all charms or repair broken ones
-* Change which skills the player has
-* Change which items the player has
-* Give the player more of consumable resources such as geo and essence
-* Respawn bosses
-* Hold multiple dream gate positions
-* Change the player's respawn point to anywhere in the current scene
-* Recall to the set respawn point
-* Kill all enemies
-* Add HP bars to enemies
-* Draw collision boxes for enemies
-* Clone or delete any enemy
-* Set an enemy's health to 9999
-* Change the player's nail damage
-* Damage the player
-* Change the camera zoom level
-* Disable the in game HUD
-* Make the player invisible
-* Disable the lighting around the player
-* Disable the vignette drawn around the player
-* Change the time scale of the game
-----------------------------------------------------------------------------------------
-                                  INSTALLATION
-----------------------------------------------------------------------------------------
-
-## (STEAM/GOG, WINDOWS)
-1) Download the modding API for Hollow Knight 1.2.2.1
-	At the time of writing, 1.2.2.1-41 is the most up-to-date release: https://cdn.discordapp.com/attachments/298798821402607618/817653175586783242/Assembly-CSharp.dll
-2) Right click Hollow Knight in Steam -> Properties -> Local Files -> Browse Local Files
-	OR
-	In GOG galaxy 2 -> Click button to the right of Update -> Manage Installation -> Show Folder
-3) Create a backup of the game files located here
-4) Copy the contents of the modding API zip into this folder (Overwrite files when asked)
-5) Copy the contents of this zip into the folder (Overwrite files when asked)
-6) This mod should not affect saves negatively, but it is a good idea to back them up anyway.
-   Saves are located at %AppData%\..\LocalLow\Team Cherry\Hollow Knight\
-      
-## How to build (for devs):
-1) Make a folder `Source/References/`, then 
-2) add `Assembly-CSharp.dll` (with modding-api), and `PlayMaker.dll`, `UnityEngine.dll` and `UnityEngine.UI.dll` from your `Hollow Knight/hollow_knight_Data/Managed/`-folder
-
-----------------------------------------------------------------------------------------
                                       Known Issues
 ---------------------------------------------------------------------------------------- 
 ## Savestates:
@@ -112,4 +109,3 @@ MyEyes/Firzen
 Cerpintext  
 Mulhima  
 DemoJameson  
-
