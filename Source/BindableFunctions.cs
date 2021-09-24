@@ -14,7 +14,6 @@ namespace DebugMod
     {
         private static readonly FieldInfo TimeSlowed = typeof(GameManager).GetField("timeSlowed", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly FieldInfo IgnoreUnpause = typeof(UIManager).GetField("ignoreUnpause", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
-
         internal static readonly FieldInfo cameraGameplayScene = typeof(CameraController).GetField("isGameplayScene", BindingFlags.Instance | BindingFlags.NonPublic);
 
         #region Misc
@@ -233,11 +232,36 @@ namespace DebugMod
         {
             DebugMod.saveStateManager.LoadState(SaveStateType.SkipOne);
         }
+        [BindableMethod(name = "Next Save Page", category = "Savestates")]
+        public static void NextStatePage()
+        {
+            SaveStateManager.currentStateFolder++;
+            if (SaveStateManager.currentStateFolder == SaveStateManager.savePages) { SaveStateManager.currentStateFolder = 0; } //rollback to 0 if 10, keep folder between 0 and 9
+            SaveStateManager.path = (
+                Application.persistentDataPath +
+                "/Savestates-1221/" +
+                SaveStateManager.currentStateFolder.ToString() +
+                "/"); //change path
+            DebugMod.saveStateManager.RefreshStateMenu(); // updaate menu
+        }
+        [BindableMethod(name = "Prev Save Page", category = "Savestates")]
+        public static void PrevStatePage()
+        {
+            SaveStateManager.currentStateFolder--;
+            if (SaveStateManager.currentStateFolder == -1) { SaveStateManager.currentStateFolder = SaveStateManager.savePages-1; } //rollback to max if past limit, keep folder between 0 and 9
+            SaveStateManager.path = (
+                Application.persistentDataPath +
+                "/Savestates-1221/" +
+                SaveStateManager.currentStateFolder.ToString() +
+                "/"); //change path
+            DebugMod.saveStateManager.RefreshStateMenu(); // update menu
+        }
+
 
         /*
         [BindableMethod(name = "Toggle auto slot", category = "Savestates")]
         public static void ToggleAutoSlot()
-        {
+        {   
             DebugMod.saveStateManager.ToggleAutoSlot();
         }
         

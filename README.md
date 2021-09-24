@@ -1,3 +1,46 @@
+
+# This is a modification of DebugMod. by default, it will not use your old savestates. Dont panic, they didn't get deleted.
+
+----------------------------------------------------------------------------------------
+                                      SAVESTATE BASICS
+---------------------------------------------------------------------------------------- 
+
+## Savestates
+In order to acess your new save-states, bind Next Page and Prev Page to a key (2nd page of binds in debug mod) 
+There are 10 pages of 10 savestates.
+Prev/Next Page will scroll through these.
+then, just do what you would do in normal debug mod to save and load states.
+
+To use your old savestates, go to this folder %APPDATA%\..\LocalLow\Team Cherry\Hollow Knight\Savestates-1221
+copy the files in this folder into the folder labeled 0 ( if it doesn't exist, make it. )
+Start the game and you will have your old saves plus the 90 empty slots.
+
+*If you have performance issues, please report it.*
+
+To use numpad for slot select; after installing debugmod, start and stop the game, 
+then go to the Hollow Knight saves-directory and open the `DebugMod.GlobalSettings` json-file.
+In that file find `"NumPadForSaveStates"`, and change the corresponding value from 0 to 1.
+
+To change the amount of available Savestate-slots per page (default: 6), find `MaxSaveStates` and set the corresponding value between 0 and 10 respective of how many slots you want.
+
+Savestates files are located in `%APPDATA%\..\LocalLow\Team Cherry\Hollow Knight\Savestates-1221\`. They use the name format `savestate<slot>.json`.
+After saving a savestate to file, you can edit the name of that savestate. To do this, open the file in any text-editor, and the first variable/line should be something like `"saveStateIdentifier": "<timestamp+area/scene name>",`. Change `<timestamp+area/scene name>` inside the pair of `"`-s to whatever you want that savestate named in the select savestate in-game menu.
+
+## Quickslot: 
+The main savestate used. Not saved permanently, cleared when the game restarts.
+
+## Quickslot save to file
+Specifies slot number, then saves the current Quickslot from temporary memory to a numbered json-file in the game save directory, overwriting any files with identical number as the selected one.
+
+## Load file to quickslot
+Asks to specify slot number, then reads the json-file with that number from the game save directory and loads it into the Quickslot, overwriting any current savestate there.
+
+## Save new state to file 
+Specifies slot number, then makes a new savestate and saves to a json-file with the given slot number.
+
+## Load new state from file 
+Specifies slot number, then loads savestate from that file directly.
+
 ----------------------------------------------------------------------------------------
                                        FEATURES
 ----------------------------------------------------------------------------------------
@@ -45,38 +88,6 @@
 2) add `Assembly-CSharp.dll` (with modding-api), and `PlayMaker.dll`, `UnityEngine.dll` and `UnityEngine.UI.dll` from your `Hollow Knight/hollow_knight_Data/Managed/`-folder
 
 ----------------------------------------------------------------------------------------
-                                      SAVESTATE BASICS
----------------------------------------------------------------------------------------- 
-
-## Savestates
-
-*If you have performance issues, please report it.*
-
-To use numpad for slot select; after installing debugmod, start and stop the game, 
-then go to the Hollow Knight saves-directory and open the `DebugMod.GlobalSettings` json-file.
-In that file find `"NumPadForSaveStates"`, and change the corresponding value from 0 to 1.
-
-To change the amount of available Savestate-slots (default: 6), find `MaxSaveStates` and set the corresponding value between 0 and 10 respective of how many slots you want.
-
-Savestates files are located in `%APPDATA%\..\LocalLow\Team Cherry\Hollow Knight\Savestates-1221\`. They use the name format `savestate<slot>.json`.
-After saving a savestate to file, you can edit the name of that savestate. To do this, open the file in any text-editor, and the first variable/line should be something like `"saveStateIdentifier": "<timestamp+area/scene name>",`. Change `<timestamp+area/scene name>` inside the pair of `"`-s to whatever you want that savestate named in the select savestate in-game menu.
-
-## Quickslot: 
-The main savestate used. Not saved permanently, cleared when the game restarts.
-
-## Quickslot save to file
-Specifies slot number, then saves the current Quickslot from temporary memory to a numbered json-file in the game save directory, overwriting any files with identical number as the selected one.
-
-## Load file to quickslot
-Asks to specify slot number, then reads the json-file with that number from the game save directory and loads it into the Quickslot, overwriting any current savestate there.
-
-## Save new state to file 
-Specifies slot number, then makes a new savestate and saves to a json-file with the given slot number.
-
-## Load new state from file 
-Specifies slot number, then loads savestate from that file directly.
-
-----------------------------------------------------------------------------------------
                                       Known Issues
 ---------------------------------------------------------------------------------------- 
 ## Savestates:
@@ -101,3 +112,4 @@ MyEyes/Firzen
 Cerpintext  
 Mulhima  
 DemoJameson  
+

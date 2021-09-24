@@ -84,7 +84,7 @@ namespace DebugMod
                 File.WriteAllText (
                     string.Concat(new object[] {
                         SaveStateManager.path,
-                        "/savestate",
+                        "savestate",
                         paramSlot,
                         ".json"
                     }),
