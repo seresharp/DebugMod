@@ -29,7 +29,7 @@
 ---------------------------------------------------------------------------------------- 
 
 ## Savestates
-In order to acess your new save-states, bind Next Page and Prev Page to a key (2nd page of binds in debug mod) 
+In order to acess your new save-states, bind Next Page and Prev Page to a key (2nd page of keybinds) 
 There are 10 pages of 10 savestates.
 Prev/Next Page will scroll through these.
 then, just do what you would do in normal debug mod to save and load states.
