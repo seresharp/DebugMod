@@ -1,6 +1,29 @@
-
-# This is a modification of DebugMod. by default, it will not use your old savestates. Dont panic, they didn't get deleted.
-
+----------------------------------------------------------------------------------------
+                                       FEATURES
+----------------------------------------------------------------------------------------
+* A toggleable UI in-game that provides the following functions:
+* Cheats such as invincibility and noclip
+* The ability to unlock all charms or repair broken ones
+* Change which skills the player has
+* Change which items the player has
+* Give the player more of consumable resources such as geo and essence
+* Respawn bosses
+* Hold multiple dream gate positions
+* Change the player's respawn point to anywhere in the current scene
+* Recall to the set respawn point
+* Kill all enemies
+* Add HP bars to enemies
+* Draw collision boxes for enemies
+* Clone or delete any enemy
+* Set an enemy's health to 9999
+* Change the player's nail damage
+* Damage the player
+* Change the camera zoom level
+* Disable the in game HUD
+* Make the player invisible
+* Disable the lighting around the player
+* Disable the vignette drawn around the player
+* Change the time scale of the game
 ----------------------------------------------------------------------------------------
                                       SAVESTATE BASICS
 ---------------------------------------------------------------------------------------- 
@@ -41,32 +64,6 @@ Specifies slot number, then makes a new savestate and saves to a json-file with 
 ## Load new state from file 
 Specifies slot number, then loads savestate from that file directly.
 
-----------------------------------------------------------------------------------------
-                                       FEATURES
-----------------------------------------------------------------------------------------
-* A toggleable UI in-game that provides the following functions:
-* Cheats such as invincibility and noclip
-* The ability to unlock all charms or repair broken ones
-* Change which skills the player has
-* Change which items the player has
-* Give the player more of consumable resources such as geo and essence
-* Respawn bosses
-* Hold multiple dream gate positions
-* Change the player's respawn point to anywhere in the current scene
-* Recall to the set respawn point
-* Kill all enemies
-* Add HP bars to enemies
-* Draw collision boxes for enemies
-* Clone or delete any enemy
-* Set an enemy's health to 9999
-* Change the player's nail damage
-* Damage the player
-* Change the camera zoom level
-* Disable the in game HUD
-* Make the player invisible
-* Disable the lighting around the player
-* Disable the vignette drawn around the player
-* Change the time scale of the game
 ----------------------------------------------------------------------------------------
                                   INSTALLATION
 ----------------------------------------------------------------------------------------
