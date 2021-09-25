@@ -5,7 +5,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using HutongGames.PlayMaker;
 using HutongGames.PlayMaker.Actions;
-using Vasi;
+//using Vasi;
+using System;
 
 namespace DebugMod
 {
@@ -136,115 +137,53 @@ namespace DebugMod
         {
             if (!fsmToggle)
             {
-                var go = new GameObject();
-                _coro = go.AddComponent<NonBouncer>();
-                //GameManager.instance.
-                Object.DontDestroyOnLoad(_coro);
-                
                 Console.AddLine("Uumuu forced extra attack ON");
-                
-                UnityEngine.SceneManagement.SceneManager.sceneLoaded += StartUumuuCoro;
+
+                UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SetUumuuExtra;
                 fsmToggle = true;
             }
             else
             {
-                Object.Destroy(_coro);
-                UnityEngine.SceneManagement.SceneManager.sceneLoaded -= StartUumuuCoro;
+                UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= SetUumuuExtra;
                 fsmToggle = false;
                 Console.AddLine("Uumuu forced extra attack OFF");
             }
+        }
 
-            /*
-            if (DebugMod.GetSceneName() == "Fungus3_archive_02") 
+        private static void SetUumuuExtra(Scene sceneFrom, Scene sceneTo)
+        {
+            Console.AddLine("SetUumuuExtra scene check: " + sceneFrom.name + " " + sceneTo.name);
+            if (sceneTo.name == "Fungus3_archive_02" && sceneTo != null)
             {
-                PlayMakerFSM[] components = GameObject.Find("Mega Jellyfish").GetComponents<PlayMakerFSM>();
-
-                if (components != null)
+                try
                 {
-                    foreach (PlayMakerFSM playMakerFSM in components)
+                    if (DebugMod.GM == null)
                     {
-                        //if (playMakerFSM.)
-                        {
-                            playMakerFSM.FsmVariables.GetFsmBool("Activated").Value = false;
-                            Console.AddLine("Boss control for this scene was reset, re-enter scene or warp");
-                        }
+                        throw new Exception("StartUumuuCoro(  ) - gamemanager is null");
                     }
+                    DebugMod.GM.StartCoroutine(UumuuExtraCoro(sceneTo));
                 }
-                else
+                catch (Exception e)
                 {
-                    Console.AddLine("GO does not exist or no FSM on it");
+                    DebugMod.instance.Log(e.Message);
                 }
             }
-            */
         }
 
-        private static void StartUumuuCoro(Scene scene, LoadSceneMode lsm)
+        private static IEnumerator UumuuExtraCoro(Scene activeScene)
         {
-            Console.AddLine("Start Uumuu Coro Uumuu test: " + scene.name);
-            if (scene.name == "Fungus3_archive_02")
+            Console.AddLine("Coro launched");
+            while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != activeScene.name)
             {
-                Console.AddLine("_coro ToString:  " + _coro.active.ToString());
-                //_coro.StartCoroutine(UumuuExtraCoro());
-                
-                GameObject uumuu = GameObject.Find("Mega Jellyfish");
-                Console.AddLine("Uumuu GameObject");
-                
-                if (uumuu != null) {
-                    Console.AddLine("Locating Uumuu FSM");
-                    PlayMakerFSM fsm = uumuu.LocateMyFSM("Mega Jellyfish");
-            
-                    fsm.GetState("Idle").GetAction<WaitRandom>().timeMax = 1.6f;
-                }
+                yield return null;
             }
-        }
-
-        private static IEnumerator UumuuExtraCoro()
-        {
-            // Find Uumuu and the FSM
+            // Find Uumuu, their FSM, the specific State, and the Action that dictates the possibility of extra attacks
             GameObject uumuu = GameObject.Find("Mega Jellyfish");
-            Console.AddLine("Uumuu GameObject");
-            if (uumuu == null)
-                yield break;
-            Console.AddLine("Locating Uumuu FSM");
             PlayMakerFSM fsm = uumuu.LocateMyFSM("Mega Jellyfish");
-            
-            fsm.GetState("Idle").GetAction<WaitRandom>().timeMax = 1.6f;
-            
-
-            // Fix the waits and the number of attacks
-
-
-            //fsm.GetState("Idle").GetAction<WaitRandom>().timeMax = 1.5f;
-            //fsm.GetState("Set Timer").GetAction<RandomFloat>().max = 2f;
-            //fsm.FsmVariables.GetFsmFloat("Quirrel Time").Value = 4f;
-
-            // Fix the pattern to 2 quick, then 1 long if it still needs to attack
-            //FsmState choice = fsm.GetState("Choice");
-            //choice.RemoveAction<SendRandomEventV2>();
-            //choice.AddMethod(() => SetUumuuPattern(fsm));
-
-            // Reset the multizap counter to 0 so the pattern remains 2 quick 1 optional long
-            //fsm.GetState("Recover").AddMethod(() => fsm.FsmVariables.GetFsmInt("Ct Multizap").Value = 0); 
-
-            // Set the initial RecoilSpeed to 0 so that dream nailing her on the first cycle doesn't push her
-            //uumuu.GetComponent<Recoil>().SetRecoilSpeed(0);
-
-            // Set her HP to 1028 value
-            //uumuu.GetComponent<HealthManager>().hp = 250;
-
-        }
-
-        private static void SetUumuuPattern(PlayMakerFSM fsm)
-        {
-            if (fsm.FsmVariables.GetFsmInt("Ct Multizap").Value < 2)
-            {
-                fsm.Fsm.Event(fsm.FsmEvents.First(e => e.Name == "MULTIZAP"));
-                fsm.FsmVariables.GetFsmInt("Ct Multizap").Value++;
-            }
-            else
-            {
-                fsm.Fsm.Event(fsm.FsmEvents.First(e => e.Name == "CHASE"));
-            }
+            FsmState fsmState = fsm.FsmStates.First(t => t.Name == "Idle");
+            WaitRandom waitRandom = (WaitRandom)fsmState.Actions.OfType<WaitRandom>().First();
+            waitRandom.timeMax.Value = 1.6f;
+            yield break;
         }
     }
 }
