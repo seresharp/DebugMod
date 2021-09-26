@@ -79,6 +79,12 @@ namespace DebugMod
             set => SetInt(value);
         }
 
+        public int SaveStatePages
+        {
+            get => GetInt(-1);
+            set => SetInt(value);
+        }
+
         public float AmountToMove
         {
             get => GetFloat(0.1f);

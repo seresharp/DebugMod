@@ -30,7 +30,7 @@ namespace DebugMod
         public static int currentStateFolder = 0;
         public static SaveState quickState;
         public static bool inSelectSlotState = false;   // a mutex, in practice?
-        public static int savePages = 10;
+        public static int savePages;
         public static int currentStateSlot = -1;
         public static string path = Application.persistentDataPath + "/Savestates-1221/0/";
         public static string currentStateOperation = null;
@@ -59,6 +59,8 @@ namespace DebugMod
                 inSelectSlotState = false;
                 //autoSlot = false;
                 DebugMod.settings.SaveStatePanelVisible = false;
+                if (DebugMod.settings.SaveStatePages == -1) DebugMod.settings.SaveStatePages = 10;
+                savePages = DebugMod.settings.SaveStatePages;
                 quickState = new SaveState();
                 for (int i = 0; i <= savePages; i++)
                 {

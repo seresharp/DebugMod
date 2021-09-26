@@ -53,6 +53,7 @@ namespace DebugMod
 
         public void SaveTempState()
         {
+            DebugMod.GM.SaveLevelState();
             data.saveScene = GameManager.instance.GetSceneNameString();
             data.saveStateIdentifier = "(tmp)_" + data.saveScene + "-" + DateTime.Now.ToString("H:mm_d-MMM");
             data.savedPd = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(PlayerData.instance));
@@ -155,7 +156,7 @@ namespace DebugMod
                         data.savePos = tmpData.savePos;
                         data.saveScene = tmpData.saveScene;
                         data.lockArea = tmpData.lockArea;
-                        DebugMod.instance.Log("Load SaveState ready: " + data.saveStateIdentifier);
+                        DebugMod.instance.LogFine("Load SaveState ready: " + data.saveStateIdentifier);
                     }
                     catch (Exception ex)
                     {
@@ -181,6 +182,9 @@ namespace DebugMod
             }
             */
             //Console.AddLine("LoadStateCoro line1: " + data.savedPd.hazardRespawnLocation.ToString());
+            int oldMPReserveMax = PlayerData.instance.MPReserveMax;
+            int oldMP = PlayerData.instance.MPCharge;
+
             data.cameraLockArea = (data.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
             GameManager.instance.ChangeToScene("Room_Sly_Storeroom", "", 0f);
             while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Room_Sly_Storeroom")
@@ -188,11 +192,8 @@ namespace DebugMod
                 yield return null;
             }
             GameManager.instance.sceneData = (SceneData.instance = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(data.savedSd)));
-            //if (!BindableFunctions.preserveThroughStates)
-            //{
-            //Console.AddLine("Before ResetSemiPersistentItems(): " + data.savedPd.hazardRespawnLocation.ToString());
             GameManager.instance.ResetSemiPersistentItems();
-            //}
+
             yield return null;
             HeroController.instance.gameObject.transform.position = data.savePos;
             PlayerData.instance = (GameManager.instance.playerData = (HeroController.instance.playerData = JsonUtility.FromJson<PlayerData>(JsonUtility.ToJson(data.savedPd))));
@@ -211,30 +212,25 @@ namespace DebugMod
             HeroController.instance.playerData = PlayerData.instance;
             HeroController.instance.geoCounter.playerData = PlayerData.instance;
             HeroController.instance.geoCounter.TakeGeo(0);
-            if (PlayerData.instance.MPCharge >= PlayerData.instance.maxMP)
+
+            if (PlayerData.instance.MPCharge >= 99 || oldMP >= 99)
             {
-                int tmpMp = PlayerData.instance.MPCharge;
-                HeroController.instance.TakeMP(PlayerData.instance.MPCharge);
+                if (PlayerData.instance.MPReserve > 0)
+                {
+                    HeroController.instance.TakeReserveMP(1);
+                    HeroController.instance.AddMPChargeSpa(1);
+                }
+                HeroController.instance.TakeMP(1);
                 yield return null;
-                HeroController.instance.AddMPChargeSpa(tmpMp);
+                HeroController.instance.AddMPCharge(1);
             }
             else
             {
-                HeroController.instance.AddMPChargeSpa(1);
-                yield return null;
+                HeroController.instance.AddMPCharge(1);
                 HeroController.instance.TakeMP(1);
             }
-            if (PlayerData.instance.MPReserveMax > 0)
-            {
-                int tmpReserve = PlayerData.instance.MPReserve;
-                HeroController.instance.TakeReserveMP(PlayerData.instance.MPReserve);
-                yield return null;
-                HeroController.instance.AddMPChargeSpa(tmpReserve);
-            }
-            
-            //Console.AddLine("LoadStateCoro end of func: " + data.savedPd.hazardRespawnLocation.ToString());
-            //HeroController.instance.SetHazardRespawn(savedPd.hazardRespawnLocation, savedPd.hazardRespawnFacingRight);
-            HeroController.instance.proxyFSM.SendEvent("HeroCtrl-HeroDamaged");
+
+            HeroController.instance.proxyFSM.SendEvent("HeroCtrl-HeroLanded");
             HeroAnimationController component = HeroController.instance.GetComponent<HeroAnimationController>();
             typeof(HeroAnimationController).GetField("pd", BindingFlags.Instance | BindingFlags.NonPublic).SetValue(component, PlayerData.instance);
            
@@ -245,6 +241,10 @@ namespace DebugMod
             HeroController.instance.AddHealth(1);
             
             GameManager.instance.inputHandler.RefreshPlayerData();
+
+            //UnityEngine.Object.Destroy(GameCameras.instance.gameObject);
+            //yield return null;
+            //DebugMod.GM.SetupSceneRefs();
             yield break;
             // need to redraw UI somehow
         }
