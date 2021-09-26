@@ -22,7 +22,7 @@ namespace DebugMod
                     GUIController.Instance.images["BlankVertical"].height
                 )
             );
-            statePanel.AddText("CurrentFolder", "In slot "+(SaveStateManager.currentStateFolder + 1).ToString(), new Vector2(20,10), Vector2.zero, GUIController.Instance.arial, 15);
+            statePanel.AddText("CurrentFolder", "Page: "+(SaveStateManager.currentStateFolder + 1).ToString(), new Vector2(8,0), Vector2.zero, GUIController.Instance.arial, 15);
             statePanel.AddText("Mode", "mode: ", new Vector2(8, 20), Vector2.zero, GUIController.Instance.arial, 15);
             statePanel.AddText("currentmode", "-", new Vector2(60, 20), Vector2.zero, GUIController.Instance.arial, 15);
             
@@ -87,7 +87,7 @@ namespace DebugMod
             if (statePanel.active)
             {
                 statePanel.GetText("currentmode").UpdateText(SaveStateManager.currentStateOperation);
-                statePanel.GetText("CurrentFolder").UpdateText("In slot " + (SaveStateManager.currentStateFolder + 1).ToString()+"/"+SaveStateManager.savePages);
+                statePanel.GetText("CurrentFolder").UpdateText("Page: " + (SaveStateManager.currentStateFolder + 1).ToString()+"/"+SaveStateManager.savePages);
                 for (int i = 0; i < SaveStateManager.maxSaveStates; i++)
                 {
                     statePanel.GetText(i.ToString()).UpdateText("open");

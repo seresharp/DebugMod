@@ -73,10 +73,6 @@
       <HintPath>.\References\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Vasi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>References\Vasi.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindableMethod.cs" />

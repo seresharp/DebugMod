@@ -19,6 +19,13 @@ namespace DebugMod
 
         #region Misc
 
+        [BindableMethod(name = "Clear White Screen", category = "Misc")]
+        public static void ClearWhiteScreen()
+        {
+            GameObject.Find("Blanker White").LocateMyFSM("Blanker Control").SendEvent("FADE OUT");
+            HeroController.instance.EnableRenderer();
+        }
+
         [BindableMethod(name = "Nail Damage +4", category = "Misc")]
         public static void IncreaseNailDamage()
         {
