@@ -27,11 +27,12 @@ namespace DebugMod
     internal class SaveStateManager
     {
         public static int maxSaveStates = DebugMod.settings.MaxSaveStates;
-
+        public static int currentStateFolder = 0;
         public static SaveState quickState;
         public static bool inSelectSlotState = false;   // a mutex, in practice?
+        public static int savePages = 10;
         public static int currentStateSlot = -1;
-        public static string path = Application.persistentDataPath + "/Savestates-1221/";
+        public static string path = Application.persistentDataPath + "/Savestates-1221/0/";
         public static string currentStateOperation = null;
 
         private static string[] stateStrings =
@@ -59,14 +60,16 @@ namespace DebugMod
                 //autoSlot = false;
                 DebugMod.settings.SaveStatePanelVisible = false;
                 quickState = new SaveState();
-
-                if (!Directory.Exists(path))
+                for (int i = 0; i <= savePages; i++)
                 {
-                    Directory.CreateDirectory(path);
-                }
-                else
-                {
-                    RefreshStateMenu();
+                    if (!Directory.Exists(Application.persistentDataPath + "/Savestates-1221/" + i.ToString()))
+                    {
+                        Directory.CreateDirectory(Application.persistentDataPath + "/Savestates-1221/" + i.ToString());
+                    }
+                    else
+                    {
+                        RefreshStateMenu();
+                    }
                 }
             }
             catch (Exception)
@@ -113,6 +116,7 @@ namespace DebugMod
                     }
                     break;
                 case SaveStateType.File or SaveStateType.SkipOne:
+                
                     if (!inSelectSlotState)
                     {
                         RefreshStateMenu();
@@ -312,6 +316,7 @@ namespace DebugMod
             try
             {
                 //SaveState tempSave = new SaveState();
+                saveStateFiles.Clear();
                 string shortFileName;
                 string[] files = Directory.GetFiles(path);
                 //DebugMod.instance.Log( 

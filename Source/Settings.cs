@@ -2,7 +2,10 @@
 
 namespace DebugMod
 {
-    //Empty class required for DebugMod class definition
+    //
+    //
+    //
+    //class required for DebugMod class definition
     public class SaveSettings : IModSettings { }
 
     public class GlobalSettings : IModSettings

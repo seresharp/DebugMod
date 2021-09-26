@@ -30,10 +30,10 @@
 
 ## (STEAM/GOG, WINDOWS)
 1) Download the modding API for Hollow Knight 1.2.2.1
-	At the time of writing, 1.2.2.1-41 is the most up-to-date release: https://cdn.discordapp.com/attachments/298798821402607618/817653175586783242/Assembly-CSharp.dll
+   At the time of writing, 1.2.2.1-41 is the most up-to-date release: https://cdn.discordapp.com/attachments/298798821402607618/817653175586783242/Assembly-CSharp.dll
 2) Right click Hollow Knight in Steam -> Properties -> Local Files -> Browse Local Files
-	OR
-	In GOG galaxy 2 -> Click button to the right of Update -> Manage Installation -> Show Folder
+   OR
+   In GOG galaxy 2 -> Click button to the right of Update -> Manage Installation -> Show Folder
 3) Create a backup of the game files located here
 4) Copy the contents of the modding API zip into this folder (Overwrite files when asked)
 5) Copy the contents of this zip into the folder (Overwrite files when asked)
@@ -49,6 +49,14 @@
 ---------------------------------------------------------------------------------------- 
 
 ## Savestates
+In order to acess your new save-states, bind Next Page and Prev Page to a key (2nd page of binds in debug mod) 
+There are 10 pages of 10 savestates.
+Prev/Next Page will scroll through these.
+then, just do what you would do in normal debug mod to save and load states.
+
+To use your old savestates, go to this folder %APPDATA%\..\LocalLow\Team Cherry\Hollow Knight\Savestates-1221
+copy the files in this folder into the folder labeled 0 ( if it doesn't exist, make it. )
+Start the game and you will have your old saves plus the 90 empty slots.
 
 *If you have performance issues, please report it.*
 
@@ -56,7 +64,7 @@ To use numpad for slot select; after installing debugmod, start and stop the gam
 then go to the Hollow Knight saves-directory and open the `DebugMod.GlobalSettings` json-file.
 In that file find `"NumPadForSaveStates"`, and change the corresponding value from 0 to 1.
 
-To change the amount of available Savestate-slots (default: 6), find `MaxSaveStates` and set the corresponding value between 0 and 10 respective of how many slots you want.
+To change the amount of available Savestate-slots per page (default: 6), find `MaxSaveStates` and set the corresponding value between 0 and 10 respective of how many slots you want.
 
 Savestates files are located in `%APPDATA%\..\LocalLow\Team Cherry\Hollow Knight\Savestates-1221\`. They use the name format `savestate<slot>.json`.
 After saving a savestate to file, you can edit the name of that savestate. To do this, open the file in any text-editor, and the first variable/line should be something like `"saveStateIdentifier": "<timestamp+area/scene name>",`. Change `<timestamp+area/scene name>` inside the pair of `"`-s to whatever you want that savestate named in the select savestate in-game menu.
