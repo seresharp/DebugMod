@@ -14,6 +14,7 @@ namespace DebugMod
     {
         private static readonly FieldInfo TimeSlowed = typeof(GameManager).GetField("timeSlowed", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly FieldInfo IgnoreUnpause = typeof(UIManager).GetField("ignoreUnpause", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
+        private static bool corniferYeeteded = false;
         internal static readonly FieldInfo cameraGameplayScene = typeof(CameraController).GetField("isGameplayScene", BindingFlags.Instance | BindingFlags.NonPublic);
 
         #region Misc
@@ -154,6 +155,38 @@ namespace DebugMod
                 Console.AddLine("Cannot set TimeScale greater than 2.0");
             }
         }
+
+        [BindableMethod(name = "Yeet Cornifer-Toggle", category = "Misc")]
+        public static void CorniferYeet()
+        {
+            corniferYeeteded = !corniferYeeteded;
+
+            if (corniferYeeteded)
+            {
+                CorniferYeeted();
+                UnityEngine.SceneManagement.SceneManager.activeSceneChanged += CorniferYeeted;
+                Console.AddLine("Cornifer yeeted on next loads lol");
+            }
+            else
+            {
+                UnityEngine.SceneManagement.SceneManager.activeSceneChanged -= CorniferYeeted;
+                Console.AddLine("Cornifer unyeeted from next loads on???");
+            }
+        }
+
+        private static void CorniferYeeted(Scene current, Scene next) => CorniferYeeted();
+
+        private static void CorniferYeeted()
+        {
+            (from x in UnityEngine.Object.FindObjectsOfType<GameObject>()
+             where x.name.Contains("Cornifer")
+             select x).ToList<GameObject>().ForEach(delegate (GameObject x)
+             {
+                 UnityEngine.Object.Destroy(x);
+             });
+        }
+        
+
         [BindableMethod(name = "Reset Debug States", category = "Misc")]
         public static void Reset()
         {
@@ -1071,13 +1104,13 @@ namespace DebugMod
 
         #region Bosses
         
-        /*
+        
         [BindableMethod(name = "Force Uumuu extra attack", category = "Bosses")]
         public static void ForceUumuuExtra() 
         {
             BossHandler.UumuuExtra();
         }
-        */
+        
         [BindableMethod(name = "Respawn Ghost", category = "Bosses")]
         public static void RespawnGhost()
         {
