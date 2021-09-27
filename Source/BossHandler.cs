@@ -137,8 +137,7 @@ namespace DebugMod
         {
             if (!fsmToggle)
             {
-                Console.AddLine("Uumuu forced extra attack ON");
-
+                SetUumuuExtra(UnityEngine.SceneManagement.SceneManager.GetActiveScene(), DebugMod.GM.nextScene);
                 UnityEngine.SceneManagement.SceneManager.activeSceneChanged += SetUumuuExtra;
                 fsmToggle = true;
             }
