@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 
 namespace DebugMod
@@ -53,7 +54,8 @@ namespace DebugMod
 
             for (int i = 0; i < 11; i++)
             {
-                panel.AddButton(i.ToString(), GUIController.Instance.images["Scrollbar_point"], new Vector2(300f, 45f + 17.5f * i), Vector2.zero, ChangeBind, new Rect(0, 0, GUIController.Instance.images["Scrollbar_point"].width, GUIController.Instance.images["Scrollbar_point"].height));
+                panel.AddButton(i.ToString(), GUIController.Instance.images["Scrollbar_point"], new Vector2(290f, 45f + 17.5f * i), Vector2.zero, ChangeBind, new Rect(0, 0, GUIController.Instance.images["Scrollbar_point"].width, GUIController.Instance.images["Scrollbar_point"].height));
+                panel.AddButton($"run{i}", GUIController.Instance.images["ButtonRun"], new Vector2(308f, 51f + 17.5f * i), new Vector2(12f, 12f), RunBind, new Rect(0, 0, GUIController.Instance.images["ButtonRun"].width, GUIController.Instance.images["ButtonRun"].height));
             }
 
             //Build pages based on categories
@@ -152,6 +154,13 @@ namespace DebugMod
             UpdateHelpText();
         }
 
+        private static void RunBind(string buttonName) {
+            int bindIndex = Convert.ToInt32(buttonName.Substring(3)); // strip leading "run"
+            string bindName = bindPages[pageKeys[page]][bindIndex];
+            MethodInfo method = (MethodInfo)DebugMod.bindMethods[bindName].Second;
+            method.Invoke(null, null);
+        }
+
         public static void Update()
         {
             if (panel == null)
@@ -183,6 +192,7 @@ namespace DebugMod
                 for (int i = 0; i < 11; i++)
                 {
                     panel.GetButton(i.ToString()).SetActive(bindPages[pageKeys[page]].Count > i);
+                    panel.GetButton($"run{i}").SetActive(bindPages[pageKeys[page]].Count > i);
                 }
             }
         }
