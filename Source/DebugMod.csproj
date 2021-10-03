@@ -121,6 +121,7 @@
     <EmbeddedResource Include="Images\ButtonPlus.png" />
     <EmbeddedResource Include="Images\ButtonRect.png" />
     <EmbeddedResource Include="Images\ButtonRectEmpty.png" />
+    <EmbeddedResource Include="Images\ButtonRun.png" />
     <EmbeddedResource Include="Images\ButtonsMenuBG.png" />
     <EmbeddedResource Include="Images\CityKey.png" />
     <EmbeddedResource Include="Images\ConsoleBg.png" />
