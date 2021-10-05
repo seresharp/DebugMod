@@ -62,7 +62,7 @@ namespace DebugMod
                 if (DebugMod.settings.SaveStatePages == -1) DebugMod.settings.SaveStatePages = 10;
                 savePages = DebugMod.settings.SaveStatePages;
                 quickState = new SaveState();
-                for (int i = 0; i <= savePages; i++)
+                for (int i = 0; i < savePages; i++)
                 {
                     if (!Directory.Exists(Application.persistentDataPath + "/Savestates-1221/" + i.ToString()))
                     {
