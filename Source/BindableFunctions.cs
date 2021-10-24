@@ -7,6 +7,7 @@ using UnityEngine;
 using GlobalEnums;
 using HutongGames.PlayMaker;
 using UnityEngine.SceneManagement;
+using HutongGames.PlayMaker.Actions;
 
 namespace DebugMod
 {
@@ -1114,8 +1115,28 @@ namespace DebugMod
         #endregion
 
         #region Bosses
-        
-        
+
+
+        [BindableMethod(name = "Force Shade fireball", category = "Bosses")]
+        public static void ShadeFireball()
+        {
+            
+            try
+            {
+                GameObject shade = GameObject.Find("Hollow Shade(Clone)");
+                PlayMakerFSM fsm = shade.LocateMyFSM("Shade Control");
+                //FsmState fsmState = fsm.FsmStates.First(t => t.Name == "Attack Choice"); i couldnt get this to work. the current solution works good enough.
+                //SendRandomEvent sendRandom = fsmState.Actions.OfType<SendRandomEvent>().First();
+                //sendRandom.weights[0] = 0f;
+                //sendRandom.weights[1] = 1;
+                fsm.SetState("Fireball Pos");
+            }
+            catch (Exception e)
+            {
+                Console.AddLine("Ignore below message if no shade is in scene");
+                Console.AddLine(e.Message);
+            }
+        }
         [BindableMethod(name = "Force Uumuu extra attack", category = "Bosses")]
         public static void ForceUumuuExtra() 
         {
