@@ -242,6 +242,7 @@ namespace DebugMod
             
             GameManager.instance.inputHandler.RefreshPlayerData();
 
+            if (DebugMod.settings.EnemiesPanelVisible) EnemiesPanel.RefreshEnemyList();
             //UnityEngine.Object.Destroy(GameCameras.instance.gameObject);
             //yield return null;
             //DebugMod.GM.SetupSceneRefs();
