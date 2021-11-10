@@ -186,10 +186,18 @@ namespace DebugMod
             int oldMP = PlayerData.instance.MPCharge;
 
             data.cameraLockArea = (data.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
-            GameManager.instance.ChangeToScene("Room_Sly_Storeroom", "", 0f);
-            while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Room_Sly_Storeroom")
+            if (data.saveScene == UnityEngine.SceneManagement.SceneManager.GetActiveScene().name)
             {
-                yield return null;
+                string scene = "Room_Mender_House";
+                if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Room_Mender_House")
+                {
+                    scene = "Room_Sly_Storeroom";
+                }
+                GameManager.instance.ChangeToScene(scene, "", 0f);// i hate that i have to do this.
+                while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != scene)
+                {
+                    yield return null;
+                }
             }
             GameManager.instance.sceneData = (SceneData.instance = JsonUtility.FromJson<SceneData>(JsonUtility.ToJson(data.savedSd)));
             GameManager.instance.ResetSemiPersistentItems();
