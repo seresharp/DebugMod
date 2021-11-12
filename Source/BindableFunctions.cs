@@ -237,7 +237,16 @@ namespace DebugMod
         #endregion
 
         #region SaveStates 
-
+        [BindableMethod(name = "Position Save", category = "SaveStates")]
+        public static void SavePosition()
+        {
+            SavePositionManager.SavePosition();
+        }
+        [BindableMethod(name = "Position Load", category = "SaveStates")]
+        public static void LoadPosition()
+        {
+            SavePositionManager.LoadPosition();
+        }
         [BindableMethod(name = "Quickslot (save)", category = "Savestates")]
         public static void SaveState()
         {

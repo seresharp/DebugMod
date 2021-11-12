@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindableMethod.cs" />
+    <Compile Include="SavePositionManager.cs" />
     <Compile Include="EnemiesPanel.cs" />
     <Compile Include="EnemyData.cs" />
     <Compile Include="Hitbox\Drawing.cs" />
