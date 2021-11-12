@@ -2,20 +2,62 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static Modding.ReflectionHelper;
 using UnityEngine;
 using static DebugMod.EnemiesPanel;
 namespace DebugMod
 {
     public class SavePositionManager
     {
+        public class floats
+        {
+            public float[] value;
+            public string[] name;
+        }
+        public class ints
+        {
+            public int[] value;
+            public string[] name;
+        }
+        public class bools
+        {
+            public bool[] value;
+            public string[] name;
+        }
+        public static floats floata = new floats();
+        
         public static List<EnemyData> FSMs = new List<EnemyData>();
         public static List<EnemyData> FSMs2 = new List<EnemyData>();
-        static Vector3 vect = new(0,0,0);
+        //public static List<Vector3>;
+        //public static List<Vector3,>
+        // too complicated public static PlayMakerFSM KnightFsm = DebugMod.RefKnight.LocateMyFSM("Knight-ProxyFSM") ;
+        public static Vector3 KnightPos;
+        public static Vector3 CamPos;
+        //get => return GetAttr;
+        public void set (float[] ar) {
+            for (int i = 0; i < ar.Length; i++)
+            {
+                 SetAttr<HeroController, float>(HeroController.instance, "dash_timer", ar[i]);
+            }
+        }
+        
+           
+        public static Vector2 KnightVel;
+        // public static List
+        public static float dash_timer;
         public static void SavePosition()
         {
-            vect = DebugMod.RefKnight.transform.position;
-            // save fsms :eyes:
 
+            dash_timer = GetField<HeroController, float>(HeroController.instance, "dash_timer");
+            KnightPos = DebugMod.RefKnight.gameObject.transform.position;
+            KnightVel = HeroController.instance.current_velocity;
+            CamPos = DebugMod.RefCamera.gameObject.transform.position;
+
+
+            
+            //schmove = DebugMod.RefKnight.
+            // save fsms :eyes:
+            
             FSMs = GetAllEnemies(FSMs);
             FSMs.ForEach(delegate (EnemyData dat)
             {
@@ -30,9 +72,16 @@ namespace DebugMod
             //create and name fsms2
             RemoveAll();
             FSMs2 = Create();
+            // Move knight to saved location, change velocity to saved velocity, Move Camera to saved campos, 
+            SetField<HeroController, float>(HeroController.instance, "dash_timer", dash_timer);
+            DebugMod.RefKnight.gameObject.transform.position = KnightPos;
+            HeroController.instance.current_velocity = KnightVel;
+            DebugMod.RefCamera.gameObject.transform.position = CamPos;
+            //HeroController.instance.DASH_COOLDOWN =
+            //HeroController.instance.DASH_COOLDOWN_CH =
+            //HeroController.instance.dash
             
-            DebugMod.RefKnight.transform.position = vect;
-            DebugMod.RefCamera.SnapTo(DebugMod.RefKnight.transform.position.x, DebugMod.RefKnight.transform.position.y);
+            //DebugMod.RefCamera.SnapTo(DebugMod.RefKnight.transform.position.x, DebugMod.RefKnight.transform.position.y);
 
         }
 
