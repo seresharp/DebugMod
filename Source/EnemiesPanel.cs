@@ -59,6 +59,7 @@ namespace DebugMod
 
         private static void CloneClicked(string buttonName)
         {
+            float time = Time.realtimeSinceStartup;
             int num = Convert.ToInt32(buttonName.Substring(5));
             EnemyData dat = enemyPool.FindAll(ed => ed.gameObject != null && ed.gameObject.activeSelf)[num - 1];
 
@@ -68,6 +69,7 @@ namespace DebugMod
             int value8 = playMakerFSM2.FsmVariables.GetFsmInt("HP").Value;
             enemyPool.Add(new EnemyData(value8, playMakerFSM2, component, parent, gameObject2));
             Console.AddLine("Cloning enemy as: " + gameObject2.name);
+            Console.AddLine((Time.realtimeSinceStartup - time).ToString());
         }
 
         private static void InfClicked(string buttonName)

@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Reflection;
 using UnityEngine;
+using System.Reflection;
 using static DebugMod.EnemiesPanel;
+using System;
+
 namespace DebugMod
 {
     public class SavePositionManager
@@ -31,7 +32,7 @@ namespace DebugMod
             //schmove = DebugMod.RefKnight.
             // save fsms :eyes:
             
-            FSMs = GetAllEnemies(FSMs);
+            FSMs = GetAllEnemies(FSMs2);
             FSMs.ForEach(delegate (EnemyData dat)
             {
                 dat.gameObject.SetActive(false);
@@ -40,19 +41,21 @@ namespace DebugMod
         }
         public static void LoadPosition()
         {
-
-            //debuging();
-            //create and name fsms2
-            float time = Time.realtimeSinceStartup;
-            RemoveAll();
-            Console.AddLine((Time.realtimeSinceStartup - time).ToString());
-            FSMs2 = Create();
-            Console.AddLine((Time.realtimeSinceStartup - time).ToString());
-            // Move knight to saved location, change velocity to saved velocity, Move Camera to saved campos, 
-            //ReflectionHelper.SetField<HeroController, float>(HeroController.instance, "dash_timer", newValue);
-            DebugMod.RefKnight.gameObject.transform.position = KnightPos;
-            HeroController.instance.current_velocity = KnightVel;
-            DebugMod.RefCamera.gameObject.transform.position = CamPos;
+            try
+            {
+                RemoveAll();
+                FSMs2 = Create();
+                // Move knight to saved location, change velocity to saved velocity, Move Camera to saved campos, 
+                //ReflectionHelper.SetField<HeroController, float>(HeroController.instance, "dash_timer", newValue);
+                DebugMod.RefKnight.gameObject.transform.position = KnightPos;
+                HeroController.instance.current_velocity = KnightVel;
+                DebugMod.RefCamera.gameObject.transform.position = CamPos;
+            }
+            catch(Exception     e)
+            {
+                Console.AddLine(e.Message);
+                Console.AddLine(e.StackTrace);
+            }
             //HeroController.instance.DASH_COOLDOWN =
             //HeroController.instance.DASH_COOLDOWN_CH =
             //HeroController.instance.dash
@@ -64,33 +67,40 @@ namespace DebugMod
         public static List<EnemyData> Create() 
         {
             List<EnemyData> data = new List<EnemyData>();
-            //EnemyData dat = enemyPool.FindAll(ed => ed.gameObject != null && ed.gameObject.activeSelf)[num - 1];
-            FSMs.ForEach(delegate (EnemyData dat)
+            //    FSMs.ForEach(delegate (EnemyData dat)
+          //  if (FSMs.FindAll(ed => ed.gameObject != null && ed.gameObject.activeSelf)){
+                
+        //    }
+            for (int i = 0; i < FSMs.Count; i++)
             {
-                GameObject gameObject2 = UnityEngine.Object.Instantiate(dat.gameObject, dat.gameObject.transform.position, dat.gameObject.transform.rotation) as GameObject;
+                Console.AddLine(i.ToString());
+                EnemyData dattemp = FSMs.FindAll(ed => ed.gameObject != null)[i];
+                float time = Time.realtimeSinceStartup;
+                //Console.AddLine((Time.realtimeSinceStartup - time).ToString());
+
+                GameObject gameObject2 = UnityEngine.Object.Instantiate(dattemp.FSM.gameObject, dattemp.gameObject.transform.position, dattemp.gameObject.transform.rotation) as GameObject;
                 Component component = gameObject2.GetComponent<tk2dSprite>();
-                PlayMakerFSM playMakerFSM2 = FSMUtility.LocateFSM(gameObject2, dat.FSM.FsmName);
+
+                PlayMakerFSM playMakerFSM2 = FSMUtility.LocateFSM(gameObject2, dattemp.FSM.FsmName);
+
                 int value8 = playMakerFSM2.FsmVariables.GetFsmInt("HP").Value;
                 gameObject2.SetActive(true);
                 data.Add(new EnemyData(value8, playMakerFSM2, component, parent, gameObject2));
-                Console.AddLine(dat.gameObject.name+"Cloning enemy as: " + gameObject2.name);
-            });
-           return data;
-        }
+            };
+            return data;
+        }   
         public static void RemoveAll()
         {
             //get all created
             FSMs2.ForEach(delegate (EnemyData dat)
             {
-               // if (!FSMs.Any(ed => ed.gameObject == dat.gameObject))
-                //{
-                    UnityEngine.Object.Destroy(dat.gameObject);
-                //}
+               if (!FSMs.Any(ed => ed.gameObject == dat.gameObject))
+                    GameObject.Destroy(dat.gameObject.gameObject.gameObject.gameObject);
 
             });
             
         }
-        public static List<EnemyData> GetAllEnemies(List<EnemyData> Include)
+        public static List<EnemyData> GetAllEnemies(List<EnemyData> Exclude)
         {
             float boxSize = 250f;
             List<EnemyData> ret = new List<EnemyData>();
@@ -107,7 +117,7 @@ namespace DebugMod
                         {
                             FSMUtility.LocateFSM(array[i].gameObject, "health_manager");
                         }
-                        if (playMakerFSM && array[i].gameObject.activeSelf &&   !(Include.Any(ed => ed.gameObject == array[i].gameObject)) && !Ignore(array[i].gameObject.name))
+                        if (playMakerFSM && array[i].gameObject.activeSelf && !(Exclude.Any(ed => ed.gameObject == array[i].gameObject)) && !Ignore(array[i].gameObject.name))
                         {
                             Component component = array[i].gameObject.GetComponent<tk2dSprite>();
                             if (component == null)
