@@ -59,7 +59,6 @@ namespace DebugMod
 
         private static void CloneClicked(string buttonName)
         {
-            float time = Time.realtimeSinceStartup;
             int num = Convert.ToInt32(buttonName.Substring(5));
             EnemyData dat = enemyPool.FindAll(ed => ed.gameObject != null && ed.gameObject.activeSelf)[num - 1];
 
@@ -69,7 +68,6 @@ namespace DebugMod
             int value8 = playMakerFSM2.FsmVariables.GetFsmInt("HP").Value;
             enemyPool.Add(new EnemyData(value8, playMakerFSM2, component, parent, gameObject2));
             Console.AddLine("Cloning enemy as: " + gameObject2.name);
-            Console.AddLine((Time.realtimeSinceStartup - time).ToString());
         }
 
         private static void InfClicked(string buttonName)
@@ -243,7 +241,7 @@ namespace DebugMod
                                 position.x *= 1920f / Screen.width;
                                 position.y *= 1080f / Screen.height;
                                 position.y = 1080f - position.y;
-                                
+
                                 dat.hitbox.SetPosition(position);
                                 dat.hitbox.ResizeBG(size);
                             }
@@ -328,7 +326,7 @@ namespace DebugMod
 
         public static void Reset()
         {
-            foreach(EnemyData dat in enemyPool)
+            foreach (EnemyData dat in enemyPool)
             {
                 dat.hitbox.Destroy();
                 dat.hpBar.Destroy();
