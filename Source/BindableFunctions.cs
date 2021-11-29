@@ -237,6 +237,7 @@ namespace DebugMod
         #endregion
 
         #region SaveStates 
+
         [BindableMethod(name = "Position Save", category = "SaveStates")]
         public static void SavePosition()
         {

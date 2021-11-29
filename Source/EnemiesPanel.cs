@@ -326,7 +326,7 @@ namespace DebugMod
 
         public static void Reset()
         {
-            foreach (EnemyData dat in enemyPool)
+            foreach(EnemyData dat in enemyPool)
             {
                 dat.hitbox.Destroy();
                 dat.hpBar.Destroy();

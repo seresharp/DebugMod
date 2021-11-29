@@ -21,11 +21,6 @@ namespace Modding
 
         private static bool _preloaded;
 
-        internal static T2 GetField<T1, T2>(T1 instance, string v)
-        {
-            throw new NotImplementedException();
-        }
-
         /// <summary>
         ///     Caches all fields on a type to frontload cost of reflection
         /// </summary>
@@ -60,12 +55,6 @@ namespace Modding
                 }
             }
         }
-
-    /*    internal static void SetField<T1, T2>(T1 instance, string v, object newValue)
-        {
-            throw new NotImplementedException();
-        }*/
-
         /// <summary>
         ///     Gets a field on a type
         /// </summary>
