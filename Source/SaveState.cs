@@ -120,7 +120,14 @@ namespace DebugMod
 
         public void LoadTempState()
         {
-            HeroController.instance.StartCoroutine(LoadStateCoro());
+            //Don't load states if not alive/in transition (breaks savestates)
+            if (!PlayerDeathWatcher.playerDead && !HeroController.instance.cState.transitioning) {
+                HeroController.instance.StartCoroutine(LoadStateCoro());
+            }
+            else
+            {
+                Console.AddLine("Don't load states while dead or in a transition! if you are not, this is a bug.");
+            }
         }
 
         public void NewLoadStateFromFile()
