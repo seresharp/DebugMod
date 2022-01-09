@@ -120,7 +120,14 @@ namespace DebugMod
 
         public void LoadTempState()
         {
-            HeroController.instance.StartCoroutine(LoadStateCoro());
+            //Don't load states if not alive/in transition (breaks savestates)
+            if (!PlayerDeathWatcher.playerDead && !HeroController.instance.cState.transitioning) {
+                HeroController.instance.StartCoroutine(LoadStateCoro());
+            }
+            else
+            {
+                Console.AddLine("Don't load states while dead or in a transition! if you are not, this is a bug.");
+            }
         }
 
         public void NewLoadStateFromFile()
@@ -186,8 +193,13 @@ namespace DebugMod
             int oldMP = PlayerData.instance.MPCharge;
 
             data.cameraLockArea = (data.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
-            GameManager.instance.ChangeToScene("Room_Sly_Storeroom", "", 0f);
-            while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Room_Sly_Storeroom")
+            string scene = "Room_Mender_House";
+            if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Room_Mender_House")
+            {
+                scene = "Room_Sly_Storeroom";
+            }
+            GameManager.instance.ChangeToScene(scene, "", 0f);// i hate that i have to do this.
+            while (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != scene)
             {
                 yield return null;
             }

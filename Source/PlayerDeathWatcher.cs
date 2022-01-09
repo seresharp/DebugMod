@@ -2,7 +2,7 @@
 {
     public static class PlayerDeathWatcher
     {
-        private static bool playerDead;
+        public static bool playerDead;
 
         public static void Reset()
         {

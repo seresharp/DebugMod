@@ -13,7 +13,7 @@ namespace DebugMod
         public static bool autoUpdate;
         private static float lastTime;
         public static List<EnemyData> enemyPool = new List<EnemyData>();
-        private static GameObject parent;
+        public static GameObject parent;
         public static bool hpBars;
         public static bool hitboxes;
         public static readonly MethodInfo takeDamage = typeof(HeroController).GetMethod("TakeDamage");
@@ -241,7 +241,7 @@ namespace DebugMod
                                 position.x *= 1920f / Screen.width;
                                 position.y *= 1080f / Screen.height;
                                 position.y = 1080f - position.y;
-                                
+
                                 dat.hitbox.SetPosition(position);
                                 dat.hitbox.ResizeBG(size);
                             }

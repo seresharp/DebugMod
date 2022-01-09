@@ -274,11 +274,6 @@ namespace DebugMod
                     }
                 }
 
-                if (DebugMod.IH.inputActions.pause.WasPressed && DebugMod.GM.IsGamePaused())
-                {
-                    UIManager.instance.TogglePauseGame();
-                }
-
                 if (DebugMod.cameraFollow)
                 {
                     BindableFunctions.cameraGameplayScene.SetValue(DebugMod.RefCamera, false);

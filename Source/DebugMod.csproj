@@ -73,9 +73,14 @@
       <HintPath>.\References\UnityEngine.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ValueTupleBridge, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ValueTupleBridge.0.1.5\lib\net35\ValueTupleBridge.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindableMethod.cs" />
+    <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="SavePositionManager.cs" />
     <Compile Include="EnemiesPanel.cs" />
     <Compile Include="EnemyData.cs" />
     <Compile Include="Hitbox\Drawing.cs" />
@@ -173,6 +178,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Images\BlankVertical.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
