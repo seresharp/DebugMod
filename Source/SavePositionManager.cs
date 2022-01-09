@@ -18,7 +18,9 @@ namespace DebugMod
         public static Vector3 KnightPos;
         public static Vector3 CamPos;
         public static Vector2 KnightVel;
-       // public static List
+        public static string PositionScene;
+        public static bool InitialisedPosition = false;
+        // public static List
         public static void SavePosition()
         {
 
@@ -26,42 +28,47 @@ namespace DebugMod
             KnightPos = DebugMod.RefKnight.gameObject.transform.position;
             KnightVel = HeroController.instance.current_velocity;
             CamPos = DebugMod.RefCamera.gameObject.transform.position;
+            PositionScene = DebugMod.GetSceneName();
+            InitialisedPosition = true;
 
-
-            
             //schmove = DebugMod.RefKnight.
             // save fsms :eyes:
-            
+
             FSMs = GetAllEnemies(FSMs2);
             FSMs.ForEach(delegate (EnemyData dat)
             {
                 dat.gameObject.SetActive(false);
             });
 
+            Console.AddLine("Positional save set in " + DebugMod.GetSceneName());
+
         }
         public static void LoadPosition()
         {
-            try
-            {
-                RemoveAll();
-                FSMs2 = Create();
-                // Move knight to saved location, change velocity to saved velocity, Move Camera to saved campos, 
-                //ReflectionHelper.SetField<HeroController, float>(HeroController.instance, "dash_timer", newValue);
-                DebugMod.RefKnight.gameObject.transform.position = KnightPos;
-                HeroController.instance.current_velocity = KnightVel;
-                DebugMod.RefCamera.gameObject.transform.position = CamPos;
-            }
-            catch(Exception     e)
-            {
-                Console.AddLine(e.Message);
-                Console.AddLine(e.StackTrace);
-            }
-            //HeroController.instance.DASH_COOLDOWN =
-            //HeroController.instance.DASH_COOLDOWN_CH =
-            //HeroController.instance.dash
-            
-            //DebugMod.RefCamera.SnapTo(DebugMod.RefKnight.transform.position.x, DebugMod.RefKnight.transform.position.y);
+            if (PositionScene == DebugMod.GetSceneName() && InitialisedPosition) { 
+                try
+                {
+                    RemoveAll();
+                    FSMs2 = Create();
+                    // Move knight to saved location, change velocity to saved velocity, Move Camera to saved campos, 
+                    //ReflectionHelper.SetField<HeroController, float>(HeroController.instance, "dash_timer", newValue);
+                    DebugMod.RefKnight.gameObject.transform.position = KnightPos;
+                    HeroController.instance.current_velocity = KnightVel;
+                    DebugMod.RefCamera.gameObject.transform.position = CamPos;
+                }
+                catch(Exception     e)
+                {
+                    Console.AddLine(e.Message);
+                    Console.AddLine(e.StackTrace);
+                }
+                //HeroController.instance.DASH_COOLDOWN =
+                //HeroController.instance.DASH_COOLDOWN_CH =
+                //HeroController.instance.dash
 
+                //DebugMod.RefCamera.SnapTo(DebugMod.RefKnight.transform.position.x, DebugMod.RefKnight.transform.position.y);
+            } else {
+                Console.AddLine("No positional save in " + DebugMod.GetSceneName());
+            }
         }
 
         public static List<EnemyData> Create() 

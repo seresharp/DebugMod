@@ -171,7 +171,11 @@ namespace DebugMod
         
         public override string GetVersion()
         {
-            return "1.4.6-early";
+            string version = "1.5.0";
+#if DEBUG
+            version = string.Concat(version, "-dev");
+#endif
+            return version;
         }
 
         public override bool IsCurrent()
@@ -186,7 +190,7 @@ namespace DebugMod
             catch (Exception)
             {
                 return true;
-            }
+      u      }
             */
             return true;
         }
