@@ -238,12 +238,12 @@ namespace DebugMod
 
         #region SaveStates 
 
-        [BindableMethod(name = "Position Save", category = "SaveStates")]
+        [BindableMethod(name = "Position Save", category = "Savestates")]
         public static void SavePosition()
         {
             SavePositionManager.SavePosition();
         }
-        [BindableMethod(name = "Position Load", category = "SaveStates")]
+        [BindableMethod(name = "Position Load", category = "Savestates")]
         public static void LoadPosition()
         {
             SavePositionManager.LoadPosition();
@@ -343,6 +343,43 @@ namespace DebugMod
         public static void ToggleVignette()
         {
             HeroController.instance.vignette.enabled = !HeroController.instance.vignette.enabled;
+        }
+
+        [BindableMethod(name = "Deactivate Visual Masks", category = "Visual")]
+        public static void DeactivateVisualMasks() {
+            int ctr = 0;
+
+            void disableMask(GameObject go) {
+                foreach (Renderer r in go.GetComponentsInChildren<Renderer>()) {
+                    if (r.enabled) {
+                        ctr++;
+                        r.enabled = false;
+                    }
+                }
+            }
+
+            float knightZ = HeroController.instance.transform.position.z;
+            foreach (GameObject go in GameObject.FindObjectsOfType<GameObject>()) {
+                if (go.transform.position.z > knightZ) continue;
+
+                // A collection of ways to identify masks. It's possible some slip through the cracks I guess
+                if (go.name.StartsWith("msk_"))
+                    disableMask(go);
+                else if (go.name.StartsWith("Tut_msk"))
+                    disableMask(go);
+                else if (go.name.StartsWith("black_solid"))
+                    disableMask(go);
+                else if (go.name.ToLower().Contains("vignette"))
+                    disableMask(go);
+                else if (go.LocateMyFSM("unmasker") is PlayMakerFSM)
+                    disableMask(go);
+                else if (go.LocateMyFSM("remasker_inverse") is PlayMakerFSM)
+                    disableMask(go);
+                else if (go.LocateMyFSM("remasker") is PlayMakerFSM)
+                    disableMask(go);
+            }
+
+            Console.AddLine($"Deactivated {ctr} masks");
         }
 
         [BindableMethod(name = "Toggle Hero Light", category = "Visual")]
