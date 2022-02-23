@@ -234,11 +234,7 @@ namespace DebugMod
             pd.isInvincible=false; 
             DebugMod.noclip=false;
         }
-        [BindableMethod(name = "Toggle showing room IDs", category = "Misc")]
-        public static void toggleShowRoomIDs()
-        {
-            DebugMod.settings.ShowRoomIDs = !DebugMod.settings.ShowRoomIDs;
-        }
+
         #endregion
 
         #region SaveStates 
@@ -506,6 +502,11 @@ namespace DebugMod
             {
                 EnemiesPanel.RefreshEnemyList();
             }
+        }
+        [BindableMethod(name = "Toggle showing room IDs", category = "Mod UI")]
+        public static void toggleShowRoomIDs()
+        {
+            DebugMod.settings.ShowRoomIDs = !DebugMod.settings.ShowRoomIDs;
         }
 
         [BindableMethod(name = "Toggle Binds", category = "Mod UI")]
