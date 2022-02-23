@@ -234,6 +234,11 @@ namespace DebugMod
             pd.isInvincible=false; 
             DebugMod.noclip=false;
         }
+        [BindableMethod(name = "Toggle showing room IDs", category = "Misc")]
+        public static void toggleShowRoomIDs()
+        {
+            DebugMod.settings.ShowRoomIDs = !DebugMod.settings.ShowRoomIDs;
+        }
         #endregion
 
         #region SaveStates 
