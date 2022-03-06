@@ -10,16 +10,16 @@ namespace DebugMod
 {
     public class SavePositionManager
     {
-        public static List<EnemyData> FSMs = new List<EnemyData>();
-        public static List<EnemyData> CreatedFSMs = new List<EnemyData>();
+        private static List<EnemyData> FSMs = new List<EnemyData>();
+        private static List<EnemyData> CreatedFSMs = new List<EnemyData>();
         //public static List<Vector3>;
         //public static List<Vector3,>
         // too complicated public static PlayMakerFSM KnightFsm = DebugMod.RefKnight.LocateMyFSM("Knight-ProxyFSM") ;
-        public static Vector3 KnightPos;
-        public static Vector3 CamPos;
-        public static Vector2 KnightVel;
-        public static string PositionScene;
-        public static bool InitializedPosition = false;
+        private static Vector3 KnightPos;
+        private static Vector3 CamPos;
+        private static Vector2 KnightVel;
+        private static string PositionScene;
+        private static bool InitializedPosition = false;
         // public static List
         public static void SaveState()
         {
@@ -56,7 +56,7 @@ namespace DebugMod
             }
         }
 
-        public static List<EnemyData> Create() 
+        private static List<EnemyData> Create() 
         {
             List<EnemyData> data = new List<EnemyData>();
             for (int i = 0; i < FSMs.Count; i++)
@@ -71,7 +71,7 @@ namespace DebugMod
             };
             return data;
         }   
-        public static void RemoveAllCopies()
+        private static void RemoveAllCopies()
         {
             //get all copies and remove them.
             CreatedFSMs.ForEach(delegate (EnemyData dat)
@@ -81,7 +81,7 @@ namespace DebugMod
             });
         }
         // this works but idk how ??
-        public static List<EnemyData> GetAllEnemies(List<EnemyData> Exclude)
+        private static List<EnemyData> GetAllEnemies(List<EnemyData> Exclude)
         {
             float boxSize = 250f;
             List<EnemyData> ret = new List<EnemyData>();
