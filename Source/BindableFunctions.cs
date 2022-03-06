@@ -775,6 +775,26 @@ namespace DebugMod
             GameCameras.instance.hudCanvas.gameObject.SetActive(true);
         }
 
+        [BindableMethod(name = "Toggle Hero Collider", category = "Cheats")]
+        public static void ToggleHeroCollider()
+        {
+            if (!DebugMod.RefHeroCollider.enabled)
+            {
+                DebugMod.RefHeroCollider.enabled = true;
+                DebugMod.RefHeroBox.enabled = true;
+                Console.AddLine("Enabled hero collider" + (DebugMod.noclip ? " and disabled noclip" : ""));
+                DebugMod.noclip = false;
+            }
+            else
+            {
+                DebugMod.RefHeroCollider.enabled = false;
+                DebugMod.RefHeroBox.enabled = false;
+                Console.AddLine("Disabled hero collider" + (DebugMod.noclip ? "" : " and enabled noclip"));
+                DebugMod.noclip = true;
+                DebugMod.noclipPos = DebugMod.RefKnight.transform.position;
+            }
+        }
+
         #endregion
 
         #region Charms

@@ -19,6 +19,9 @@ namespace DebugMod
         private static PlayMakerFSM _refKnightSlash;
         private static CameraController _refCamera;
         private static PlayMakerFSM _refDreamNail;
+        private static Collider2D _refHeroCollider;
+        private static Collider2D _refHeroBox;
+
         internal static GameManager GM => _gm != null ? _gm : (_gm = GameManager.instance);
         internal static InputHandler IH => _ih != null ? _ih : (_ih = GM.inputHandler);
         internal static HeroController HC => _hc != null ? _hc : (_hc = GM.hero_ctrl);
