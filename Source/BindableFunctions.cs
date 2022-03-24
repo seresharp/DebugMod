@@ -13,6 +13,7 @@ namespace DebugMod
 {
     public static class BindableFunctions
     {
+        public static bool breakChainsOnLoad = false;
         private static readonly FieldInfo TimeSlowed = typeof(GameManager).GetField("timeSlowed", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
         private static readonly FieldInfo IgnoreUnpause = typeof(UIManager).GetField("ignoreUnpause", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
         private static bool corniferYeeteded = false;
@@ -504,7 +505,7 @@ namespace DebugMod
             }
         }
         [BindableMethod(name = "Toggle showing room IDs", category = "Mod UI")]
-        public static void toggleShowRoomIDs()
+        public static void ToggleShowRoomIDs()
         {
             DebugMod.settings.ShowRoomIDs = !DebugMod.settings.ShowRoomIDs;
         }
@@ -1188,12 +1189,20 @@ namespace DebugMod
         #endregion
 
         #region Bosses
+        [BindableMethod(name = "Toggle auto break thk chains",category = "Bosses")]
+        public static void ToggleBreakOnLoads()
+        {
+            breakChainsOnLoad = !breakChainsOnLoad;
+        }
+        [BindableMethod(name = "Break THK chains",category = "Bosses")]
+        public static void BreakChains()
+        {
+            DebugMod.GM.StartCoroutine(BossHandler.BreakTHKChains());
+        }
 
-
-        [BindableMethod(name = "Force Shade fireball", category = "Bosses")]
+        [BindableMethod(name = "Force Shade Fireball", category = "Bosses")]
         public static void ShadeFireball()
         {
-            
             try
             {
                 GameObject shade = GameObject.Find("Hollow Shade(Clone)");

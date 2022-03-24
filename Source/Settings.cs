@@ -24,7 +24,6 @@ namespace DebugMod
             get => GetBool(true);
             set => SetBool(value);
         }
-
         public bool HelpPanelVisible
         {
             get => GetBool(true);

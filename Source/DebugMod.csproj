@@ -21,7 +21,7 @@
     <Optimize>false</Optimize>
     <DebugType>full</DebugType>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\HK 1221\Mods - Copy\hollow_knight_Data\Managed\Mods\</OutputPath>
     <IntermediateOutputPath>obj\Windows\AnyCPU\Debug</IntermediateOutputPath>
     <DocumentationFile>bin\Debug\DebugMod.xml</DocumentationFile>
     <DefineConstants>DEBUG;PLATFORM_WINDOWS</DefineConstants>
@@ -80,6 +80,7 @@
   <ItemGroup>
     <Compile Include="BindableMethod.cs" />
     <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="RoomSpecific.cs" />
     <Compile Include="SavePositionManager.cs" />
     <Compile Include="EnemiesPanel.cs" />
     <Compile Include="EnemyData.cs" />
@@ -182,6 +183,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <_PostBuildHookTimestamp>@(IntermediateAssembly->'%(FullPath).timestamp')</_PostBuildHookTimestamp>

@@ -47,7 +47,7 @@ namespace DebugMod
                     HeroController.instance.current_velocity = KnightVel;
                     DebugMod.RefCamera.gameObject.transform.position = CamPos;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.AddLine("No positional save in " + DebugMod.GetSceneName()+", or a bug has occured.");
                 }
