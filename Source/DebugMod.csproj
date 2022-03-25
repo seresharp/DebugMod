@@ -21,7 +21,7 @@
     <Optimize>false</Optimize>
     <DebugType>full</DebugType>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
-    <OutputPath>..\..\..\..\HK 1221\Mods - Copy\hollow_knight_Data\Managed\Mods\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <IntermediateOutputPath>obj\Windows\AnyCPU\Debug</IntermediateOutputPath>
     <DocumentationFile>bin\Debug\DebugMod.xml</DocumentationFile>
     <DefineConstants>DEBUG;PLATFORM_WINDOWS</DefineConstants>
