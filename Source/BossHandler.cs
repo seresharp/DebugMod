@@ -184,16 +184,5 @@ namespace DebugMod
             waitRandom.timeMax.Value = 1.6f;
             yield break;
         }
-        public static IEnumerator BreakTHKChains()
-        {
-            if (DebugMod.GetSceneName() == "Room_Final_Boss_Core")
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    PlayMakerFSM.BroadcastEvent("HIT");
-                    yield return new WaitForSecondsRealtime(0.14f);
-                }
-            }
-        }
     }
 }

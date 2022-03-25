@@ -261,10 +261,6 @@ namespace DebugMod
             //UnityEngine.Object.Destroy(GameCameras.instance.gameObject);
             //yield return null;
             //DebugMod.GM.SetupSceneRefs();
-            if (BindableFunctions.breakChainsOnLoad)
-            {
-                DebugMod.GM.StartCoroutine(BossHandler.BreakTHKChains());
-            }
             if(data.useRoomSpecific != 0)
             {
                 RoomSpecific.DoRoomSpecific(data.saveScene,data.useRoomSpecific);

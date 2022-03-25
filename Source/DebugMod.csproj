@@ -79,7 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BindableMethod.cs" />
-    <Compile Include="ReflectionHelper.cs" />
     <Compile Include="RoomSpecific.cs" />
     <Compile Include="SavePositionManager.cs" />
     <Compile Include="EnemiesPanel.cs" />
