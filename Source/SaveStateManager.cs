@@ -34,6 +34,7 @@ namespace DebugMod
         public static int currentStateSlot = -1;
         public static string path = Application.persistentDataPath + "/Savestates-1221/0/";
         public static string currentStateOperation = null;
+        //public static bool hasFury = typeof(Modding.ReflectionHelper).GetField(, "fury");
 
         private static string[] stateStrings =
         {

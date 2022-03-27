@@ -48,7 +48,11 @@ namespace DebugMod
         {
             data = new SaveStateData();
         }
-
+        /* TODO:
+            handle fury/full-health fury
+            apply/deapply twister effects when charms changed 
+            adjust nail dmg from one save to another
+        */
         #region saving
 
         public void SaveTempState()

@@ -15,6 +15,7 @@ namespace DebugMod
         private static GameManager _gm;
         private static InputHandler _ih;
         private static HeroController _hc;
+        private static NailSlash _ns;
         private static GameObject _refKnight;
         private static PlayMakerFSM _refKnightSlash;
         private static CameraController _refCamera;
@@ -24,6 +25,7 @@ namespace DebugMod
         internal static InputHandler IH => _ih != null ? _ih : (_ih = GM.inputHandler);
         internal static HeroController HC => _hc != null ? _hc : (_hc = GM.hero_ctrl);
         internal static GameObject RefKnight => _refKnight != null ? _refKnight : (_refKnight = HC.gameObject);
+        //internal static NailSlash NailSlash => _ns != null ? _ns : (_ns = typeof(HC.normalSlash.GetType());
         internal static PlayMakerFSM RefKnightSlash => _refKnightSlash != null ? _refKnightSlash : (_refKnightSlash = RefKnight.transform.Find("Attacks/Slash").GetComponent<PlayMakerFSM>());
         internal static CameraController RefCamera => _refCamera != null ? _refCamera : (_refCamera = GM.cameraCtrl);
         internal static PlayMakerFSM RefDreamNail => _refDreamNail != null ? _refDreamNail : (_refDreamNail = FSMUtility.LocateFSM(RefKnight, "Dream Nail"));
