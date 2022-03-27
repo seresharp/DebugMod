@@ -26,7 +26,7 @@ namespace DebugMod
             public Vector3 savePos;
             public FieldInfo cameraLockArea;
             public string filePath;
-
+            public int useRoomSpecific;
             internal SaveStateData() { }
             
             internal SaveStateData(SaveStateData _data)
@@ -38,6 +38,7 @@ namespace DebugMod
                 savedSd = _data.savedSd;
                 savePos = _data.savePos;
                 lockArea = _data.lockArea;
+                useRoomSpecific = _data.useRoomSpecific;
             }
         }
 
@@ -61,6 +62,7 @@ namespace DebugMod
             data.savePos = HeroController.instance.gameObject.transform.position;
             data.cameraLockArea = (data.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
             data.lockArea = data.cameraLockArea.GetValue(GameManager.instance.cameraCtrl);
+            data.useRoomSpecific = 0;
         }
 
         public void NewSaveStateToFile(int paramSlot)
@@ -163,6 +165,7 @@ namespace DebugMod
                         data.savePos = tmpData.savePos;
                         data.saveScene = tmpData.saveScene;
                         data.lockArea = tmpData.lockArea;
+                        data.useRoomSpecific = tmpData.useRoomSpecific;
                         DebugMod.instance.LogFine("Load SaveState ready: " + data.saveStateIdentifier);
                     }
                     catch (Exception ex)
@@ -258,6 +261,10 @@ namespace DebugMod
             //UnityEngine.Object.Destroy(GameCameras.instance.gameObject);
             //yield return null;
             //DebugMod.GM.SetupSceneRefs();
+            if(data.useRoomSpecific != 0)
+            {
+                RoomSpecific.DoRoomSpecific(data.saveScene,data.useRoomSpecific);
+            }
             yield break;
             // need to redraw UI somehow
         }
@@ -283,6 +290,7 @@ namespace DebugMod
                 data.saveStateIdentifier,
                 data.saveScene
             };
+
         }
         public SaveStateData DeepCopy()
         {

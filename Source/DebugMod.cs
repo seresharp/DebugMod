@@ -19,7 +19,9 @@ namespace DebugMod
         private static PlayMakerFSM _refKnightSlash;
         private static CameraController _refCamera;
         private static PlayMakerFSM _refDreamNail;
-        
+        private static Collider2D _refHeroCollider;
+        private static Collider2D _refHeroBox;
+
         internal static GameManager GM => _gm != null ? _gm : (_gm = GameManager.instance);
         internal static InputHandler IH => _ih != null ? _ih : (_ih = GM.inputHandler);
         internal static HeroController HC => _hc != null ? _hc : (_hc = GM.hero_ctrl);
@@ -27,7 +29,8 @@ namespace DebugMod
         internal static PlayMakerFSM RefKnightSlash => _refKnightSlash != null ? _refKnightSlash : (_refKnightSlash = RefKnight.transform.Find("Attacks/Slash").GetComponent<PlayMakerFSM>());
         internal static CameraController RefCamera => _refCamera != null ? _refCamera : (_refCamera = GM.cameraCtrl);
         internal static PlayMakerFSM RefDreamNail => _refDreamNail != null ? _refDreamNail : (_refDreamNail = FSMUtility.LocateFSM(RefKnight, "Dream Nail"));
-
+        internal static Collider2D RefHeroCollider => _refHeroCollider != null ? _refHeroCollider : (_refHeroCollider = RefKnight.GetComponent<Collider2D>());
+        internal static Collider2D RefHeroBox => _refHeroBox != null ? _refHeroBox : (_refHeroBox = RefKnight.transform.Find("HeroBox").GetComponent<Collider2D>());
         internal static DebugMod instance;
         internal static GlobalSettings settings;
 
@@ -171,7 +174,7 @@ namespace DebugMod
         
         public override string GetVersion()
         {
-            string version = "1.5.0";
+            string version = "1.5.1";
 #if DEBUG
             version = string.Concat(version, "-dev");
 #endif

@@ -234,19 +234,20 @@ namespace DebugMod
             pd.isInvincible=false; 
             DebugMod.noclip=false;
         }
+
         #endregion
 
         #region SaveStates 
 
         [BindableMethod(name = "Position Save", category = "Savestates")]
-        public static void SavePosition()
+        public static void RoomSaveState()
         {
-            SavePositionManager.SavePosition();
+            SavePositionManager.SaveState();
         }
         [BindableMethod(name = "Position Load", category = "Savestates")]
-        public static void LoadPosition()
+        public static void RoomLoadState()
         {
-            SavePositionManager.LoadPosition();
+            SavePositionManager.LoadState();
         }
         [BindableMethod(name = "Quickslot (save)", category = "Savestates")]
         public static void SaveState()
@@ -501,6 +502,11 @@ namespace DebugMod
             {
                 EnemiesPanel.RefreshEnemyList();
             }
+        }
+        [BindableMethod(name = "Toggle showing room IDs", category = "Mod UI")]
+        public static void ToggleShowRoomIDs()
+        {
+            DebugMod.settings.ShowRoomIDs = !DebugMod.settings.ShowRoomIDs;
         }
 
         [BindableMethod(name = "Toggle Binds", category = "Mod UI")]
@@ -767,6 +773,26 @@ namespace DebugMod
             DebugMod.GM.ReadyForRespawn();
             GameCameras.instance.hudCanvas.gameObject.SetActive(false);
             GameCameras.instance.hudCanvas.gameObject.SetActive(true);
+        }
+
+        [BindableMethod(name = "Toggle Hero Collider", category = "Cheats")]
+        public static void ToggleHeroCollider()
+        {
+            if (!DebugMod.RefHeroCollider.enabled)
+            {
+                DebugMod.RefHeroCollider.enabled = true;
+                DebugMod.RefHeroBox.enabled = true;
+                Console.AddLine("Enabled hero collider" + (DebugMod.noclip ? " and disabled noclip" : ""));
+                DebugMod.noclip = false;
+            }
+            else
+            {
+                DebugMod.RefHeroCollider.enabled = false;
+                DebugMod.RefHeroBox.enabled = false;
+                Console.AddLine("Disabled hero collider" + (DebugMod.noclip ? "" : " and enabled noclip"));
+                DebugMod.noclip = true;
+                DebugMod.noclipPos = DebugMod.RefKnight.transform.position;
+            }
         }
 
         #endregion
@@ -1162,12 +1188,9 @@ namespace DebugMod
         #endregion
 
         #region Bosses
-
-
-        [BindableMethod(name = "Force Shade fireball", category = "Bosses")]
+        [BindableMethod(name = "Force Shade Fireball", category = "Bosses")]
         public static void ShadeFireball()
         {
-            
             try
             {
                 GameObject shade = GameObject.Find("Hollow Shade(Clone)");

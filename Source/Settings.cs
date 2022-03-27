@@ -24,7 +24,6 @@ namespace DebugMod
             get => GetBool(true);
             set => SetBool(value);
         }
-
         public bool HelpPanelVisible
         {
             get => GetBool(true);
@@ -54,7 +53,11 @@ namespace DebugMod
             get => GetBool(true);
             set => SetBool(value);
         }
-
+        public bool ShowRoomIDs
+        {
+            get => GetBool(true);
+            set => SetBool(value);
+        }
         public bool FirstRun
         {
             get => GetBool(true);
