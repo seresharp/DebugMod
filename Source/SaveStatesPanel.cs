@@ -95,7 +95,14 @@ namespace DebugMod
 
                 foreach (KeyValuePair<int, string[]> entry in SaveStateManager.GetSaveStatesInfo())
                 {
-                    statePanel.GetText(entry.Key.ToString()).UpdateText(string.Format("{0} - {1}", entry.Value[0], entry.Value[1]));
+                    if (DebugMod.settings.ShowRoomIDs)
+                    {
+                        statePanel.GetText(entry.Key.ToString()).UpdateText(string.Format("{0} - {1}", entry.Value[0], entry.Value[1]));
+                    }
+                    else
+                    {
+                        statePanel.GetText(entry.Key.ToString()).UpdateText(string.Format("{0}", entry.Value[0]));
+                    }
                 }
             }
         }
