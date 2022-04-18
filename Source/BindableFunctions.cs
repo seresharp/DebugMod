@@ -8,6 +8,7 @@ using GlobalEnums;
 using HutongGames.PlayMaker;
 using UnityEngine.SceneManagement;
 using HutongGames.PlayMaker.Actions;
+using System.Collections;
 
 namespace DebugMod
 {
@@ -1188,6 +1189,32 @@ namespace DebugMod
         #endregion
 
         #region Bosses
+        [BindableMethod(name = "Reload Radiance Fight", category = "Bosses")]
+        public static void LoadRadiance()
+        {
+            GameManager.instance.StartCoroutine(LoadRadianceRoom());
+        }
+        private static IEnumerator LoadRadianceRoom()
+        {
+            //makes sure the initial platform and challage prompt appears
+            HeroController.instance.gameObject.LocateMyFSM("ProxyFSM").FsmVariables.FindFsmBool("Faced Radiance").Value = false;
+
+            HeroController.instance.RelinquishControl();
+            HeroController.instance.StopAnimationControl();
+            PlayMakerFSM.BroadcastEvent("START DREAM ENTRY");
+            PlayMakerFSM.BroadcastEvent("DREAM ENTER");
+            if (DebugMod.GM.IsGamePaused())
+            {
+                PlayerData.instance.disablePause = false;
+                UIManager.instance.TogglePauseGame();
+            }
+            HeroController.instance.enterWithoutInput = true; // stop early control on scene load
+            GameManager.instance.ChangeToScene("Dream_Final_Boss", "door1", 0f);
+            yield return new WaitUntil(() => HeroController.instance.acceptingInput);
+            yield return null;
+            //cuz people mostly have full soul from thk fight
+            HeroController.instance.AddMPCharge(198);
+        }
         [BindableMethod(name = "Force Shade Fireball", category = "Bosses")]
         public static void ShadeFireball()
         {
@@ -1622,7 +1649,7 @@ namespace DebugMod
             HeroController.instance.FaceRight();
             Console.AddLine("Made player face right");
         }
-        
+
         #endregion
     }
 }
