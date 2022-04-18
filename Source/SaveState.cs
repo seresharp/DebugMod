@@ -241,8 +241,17 @@ namespace DebugMod
             }
             else
             {
-                HeroController.instance.AddMPCharge(1);
-                HeroController.instance.TakeMP(1);
+                if(PlayerData.instance.MPCharge != 0)
+                {
+                    HeroController.instance.TakeMP(1);
+                    HeroController.instance.AddMPCharge(1);
+                }
+                else
+                {
+                    HeroController.instance.AddMPCharge(1);
+                    HeroController.instance.TakeMP(1);
+                }
+
             }
 
             HeroController.instance.proxyFSM.SendEvent("HeroCtrl-HeroLanded");
