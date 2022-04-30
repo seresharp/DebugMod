@@ -20,25 +20,27 @@ namespace DebugMod
         {
             public string saveStateIdentifier;
             public string saveScene;
+            public int useRoomSpecific = 0;
+            public int facingRight = -1; // -1 for unknown, so that older savestate files behave the same.
             public PlayerData savedPd;
             public object lockArea;
             public SceneData savedSd;
             public Vector3 savePos;
             public FieldInfo cameraLockArea;
             public string filePath;
-            public int useRoomSpecific;
             internal SaveStateData() { }
             
             internal SaveStateData(SaveStateData _data)
             {
                 saveStateIdentifier = _data.saveStateIdentifier;
                 saveScene = _data.saveScene;
+                useRoomSpecific = _data.useRoomSpecific;
+                facingRight = _data.facingRight;
                 cameraLockArea = _data.cameraLockArea;
                 savedPd = _data.savedPd;
                 savedSd = _data.savedSd;
                 savePos = _data.savePos;
                 lockArea = _data.lockArea;
-                useRoomSpecific = _data.useRoomSpecific;
             }
         }
 
@@ -63,6 +65,7 @@ namespace DebugMod
             data.cameraLockArea = (data.cameraLockArea ?? typeof(CameraController).GetField("currentLockArea", BindingFlags.Instance | BindingFlags.NonPublic));
             data.lockArea = data.cameraLockArea.GetValue(GameManager.instance.cameraCtrl);
             data.useRoomSpecific = 0;
+            data.facingRight = (HeroController.instance.cState.facingRight) ? 1:0;
         }
 
         public void NewSaveStateToFile(int paramSlot)
@@ -166,6 +169,7 @@ namespace DebugMod
                         data.saveScene = tmpData.saveScene;
                         data.lockArea = tmpData.lockArea;
                         data.useRoomSpecific = tmpData.useRoomSpecific;
+                        data.facingRight = tmpData.facingRight;
                         DebugMod.instance.LogFine("Load SaveState ready: " + data.saveStateIdentifier);
                     }
                     catch (Exception ex)
@@ -265,6 +269,15 @@ namespace DebugMod
             HeroController.instance.AddHealth(1);
             
             GameManager.instance.inputHandler.RefreshPlayerData();
+
+            if (data.facingRight == 1)
+            {
+                HeroController.instance.FaceRight();
+            }
+            else if (data.facingRight == 0)
+            {
+                HeroController.instance.FaceLeft();
+            }
 
             if (DebugMod.settings.EnemiesPanelVisible) EnemiesPanel.RefreshEnemyList();
             //UnityEngine.Object.Destroy(GameCameras.instance.gameObject);
