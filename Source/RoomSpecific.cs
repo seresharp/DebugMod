@@ -12,6 +12,7 @@ namespace DebugMod
     {
         //This class is intended to recreate some scenarios, with more accuracy than that of the savestate class. 
         //This should be eventually included to compatible with savestates, stored in the same location for easier access.
+        #region Functions
         private static void EnterSpiderTownTrap(int index) //Deepnest_Spider_Town
         {
             string goName = "RestBench Spider";
@@ -34,7 +35,7 @@ namespace DebugMod
                 websFSM.SendEvent("FINISHED");
             }
         }
-        public static void BreakTHKChains(int index)
+        private static void BreakTHKChains(int index)
         {
             string fsmName = "Control";
             string goName1 = "hollow_knight_chain_base";
@@ -49,7 +50,8 @@ namespace DebugMod
             fsm2.SetState("Break");
             fsm3.SetState("Break");
             fsm4.SetState("Break");
-        }
+        } //Room_Final_Boss
+        #endregion
         public static void DoRoomSpecific(string scene, int index)//index only used if multiple functionallities in one room, safe to ignore for now.
         {
             switch (scene)
@@ -57,7 +59,7 @@ namespace DebugMod
                 case "Deepnest_Spider_Town":
                     EnterSpiderTownTrap(index);
                     break;
-                case "Final_Boss_Core":
+                case "Room_Final_Boss_Core":
                     BreakTHKChains(index);
                     break;
                 default:
