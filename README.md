@@ -84,6 +84,18 @@ Specifies slot number, then makes a new savestate and saves to a json-file with 
 ## Load new state from file 
 Specifies slot number, then loads savestate from that file directly.
 
+## How to use room specific Savestates
+1. Make sure you are in one of the following rooms, as these are the only ones supported
+	Room_Final_Boss_Core
+	Deepnest_Spider_Town
+	(you can check what room you are in by pressing f2 and reading 'scene name')
+2. Create a savestate in the said room.
+3. Open your hollow knight saveStates folder (%APPDATA%\..\LocalLow\Team Cherry\Hollow Knight\Savestates-1221\)
+4. Subtract 1 from the page of savestates you saved in, and open that folder. (example, saved in page 4, open folder named 3)
+5. Open the savestate.json, whatever number you pressed being the number it will be (example, pressed 4, open file named savestate4 with a text editor such as notepad)
+6. Change the value labeled useRoomSpecific to 1 to enable room specific savestates.(if you can't find it, search for 'useRoomSpecific' with Ctrl+f)
+7. Load the savestate.
+
 ----------------------------------------------------------------------------------------
                                       Known Issues
 ---------------------------------------------------------------------------------------- 
